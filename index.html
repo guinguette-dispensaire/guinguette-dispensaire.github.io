@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Guinguette du Dispensaire — Sartrouville</title>
+    <meta name="description" content="Guinguette saisonnière au Parc du Dispensaire, Sartrouville. Bières pression, vins sélectionnés, planches et frites. Ambiance conviviale et festive, ouverte de mai à octobre 2026.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --cream: #f5f0e6;
+            --terracotta: #c4634a;
+            --dark-green: #2a4e14;
+            --sage: #5e7f42;
+            --burgundy: #742939;
+            --gold: #c8a448;
+            --dark: #1a1a1a;
+            --white: #fff;
+        }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Lato', sans-serif; background: var(--cream); color: var(--dark); line-height: 1.6; }
+
+        /* NAV */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            background: rgba(26,26,26,0.93); backdrop-filter: blur(10px);
+            padding: 0.7rem 2.5rem;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .nav-logo { height: 48px; width: 48px; object-fit: contain; border-radius: 50%; background: rgba(255,255,255,0.08); }
+        .nav-brand {
+            color: var(--gold); font-family: 'Playfair Display', serif;
+            font-size: 1.05rem; text-decoration: none; letter-spacing: 0.04em;
+            display: flex; align-items: center; gap: 0.75rem;
+        }
+        .nav-links { display: flex; gap: 2rem; list-style: none; }
+        .nav-links a {
+            color: rgba(255,255,255,0.75); text-decoration: none;
+            font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; transition: color 0.2s;
+        }
+        .nav-links a:hover { color: var(--gold); }
+
+        /* HERO */
+        .hero {
+            min-height: 100vh;
+            background: url('photo3.jpg') center/cover no-repeat;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            text-align: center; padding: 7rem 2rem 5rem; position: relative; overflow: hidden;
+        }
+        .hero::before {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(155deg, rgba(42,78,20,0.82) 0%, rgba(116,41,57,0.72) 45%, rgba(30,20,10,0.75) 100%);
+        }
+        .hero-content { position: relative; z-index: 1; }
+        .hero-logo { width: 110px; height: 110px; object-fit: contain; margin-bottom: 1.5rem; filter: drop-shadow(0 4px 16px rgba(0,0,0,0.5)); }
+        .hero-eyebrow { color: var(--gold); font-size: 0.72rem; letter-spacing: 0.35em; text-transform: uppercase; margin-bottom: 1.25rem; }
+        .hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(2.8rem, 9vw, 6rem); color: var(--white); line-height: 1.05; margin-bottom: 0.3rem; }
+        .hero h1 em { display: block; font-style: italic; color: var(--gold); }
+        .hero-tagline {
+            font-family: 'Playfair Display', serif; font-size: clamp(1rem, 2.5vw, 1.3rem);
+            color: rgba(255,255,255,0.85); font-style: italic;
+            margin: 1.5rem auto 2.2rem; max-width: 580px; line-height: 1.5;
+        }
+        .hero-pills { display: flex; flex-wrap: wrap; gap: 0.6rem; justify-content: center; margin-bottom: 2.5rem; }
+        .pill { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.22); color: rgba(255,255,255,0.92); padding: 0.38rem 1.1rem; border-radius: 50px; font-size: 0.78rem; }
+        .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+        .btn { display: inline-block; background: var(--gold); color: var(--dark); padding: 0.85rem 2.2rem; border-radius: 50px; font-weight: 700; text-decoration: none; font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; transition: transform 0.2s, box-shadow 0.2s; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.25); }
+        .btn-outline { background: transparent; border: 1.5px solid rgba(255,255,255,0.45); color: var(--white); }
+        .btn-outline:hover { background: rgba(255,255,255,0.1); }
+        .hero-scroll { position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%); color: rgba(255,255,255,0.4); font-size: 0.65rem; letter-spacing: 0.25em; text-transform: uppercase; display: flex; flex-direction: column; align-items: center; gap: 0.6rem; z-index: 1; }
+        .hero-scroll::after { content: ''; width: 1px; height: 44px; background: linear-gradient(to bottom, rgba(255,255,255,0.4), transparent); animation: scrollDown 1.8s ease-in-out infinite; }
+        @keyframes scrollDown { 0%,100%{opacity:.3;transform:scaleY(.5) translateY(-5px)} 50%{opacity:1;transform:scaleY(1) translateY(0)} }
+
+        /* SECTIONS */
+        section { padding: 5.5rem 2rem; }
+        .container { max-width: 1080px; margin: 0 auto; }
+        .section-label { color: var(--sage); font-size: 0.72rem; letter-spacing: 0.32em; text-transform: uppercase; margin-bottom: 0.75rem; }
+        .section-title { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 5vw, 3rem); line-height: 1.15; margin-bottom: 1.75rem; }
+
+        /* CONCEPT */
+        .concept { background: var(--dark-green); color: var(--cream); }
+        .concept .section-label { color: var(--gold); }
+        .concept-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+        .concept-text p { font-size: 1.05rem; line-height: 1.85; color: rgba(245,240,230,0.82); margin-bottom: 1.4rem; }
+        .concept-text p strong { color: var(--gold); }
+        .concept-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .concept-card { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; padding: 1.5rem 1.25rem; text-align: center; transition: background 0.2s; }
+        .concept-card:nth-child(even) { transform: translateY(1.25rem); }
+        .concept-card:hover { background: rgba(255,255,255,0.1); }
+        .cc-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+        .cc-title { font-family: 'Playfair Display', serif; font-size: 0.95rem; color: var(--gold); margin-bottom: 0.4rem; }
+        .cc-text { font-size: 0.82rem; color: rgba(245,240,230,0.65); line-height: 1.5; }
+
+        /* GALLERY */
+        .gallery { background: var(--cream); }
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.75rem;
+        }
+        .gallery-grid .g-item { overflow: hidden; border-radius: 12px; aspect-ratio: 4/3; }
+        .gallery-grid .g-item.g-wide { grid-column: span 2; aspect-ratio: 16/9; }
+        .gallery-grid .g-item.g-portrait { aspect-ratio: 3/4; }
+        .gallery-grid .g-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; display: block; }
+        .gallery-grid .g-item:hover img { transform: scale(1.05); }
+
+        /* CARTE */
+        .carte { background: var(--cream); }
+        .carte-tabs { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2.5rem; }
+        .tab-btn { background: none; border: 1.5px solid rgba(0,0,0,0.14); padding: 0.48rem 1.15rem; border-radius: 50px; font-family: 'Lato', sans-serif; font-size: 0.78rem; letter-spacing: 0.04em; cursor: pointer; transition: all 0.2s; color: var(--dark); }
+        .tab-btn.active, .tab-btn:hover { background: var(--terracotta); border-color: var(--terracotta); color: var(--white); }
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+        .menu-section-title { font-family: 'Playfair Display', serif; font-size: 1.25rem; color: var(--burgundy); margin: 2rem 0 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid rgba(0,0,0,0.1); }
+        .menu-section-title:first-child { margin-top: 0; }
+        .menu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 0.85rem; }
+        .menu-item { background: var(--white); border-radius: 12px; padding: 1.15rem 1.35rem; box-shadow: 0 2px 10px rgba(0,0,0,0.06); display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; transition: transform 0.18s, box-shadow 0.18s; }
+        .menu-item:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.09); }
+        .mi-info { flex: 1; }
+        .mi-name { font-family: 'Playfair Display', serif; font-size: 0.97rem; margin-bottom: 0.22rem; }
+        .mi-desc { font-size: 0.78rem; color: #777; line-height: 1.4; }
+        .mi-price { font-weight: 700; color: var(--terracotta); font-size: 0.97rem; white-space: nowrap; text-align: right; }
+        .mi-price small { display: block; font-size: 0.68rem; color: #aaa; font-weight: 400; }
+        .beer-prices { display: flex; align-items: baseline; gap: 0.5rem; justify-content: flex-end; flex-wrap: wrap; }
+        .beer-prices span { font-weight: 700; color: var(--terracotta); font-size: 0.93rem; white-space: nowrap; }
+        .beer-prices small { font-size: 0.65rem; color: #aaa; font-weight: 400; }
+        .beer-sep { color: #ccc !important; font-weight: 400 !important; }
+        .wi-bottle { width: 42px; height: 78px; object-fit: contain; object-position: center; flex-shrink: 0; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.18)); align-self: center; }
+        .formules-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; }
+        .formule-card { background: var(--white); border-radius: 18px; padding: 2rem 1.5rem; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.06); position: relative; overflow: hidden; transition: transform 0.2s, box-shadow 0.2s; }
+        .formule-card:hover { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(0,0,0,0.1); }
+        .formule-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, var(--terracotta), var(--gold)); }
+        .f-price { font-family: 'Playfair Display', serif; font-size: 2.8rem; color: var(--terracotta); font-weight: 700; line-height: 1; }
+        .f-price span { font-size: 1.3rem; }
+        .f-name { font-family: 'Playfair Display', serif; font-size: 1.05rem; margin: 0.8rem 0 0.5rem; }
+        .f-desc { font-size: 0.8rem; color: #666; line-height: 1.5; }
+        .enfant-card { max-width: 380px; margin: 0 auto; background: var(--white); border-radius: 22px; padding: 2.5rem; text-align: center; box-shadow: 0 4px 24px rgba(0,0,0,0.08); }
+        .enfant-card .big-icon { font-size: 3.5rem; margin-bottom: 1rem; }
+        .enfant-card .e-title { font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 0.5rem; }
+        .enfant-card .e-price { color: var(--terracotta); font-size: 2.2rem; font-weight: 700; font-family: 'Playfair Display', serif; }
+        .enfant-card .e-sub { font-size: 0.7rem; color: #aaa; letter-spacing: 0.15em; text-transform: uppercase; margin: 0.5rem 0 1.5rem; }
+        .enfant-card ul { list-style: none; text-align: left; font-size: 0.97rem; color: #555; line-height: 2.2; }
+
+        /* EVENTS */
+        .events { background: linear-gradient(140deg, var(--burgundy) 0%, #3a1020 100%); color: var(--cream); }
+        .events .section-label { color: var(--gold); }
+        .events-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+        .events-lead { font-size: 1.05rem; line-height: 1.85; color: rgba(245,240,230,0.82); margin-bottom: 2rem; }
+        .events-chips { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+        .event-chip { background: rgba(255,255,255,0.09); border: 1px solid rgba(255,255,255,0.18); border-radius: 50px; padding: 0.6rem 1.4rem; font-size: 0.83rem; color: var(--cream); transition: background 0.2s; }
+        .event-chip:hover { background: rgba(255,255,255,0.16); }
+        .events-photo { border-radius: 18px; overflow: hidden; aspect-ratio: 4/3; }
+        .events-photo img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* INFOS */
+        .infos { background: var(--white); }
+        .infos-grid { display: grid; grid-template-columns: repeat(3, 1fr); }
+        .info-block { padding: 2.25rem 2rem; border-left: 3px solid var(--gold); }
+        .info-block:not(:first-child) { border-left-color: rgba(200,164,72,0.35); }
+        .ib-icon { font-size: 1.6rem; margin-bottom: 1rem; }
+        .ib-title { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--dark-green); margin-bottom: 0.8rem; }
+        .ib-body { font-size: 0.88rem; line-height: 1.75; color: #555; }
+        .ib-body strong { color: var(--dark); }
+        .ib-body a { color: var(--sage); text-decoration: none; }
+        .ib-body a:hover { text-decoration: underline; }
+        .map-wrap { margin-top: 3rem; border-radius: 18px; overflow: hidden; height: 360px; box-shadow: 0 4px 24px rgba(0,0,0,0.1); }
+        .map-wrap iframe { width: 100%; height: 100%; border: none; }
+
+        /* PRESSE */
+        .presse { background: var(--cream); }
+        .presse-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.75rem; margin-top: 3rem; }
+        .press-card { background: #fff; border-radius: 16px; padding: 2rem 1.75rem; box-shadow: 0 2px 18px rgba(0,0,0,0.07); display: flex; flex-direction: column; gap: 0.9rem; transition: transform 0.2s, box-shadow 0.2s; text-decoration: none; color: inherit; }
+        .press-card:hover { transform: translateY(-4px); box-shadow: 0 8px 32px rgba(0,0,0,0.13); }
+        .press-source { display: flex; align-items: center; gap: 0.55rem; font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; color: var(--terracotta); }
+        .press-source::before { content: ''; display: inline-block; width: 28px; height: 2px; background: var(--terracotta); border-radius: 2px; }
+        .press-title { font-family: 'Playfair Display', serif; font-size: 1.05rem; line-height: 1.45; color: var(--dark); }
+        .press-excerpt { font-size: 0.82rem; line-height: 1.65; color: #666; flex: 1; }
+        .press-cta { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--terracotta); display: flex; align-items: center; gap: 0.4rem; }
+        .press-cta::after { content: '→'; }
+
+        /* FOOTER */
+        footer { background: var(--dark); color: rgba(255,255,255,0.45); padding: 3.5rem 2rem; text-align: center; }
+        .footer-logo { height: 60px; width: 60px; object-fit: contain; border-radius: 50%; opacity: 0.85; margin-bottom: 1rem; }
+        .footer-brand { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--gold); margin-bottom: 0.4rem; }
+        .footer-sub { font-size: 0.75rem; letter-spacing: 0.12em; color: rgba(255,255,255,0.35); margin-bottom: 2.25rem; }
+        .footer-nav { display: flex; justify-content: center; flex-wrap: wrap; gap: 1.75rem; list-style: none; margin-bottom: 2rem; }
+        .footer-nav a { color: rgba(255,255,255,0.45); text-decoration: none; font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; transition: color 0.2s; }
+        .footer-nav a:hover { color: var(--gold); }
+        .footer-copy { font-size: 0.72rem; color: rgba(255,255,255,0.25); }
+
+        /* REVEAL */
+        [data-reveal] { opacity: 0; transform: translateY(22px); transition: opacity 0.65s ease, transform 0.65s ease; }
+        [data-reveal].visible { opacity: 1; transform: none; }
+
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
+            .concept-grid, .events-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+            .concept-card:nth-child(even) { transform: none; }
+            .infos-grid { grid-template-columns: 1fr; }
+            .info-block { border-left: none; border-top: 3px solid var(--gold); }
+            .info-block:not(:first-child) { border-top-color: rgba(200,164,72,0.35); }
+            .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+            .gallery-grid .g-item.g-wide { grid-column: span 2; }
+            .gallery-grid .g-item.g-portrait { aspect-ratio: 4/3; }
+            .nav-links { display: none; }
+        }
+        @media (max-width: 520px) {
+            .btn-outline { display: none; }
+            .gallery-grid { grid-template-columns: 1fr; }
+            .gallery-grid .g-item.g-wide, .gallery-grid .g-item.g-portrait { grid-column: span 1; aspect-ratio: 4/3; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+    <a href="#" class="nav-brand">
+        <img src="logo.png" alt="Logo La Guinguette du Dispensaire" class="nav-logo">
+        La Guinguette du Dispensaire
+    </a>
+    <ul class="nav-links">
+        <li><a href="#concept">Le lieu</a></li>
+        <li><a href="#galerie">Photos</a></li>
+        <li><a href="#carte">La carte</a></li>
+        <li><a href="#animations">Animations</a></li>
+        <li><a href="#presse">Presse</a></li>
+        <li><a href="#infos">Infos &amp; accès</a></li>
+    </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-content">
+        <img src="logo.png" alt="Logo" class="hero-logo">
+        <p class="hero-eyebrow">Sartrouville · Parc du Dispensaire · Saison 2026</p>
+        <h1>La Guinguette<br><em>du Dispensaire</em></h1>
+        <p class="hero-tagline">
+            « On s'y retrouve, on s'y attarde,<br>
+            et on y revient. »
+        </p>
+        <div class="hero-pills">
+            <span class="pill">🍺 Bières pression</span>
+            <span class="pill">🍷 Vins sélectionnés</span>
+            <span class="pill">🧀 Planches &amp; grignotages</span>
+            <span class="pill">🎵 Concerts &amp; animations</span>
+            <span class="pill">👨‍👩‍👧 Familles bienvenues</span>
+        </div>
+        <div class="hero-btns">
+            <a href="#carte" class="btn">Voir la carte</a>
+            <a href="#infos" class="btn btn-outline">Nous trouver</a>
+        </div>
+    </div>
+    <div class="hero-scroll">Découvrir</div>
+</section>
+
+<!-- CONCEPT -->
+<section id="concept" class="concept">
+    <div class="container">
+        <div class="concept-grid">
+            <div class="concept-text" data-reveal>
+                <p class="section-label">Notre histoire</p>
+                <h2 class="section-title">Un lieu de vie au cœur du parc</h2>
+                <p>Nichée dans les <strong>anciennes écuries du Parc du Dispensaire</strong>, La Guinguette du Dispensaire est un espace ouvert à toutes et tous, dans l'esprit des guinguettes d'antan : convivial, familial, festif.</p>
+                <p>Bières pression fraîches, vins soigneusement sélectionnés par <strong>Pépites de Vin</strong>, planches généreuses et frites maison… tout est pensé pour que vous passiez un bon moment, sans chichi.</p>
+                <p>Ouverte de <strong>mai à octobre 2026</strong>, avec concerts et animations tout au long de la saison. <em>On s'y retrouve, on s'y attarde, et on y revient.</em></p>
+            </div>
+            <div class="concept-cards" data-reveal>
+                <div class="concept-card">
+                    <div class="cc-icon">🌿</div>
+                    <div class="cc-title">Cadre naturel</div>
+                    <div class="cc-text">En plein cœur d'un parc arboré en centre-ville de Sartrouville</div>
+                </div>
+                <div class="concept-card">
+                    <div class="cc-icon">🍺</div>
+                    <div class="cc-title">Bons produits</div>
+                    <div class="cc-text">Vins sélectionnés par Pépites de Vin, bières pression de qualité</div>
+                </div>
+                <div class="concept-card">
+                    <div class="cc-icon">🎵</div>
+                    <div class="cc-title">Animations</div>
+                    <div class="cc-text">Concerts live, événements festifs et culturels toute la saison</div>
+                </div>
+                <div class="concept-card">
+                    <div class="cc-icon">👨‍👩‍👧</div>
+                    <div class="cc-title">Pour tous</div>
+                    <div class="cc-text">Espace familial, jeux pour tous (Molkky, palet breton, pétanque…), menu enfant, terrasse ombragée</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- GALERIE -->
+<section id="galerie" class="gallery">
+    <div class="container">
+        <p class="section-label" data-reveal>En images</p>
+        <h2 class="section-title" data-reveal>La guinguette en vrai</h2>
+        <div class="gallery-grid" data-reveal>
+            <div class="g-item g-portrait"><img src="photo7.jpg" alt="Ambiance à la guinguette" loading="lazy"></div>
+            <div class="g-item g-portrait"><img src="photo4.jpg" alt="Détail guinguette" loading="lazy"></div>
+            <div class="g-item"><img src="photo9.jpg" alt="Le parc du Dispensaire" loading="lazy"></div>
+            <div class="g-item g-wide"><img src="photo1.jpg" alt="Le bar de la guinguette" loading="lazy"></div>
+            <div class="g-item"><img src="photo2.jpg" alt="Apéro en plein air" loading="lazy"></div>
+        </div>
+    </div>
+</section>
+
+<!-- CARTE -->
+<section id="carte" class="carte" style="background: #f0ebe0;">
+    <div class="container">
+        <p class="section-label" data-reveal>Ce qu'on vous sert</p>
+        <h2 class="section-title" data-reveal>La carte</h2>
+
+        <div class="carte-tabs" data-reveal>
+            <button class="tab-btn active"  onclick="switchTab(this,'formules')">🎯 Formules</button>
+            <button class="tab-btn"         onclick="switchTab(this,'grignoter')">🧀 À grignoter</button>
+            <button class="tab-btn"         onclick="switchTab(this,'bieres')">🍺 Bières</button>
+            <button class="tab-btn"         onclick="switchTab(this,'vins')">🍷 Vins</button>
+            <button class="tab-btn"         onclick="switchTab(this,'cocktails')">🍹 Cocktails</button>
+            <button class="tab-btn"         onclick="switchTab(this,'softs')">🥤 Softs &amp; Chauds</button>
+            <button class="tab-btn"         onclick="switchTab(this,'enfant')">👧 Menu enfant</button>
+        </div>
+
+        <!-- FORMULES -->
+        <div id="tab-formules" class="tab-panel active">
+            <div class="formules-grid">
+                <div class="formule-card"><div class="f-price">25<span>€</span></div><div class="f-name">Planche &amp; Vins</div><div class="f-desc">Planche 2 personnes + 2 verres de vin</div></div>
+                <div class="formule-card"><div class="f-price">45<span>€</span></div><div class="f-name">Grande Tablée</div><div class="f-desc">Planche 4 personnes + 1 bouteille de vin</div></div>
+                <div class="formule-card"><div class="f-price">12<span>€</span></div><div class="f-name">Frite &amp; Pinte</div><div class="f-desc">Grande frite maison + une pinte de votre choix</div></div>
+                <div class="formule-card"><div class="f-price">13<span>€</span></div><div class="f-name">Saucisson &amp; Verre</div><div class="f-desc">Saucisson entier + pinte ou verre de vin</div></div>
+            </div>
+        </div>
+
+        <!-- À GRIGNOTER -->
+        <div id="tab-grignoter" class="tab-panel">
+            <p class="menu-section-title">À picorer</p>
+            <div class="menu-grid">
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Aiguillettes de poulet</div><div class="mi-desc">6 pièces · sauce maison</div></div><div class="mi-price">5 €</div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Sticks Mozzarella</div><div class="mi-desc">6 pièces · panés et dorés</div></div><div class="mi-price">6 €</div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Bouchées Camembert</div><div class="mi-desc">8 pièces · croustillantes</div></div><div class="mi-price">7 €</div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Frite maison</div><div class="mi-desc">Faites maison · petite portion</div></div><div class="mi-price">4 €</div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Grande frite maison</div><div class="mi-desc">Faites maison · portion généreuse</div></div><div class="mi-price">6 €</div></div>
+            </div>
+            <p class="menu-section-title">Nos planches</p>
+            <div class="menu-grid">
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Planche Charcuterie</div><div class="mi-desc">Produits artisanaux</div></div><div class="mi-price">15 €<small>2 pers.</small></div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Planche Fromage</div><div class="mi-desc">Sélection affinée</div></div><div class="mi-price">15 €<small>2 pers.</small></div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Planche Mixte</div><div class="mi-desc">Charcuterie &amp; fromage</div></div><div class="mi-price">15 €<small>2 pers.</small></div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Grande Planche Mixte</div><div class="mi-desc">Sélection généreuse</div></div><div class="mi-price">25 €<small>4 pers.</small></div></div>
+            </div>
+            <p class="menu-section-title">La Conserverie de la Guinguette</p>
+            <p style="font-size:.83rem;color:#888;font-style:italic;margin-bottom:1rem">Commande au bar</p>
+            <div class="menu-grid">
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Pâté de campagne</div></div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Rillette</div></div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Saucisson entier</div></div></div>
+            </div>
+        </div>
+
+        <!-- BIÈRES -->
+        <div id="tab-bieres" class="tab-panel">
+            <p class="menu-section-title">Bières pression</p>
+            <div class="menu-grid">
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">La Buchette Blonde</div><div class="mi-desc">Blonde · pression</div></div><div class="beer-prices"><span>4 € <small>demi 25cl</small></span><span class="beer-sep">·</span><span>7 € <small>pinte 50cl</small></span></div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">IPA</div><div class="mi-desc">India Pale Ale · pression</div></div><div class="beer-prices"><span>5 € <small>demi 25cl</small></span><span class="beer-sep">·</span><span>9 € <small>pinte 50cl</small></span></div></div>
+            </div>
+        </div>
+
+        <!-- VINS -->
+        <div id="tab-vins" class="tab-panel">
+            <p style="font-size:.83rem;color:#888;font-style:italic;margin-bottom:1.75rem">Vins sélectionnés par <strong style="color:#555">Pépites de Vin</strong> — servis au verre (12,5 cl) ou à la bouteille (75 cl)</p>
+            <p class="menu-section-title">Rosé</p>
+            <div class="menu-grid">
+                <div class="menu-item"><img src="wine-rose.png" class="wi-bottle" alt="Sainte Philomène"><div class="mi-info"><div class="mi-name">Sainte Philomène</div><div class="mi-desc">Rosé · Coteaux d'Aix-en-Provence AOP</div></div><div class="mi-price">5 € / 20 €<small>verre / bouteille</small></div></div>
+            </div>
+            <p class="menu-section-title">Bulles</p>
+            <div class="menu-grid">
+                <div class="menu-item"><img src="wine-prosecco.png" class="wi-bottle" alt="Prosecco Corvezzo"><div class="mi-info"><div class="mi-name">Prosecco Corvezzo BIO</div><div class="mi-desc">Bulles · DOC Prosecco · Italie</div></div><div class="mi-price">9 € / 30 €<small>verre / bouteille</small></div></div>
+            </div>
+            <p class="menu-section-title">Blancs</p>
+            <div class="menu-grid">
+                <div class="menu-item"><img src="wine-blanc1.png" class="wi-bottle" alt="Dom. Laffitte"><div class="mi-info"><div class="mi-name">Dom. Laffitte</div><div class="mi-desc">Blanc · Colombard-Sauvignon · Côtes de Gascogne AOP</div></div><div class="mi-price">6 € / 20 €<small>verre / bouteille</small></div></div>
+                <div class="menu-item"><img src="wine-blanc2.png" class="wi-bottle" alt="Mâcon-Villages"><div class="mi-info"><div class="mi-name">Mâcon-Villages</div><div class="mi-desc">Blanc · Bourgogne AOP</div></div><div class="mi-price">8 € / 29 €<small>verre / bouteille</small></div></div>
+            </div>
+            <p class="menu-section-title">Rouges</p>
+            <div class="menu-grid">
+                <div class="menu-item"><img src="wine-rouge1.png" class="wi-bottle" alt="Ferraton La Tournée"><div class="mi-info"><div class="mi-name">Ferraton La Tournée</div><div class="mi-desc">Rouge · Vallée du Rhône AOP</div></div><div class="mi-price">6 € / 22 €<small>verre / bouteille</small></div></div>
+                <div class="menu-item"><img src="wine-rouge2.png" class="wi-bottle" alt="Costeplane 1850 BIO"><div class="mi-info"><div class="mi-name">Costeplane 1850 BIO</div><div class="mi-desc">Rouge · Languedoc AOP</div></div><div class="mi-price">8 € / 26 €<small>verre / bouteille</small></div></div>
+            </div>
+        </div>
+
+        <!-- COCKTAILS -->
+        <div id="tab-cocktails" class="tab-panel">
+            <p style="font-size:.83rem;color:#888;font-style:italic;margin-bottom:1.75rem">Cocktails préparés à la minute avec des produits de qualité</p>
+            <p class="menu-section-title">Cocktails</p>
+            <div class="menu-grid">
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Spritz</div><div class="mi-desc">Prosecco · Aperol · eau gazeuse · tranche d'orange</div></div><div class="mi-price">9 €</div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Moscow Mule</div><div class="mi-desc">Vodka · ginger beer · citron vert · menthe</div></div><div class="mi-price">9 €</div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Mojito</div><div class="mi-desc">Rhum blanc · menthe fraîche · citron vert · sucre de canne</div></div><div class="mi-price">9 €</div></div>
+            </div>
+        </div>
+
+        <!-- SOFTS -->
+        <div id="tab-softs" class="tab-panel">
+            <p class="menu-section-title">Softs &amp; Eaux</p>
+            <div class="menu-grid">
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Coca-Cola / Zéro</div><div class="mi-desc">33 cl cannette</div></div><div class="mi-price">3 €</div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Orangina</div><div class="mi-desc">33 cl cannette</div></div><div class="mi-price">3 €</div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Limonade</div><div class="mi-desc">33 cl cannette</div></div><div class="mi-price">3 €</div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Jus de fruit</div><div class="mi-desc">Orange, pomme, multifruits</div></div><div class="mi-price">3,50 €</div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Eau plate ou gazeuse</div><div class="mi-desc">50 cl bouteille</div></div><div class="mi-price">2,50 €</div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Sirop</div><div class="mi-desc">À l'eau</div></div><div class="mi-price">2 €</div></div>
+            </div>
+            <p class="menu-section-title">Chauds</p>
+            <div class="menu-grid">
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Café / Expresso</div></div><div class="mi-price">2 €</div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Café allongé</div></div><div class="mi-price">2,50 €</div></div>
+            </div>
+        </div>
+
+        <!-- MENU ENFANT -->
+        <div id="tab-enfant" class="tab-panel">
+            <div class="enfant-card">
+                <div class="big-icon">👧</div>
+                <div class="e-title">Menu Enfant</div>
+                <div class="e-price">9 €</div>
+                <div class="e-sub">— 12 ans et moins —</div>
+                <ul>
+                    <li>🧃 &nbsp;1 jus, soda ou sirop</li>
+                    <li>🍟 &nbsp;Nuggets avec frites</li>
+                    <li>🍦 &nbsp;1 glace</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ANIMATIONS -->
+<section id="animations" class="events">
+    <div class="container">
+        <div class="events-inner" data-reveal>
+            <div>
+                <p class="section-label">Toute la saison</p>
+                <h2 class="section-title" style="color:var(--cream)">Animations &amp; événements</h2>
+                <p class="events-lead">La Guinguette du Dispensaire, c'est aussi une programmation festive tout l'été : concerts live, soirées thématiques, jeux de plein air et surprises… Suivez-nous sur les réseaux pour ne rien manquer !</p>
+                <div class="events-chips">
+                    <span class="event-chip">🎵 Concerts live</span>
+                    <span class="event-chip">🌅 Soirées estivales</span>
+                    <span class="event-chip">🎮 Jeux en plein air</span>
+                    <span class="event-chip">🎉 Événements festifs</span>
+                    <span class="event-chip">👨‍👩‍👧 Animations familles</span>
+                </div>
+            </div>
+            <div class="events-photo">
+                <img src="photo2.jpg" alt="Ambiance à la guinguette" loading="lazy">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- PRESSE -->
+<section id="presse" class="presse section">
+    <div class="container">
+        <p class="section-label" data-reveal>Ils parlent de nous</p>
+        <h2 class="section-title" data-reveal>Revue de presse</h2>
+        <div class="presse-grid" data-reveal>
+
+            <a class="press-card" href="https://www.sortir
