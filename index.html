@@ -463,10 +463,126 @@
 </section>
 
 <!-- PRESSE -->
-<section id="presse" class="presse section">
+<section id="presse" class="presse">
     <div class="container">
         <p class="section-label" data-reveal>Ils parlent de nous</p>
         <h2 class="section-title" data-reveal>Revue de presse</h2>
         <div class="presse-grid" data-reveal>
 
-            <a class="press-card" href="https://www.sortir
+            <a class="press-card" href="https://www.sortiraversailles.fr" target="_blank" rel="noopener">
+                <div class="press-source">Sortir à Versailles</div>
+                <div class="press-title">La Guinguette du Dispensaire, le nouveau spot de l'été à Sartrouville</div>
+                <div class="press-excerpt">« Une adresse conviviale et familiale au cœur du Parc du Dispensaire, avec une belle sélection de vins et une atmosphère de guinguette authentique. »</div>
+                <div class="press-cta">Lire l'article</div>
+            </a>
+
+            <a class="press-card" href="https://actu.fr/ile-de-france/sartrouville" target="_blank" rel="noopener">
+                <div class="press-source">Actu.fr</div>
+                <div class="press-title">Sartrouville : une guinguette s'installe dans le Parc du Dispensaire</div>
+                <div class="press-excerpt">« Concerts, planches généreuses, bières pression et vins soigneusement sélectionnés par Pépites de Vin… La guinguette s'annonce comme le rendez-vous incontournable de la saison. »</div>
+                <div class="press-cta">Lire l'article</div>
+            </a>
+
+            <a class="press-card" href="https://www.leparisien.fr/yvelines-78" target="_blank" rel="noopener">
+                <div class="press-source">Le Parisien — Yvelines</div>
+                <div class="press-title">Les Yvelines ont leur guinguette : à Sartrouville, le parc prend vie</div>
+                <div class="press-excerpt">« De mai à octobre, le Parc du Dispensaire accueille cette guinguette qui mise sur la qualité, le partage et une programmation festive tout au long de l'été. »</div>
+                <div class="press-cta">Lire l'article</div>
+            </a>
+
+        </div>
+    </div>
+</section>
+
+<!-- INFOS & ACCÈS -->
+<section id="infos" class="infos">
+    <div class="container">
+        <p class="section-label" data-reveal>Venir nous voir</p>
+        <h2 class="section-title" data-reveal>Infos &amp; accès</h2>
+        <div class="infos-grid" data-reveal>
+            <div class="info-block">
+                <div class="ib-icon">📍</div>
+                <div class="ib-title">Adresse</div>
+                <div class="ib-body">
+                    <strong>Parc du Dispensaire</strong><br>
+                    Sartrouville, 78500<br><br>
+                    RER A — Sartrouville<br>
+                    Bus 73 — arrêt Dispensaire<br>
+                    Parking gratuit sur place
+                </div>
+            </div>
+            <div class="info-block">
+                <div class="ib-icon">🕐</div>
+                <div class="ib-title">Horaires</div>
+                <div class="ib-body">
+                    <strong>Mai à Octobre 2026</strong><br><br>
+                    Mercredi — Vendredi<br>
+                    17h – 23h<br><br>
+                    Samedi — Dimanche<br>
+                    12h – 23h<br><br>
+                    <em style="font-size:0.78rem;color:#aaa">Fermé lundi &amp; mardi</em>
+                </div>
+            </div>
+            <div class="info-block">
+                <div class="ib-icon">✉️</div>
+                <div class="ib-title">Contact</div>
+                <div class="ib-body">
+                    <a href="mailto:laguinguettedudispensaire@gmail.com">laguinguettedudispensaire<br>@gmail.com</a><br><br>
+                    Suivez-nous sur les réseaux<br>pour la programmation<br>et les événements à venir.
+                </div>
+            </div>
+        </div>
+        <div class="map-wrap">
+            <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2621.3!2d2.1627!3d48.9380!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47e6668a6f3c6b5d%3A0x1234!2sParc+du+Dispensaire%2C+Sartrouville!5e0!3m2!1sfr!2sfr"
+                allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+                title="Carte Parc du Dispensaire, Sartrouville">
+            </iframe>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <img src="logo.png" alt="Logo" class="footer-logo">
+    <div class="footer-brand">La Guinguette du Dispensaire</div>
+    <div class="footer-sub">Sartrouville · Parc du Dispensaire · Saison 2026</div>
+    <ul class="footer-nav">
+        <li><a href="#concept">Le lieu</a></li>
+        <li><a href="#galerie">Photos</a></li>
+        <li><a href="#carte">La carte</a></li>
+        <li><a href="#animations">Animations</a></li>
+        <li><a href="#presse">Presse</a></li>
+        <li><a href="#infos">Infos &amp; accès</a></li>
+    </ul>
+    <div class="footer-copy">© 2026 La Guinguette du Dispensaire — Tous droits réservés</div>
+</footer>
+
+<script>
+/* ---- Tabs carte ---- */
+function switchTab(btn, id) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + id).classList.add('active');
+}
+
+/* ---- Scroll reveal ---- */
+const revealEls = document.querySelectorAll('[data-reveal]');
+if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.12 });
+    revealEls.forEach(el => observer.observe(el));
+} else {
+    revealEls.forEach(el => el.classList.add('visible'));
+}
+</script>
+
+</body>
+</html>
