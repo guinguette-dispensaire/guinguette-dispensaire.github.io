@@ -293,6 +293,35 @@
       text-transform: uppercase;
     }
 
+    /* ── AVIS GOOGLE ── */
+    .avis-card {
+      margin: 1.5rem 1.5rem 2rem;
+      background: var(--white);
+      border: 1px solid rgba(0,0,0,0.08);
+      border-radius: 14px;
+      padding: 1.5rem;
+      text-align: center;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+    }
+    .avis-stars { font-size: 1.3rem; letter-spacing: 0.2em; margin-bottom: 0.5rem; }
+    .avis-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.15rem;
+      color: var(--dark-green);
+      margin-bottom: 0.35rem;
+    }
+    .avis-sub { font-size: 0.85rem; color: #666; margin-bottom: 1rem; }
+    .avis-btn {
+      display: inline-block;
+      background: var(--terracotta);
+      color: var(--white);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.95rem;
+      padding: 0.7rem 1.6rem;
+      border-radius: 99px;
+    }
+
     /* ── FOOTER ── */
     footer {
       background: var(--dark);
@@ -356,9 +385,10 @@
   <div class="menu-items">
     <div class="menu-item">
       <div class="item-info">
-        <div class="item-name">Chips <span class="badge-new">Nouveau</span></div>
+        <div class="item-name">Aiguillettes de poulet</div>
+        <div class="item-desc">6 pièces · sauce maison</div>
       </div>
-      <div class="item-price">2 €</div>
+      <div class="item-price">7 €</div>
     </div>
     <div class="menu-item">
       <div class="item-info">
@@ -369,17 +399,16 @@
     </div>
     <div class="menu-item">
       <div class="item-info">
-        <div class="item-name">Aiguillettes de poulet</div>
-        <div class="item-desc">6 pièces · sauce maison</div>
-      </div>
-      <div class="item-price">7 €</div>
-    </div>
-    <div class="menu-item">
-      <div class="item-info">
         <div class="item-name">Sticks Mozzarella</div>
         <div class="item-desc">6 pièces · panés et dorés</div>
       </div>
       <div class="item-price">6 €</div>
+    </div>
+    <div class="menu-item">
+      <div class="item-info">
+        <div class="item-name">Chips</div>
+      </div>
+      <div class="item-price">2 €</div>
     </div>
   </div>
 
@@ -449,6 +478,14 @@
       </div>
       <div class="item-price">1,50 €</div>
     </div>
+  </div>
+
+  <!-- AVIS GOOGLE -->
+  <div class="avis-card">
+    <div class="avis-stars">⭐⭐⭐⭐⭐</div>
+    <div class="avis-title">Vous avez passé un bon moment ?</div>
+    <div class="avis-sub">Votre avis nous aide énormément — merci !</div>
+    <a class="avis-btn" href="https://maps.google.com/?cid=5422210577195196381" target="_blank" rel="noopener">Laisser un avis Google</a>
   </div>
 
 </main>
