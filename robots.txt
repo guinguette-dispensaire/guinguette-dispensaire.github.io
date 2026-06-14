@@ -2,3 +2,6 @@ User-agent: *
 Allow: /
 
 # Pages de redirection (non indexées via meta robots noindex)
+# grandeur-nature.html et menu-evenement.html redirigent vers /menu.html
+
+Sitemap: https://guinguette-dispensaire.github.io/sitemap.xml
