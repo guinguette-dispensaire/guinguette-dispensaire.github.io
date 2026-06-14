@@ -6,7 +6,17 @@
     <title>La Guinguette du Dispensaire — Bar terrasse Sartrouville</title>
     <meta name="description" content="Guinguette saisonnière au Parc du Dispensaire, Sartrouville. Bières pression, vins sélectionnés, planches, frites. Ouverte mar.–dim. (fermé lundi) : dim., mer., sam. 10h–21h30 · mar., jeu., ven. 16h–21h30. De juin à octobre 2026.">
     <link rel="canonical" href="https://guinguette-dispensaire.github.io">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <meta name="author" content="La Guinguette du Dispensaire">
+    <meta name="geo.region" content="FR-78">
+    <meta name="geo.placename" content="Sartrouville">
+    <meta name="geo.position" content="48.9397;2.1608">
+    <meta name="ICBM" content="48.9397, 2.1608">
+    <meta name="theme-color" content="#2a4e14">
     <link rel="icon" href="logo.png" type="image/png">
+    <link rel="apple-touch-icon" href="logo.png">
+    <!-- Préchargement de l'image LCP (fond du hero) -->
+    <link rel="preload" as="image" href="photo3.webp" type="image/webp" fetchpriority="high">
 
     <!-- Open Graph -->
     <meta property="og:type"        content="restaurant">
@@ -14,6 +24,9 @@
     <meta property="og:description" content="Bar terrasse saisonnier au Parc du Dispensaire, Sartrouville. Bières, vins, planches, concerts. Dim., mer., sam. 10h–21h30 · mar., jeu., ven. 16h–21h30.">
     <meta property="og:url"         content="https://guinguette-dispensaire.github.io">
     <meta property="og:image"       content="https://guinguette-dispensaire.github.io/photo1.jpg">
+    <meta property="og:image:width"  content="1280">
+    <meta property="og:image:height" content="960">
+    <meta property="og:image:alt"   content="La Guinguette du Dispensaire, bar terrasse au Parc du Dispensaire à Sartrouville">
     <meta property="og:locale"      content="fr_FR">
     <meta property="og:site_name"   content="La Guinguette du Dispensaire">
 
@@ -27,21 +40,32 @@
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "FoodEstablishment",
+      "@type": ["Restaurant", "BarOrPub"],
+      "@id": "https://guinguette-dispensaire.github.io/#guinguette",
       "name": "La Guinguette du Dispensaire",
-      "description": "Guinguette saisonnière au Parc du Dispensaire à Sartrouville. Bières pression, vins sélectionnés, planches, frites et animations. Ouverte de juin à octobre 2026.",
+      "alternateName": "Guinguette du Dispensaire Sartrouville",
+      "description": "Guinguette saisonnière en plein air au Parc du Dispensaire à Sartrouville (78). Bar terrasse, bières pression, vins sélectionnés, planches, frites maison, concerts et animations. Ouverte de juin à octobre 2026. Privatisation pour événements.",
+      "slogan": "On s'y retrouve, on s'y attarde, et on y revient.",
       "sameAs": [
         "https://www.facebook.com/profile.php?id=61590190707357",
-        "https://www.instagram.com/guinguette.du.dispensaire/"
+        "https://www.instagram.com/guinguette.du.dispensaire/",
+        "https://maps.google.com/?cid=5422210577195196381"
       ],
       "url": "https://guinguette-dispensaire.github.io",
       "telephone": "+33667426565",
-      "image": "https://guinguette-dispensaire.github.io/photo1.jpg",
+      "email": "laguinguettedudispensaire@gmail.com",
+      "image": [
+        "https://guinguette-dispensaire.github.io/photo1.jpg",
+        "https://guinguette-dispensaire.github.io/photo3.jpg",
+        "https://guinguette-dispensaire.github.io/photo11.jpg"
+      ],
+      "logo": "https://guinguette-dispensaire.github.io/logo.png",
       "address": {
         "@type": "PostalAddress",
-        "streetAddress": "1 Avenue Maurice Berteaux",
+        "streetAddress": "Parc du Dispensaire, 1 Avenue Maurice Berteaux",
         "addressLocality": "Sartrouville",
         "postalCode": "78500",
+        "addressRegion": "Île-de-France",
         "addressCountry": "FR"
       },
       "geo": {
@@ -49,23 +73,44 @@
         "latitude": 48.9397,
         "longitude": 2.1608
       },
+      "hasMap": "https://maps.google.com/?cid=5422210577195196381",
+      "areaServed": [
+        { "@type": "City", "name": "Sartrouville" },
+        { "@type": "City", "name": "Houilles" },
+        { "@type": "City", "name": "Maisons-Laffitte" },
+        { "@type": "City", "name": "Le Mesnil-le-Roi" },
+        { "@type": "City", "name": "Montesson" },
+        { "@type": "AdministrativeArea", "name": "Yvelines" }
+      ],
       "openingHoursSpecification": [
         {
           "@type": "OpeningHoursSpecification",
           "dayOfWeek": ["Tuesday", "Thursday", "Friday"],
           "opens": "16:00",
-          "closes": "21:30"
+          "closes": "21:30",
+          "validFrom": "2026-06-01",
+          "validThrough": "2026-10-31"
         },
         {
           "@type": "OpeningHoursSpecification",
           "dayOfWeek": ["Wednesday", "Saturday", "Sunday"],
           "opens": "10:00",
-          "closes": "21:30"
+          "closes": "21:30",
+          "validFrom": "2026-06-01",
+          "validThrough": "2026-10-31"
         }
       ],
       "priceRange": "€€",
-      "servesCuisine": "Française",
-      "menu": "https://guinguette-dispensaire.github.io/#carte"
+      "currenciesAccepted": "EUR",
+      "paymentAccepted": "Espèces, Carte bancaire",
+      "servesCuisine": ["Française", "Tapas", "Bar à vin"],
+      "acceptsReservations": "https://www.facebook.com/profile.php?id=61590190707357",
+      "publicAccess": true,
+      "isAccessibleForFree": true,
+      "smokingAllowed": false,
+      "hasMenu": "https://guinguette-dispensaire.github.io/menu.html",
+      "menu": "https://guinguette-dispensaire.github.io/menu.html",
+      "keywords": "guinguette Sartrouville, bar terrasse Sartrouville, guinguette Yvelines, Parc du Dispensaire, guinguette bord de Seine, terrasse Sartrouville"
     }
     </script>
 
@@ -110,6 +155,7 @@
         .hero {
             min-height: 100vh;
             background: url('photo3.jpg') center/cover no-repeat;
+            background-image: image-set(url('photo3.webp') type('image/webp'), url('photo3.jpg') type('image/jpeg'));
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             text-align: center; padding: 7rem 2rem 5rem; position: relative; overflow: hidden;
         }
@@ -283,7 +329,7 @@
 <!-- NAV -->
 <nav>
     <a href="#" class="nav-brand">
-        <img src="logo.png" alt="Logo La Guinguette du Dispensaire" class="nav-logo">
+        <img src="logo.png" alt="Logo La Guinguette du Dispensaire" class="nav-logo" width="256" height="256">
         La Guinguette du Dispensaire
     </a>
     <ul class="nav-links">
@@ -299,7 +345,7 @@
 <!-- HERO -->
 <section class="hero">
     <div class="hero-content">
-        <img src="logo.png" alt="Logo" class="hero-logo">
+        <img src="logo.png" alt="Logo La Guinguette du Dispensaire à Sartrouville" class="hero-logo" width="256" height="256" fetchpriority="high">
         <p class="hero-eyebrow">Sartrouville · Parc du Dispensaire · Saison 2026</p>
         <h1>La Guinguette<br><em>du Dispensaire</em></h1>
         <p class="hero-tagline">
@@ -366,12 +412,12 @@
         <p class="section-label" data-reveal>En images</p>
         <h2 class="section-title" data-reveal>La guinguette en vrai</h2>
         <div class="gallery-grid" data-reveal>
-            <div class="g-item g-portrait"><img src="photo7.jpg" alt="Ambiance à la guinguette" loading="lazy"></div>
-            <div class="g-item g-portrait"><img src="photo4.jpg" alt="Détail guinguette" loading="lazy"></div>
-            <div class="g-item"><img src="photo9.jpg" alt="Le parc du Dispensaire" loading="lazy"></div>
-            <div class="g-item g-wide"><img src="photo1.jpg" alt="Le bar de la guinguette" loading="lazy"></div>
-        <div class="g-item g-portrait"><img src="photo10.jpg" alt="Terrasse animée à la guinguette" loading="lazy"></div>
-        <div class="g-item g-wide"><img src="photo11.jpg" alt="Le comptoir de la guinguette" loading="lazy"></div>
+            <div class="g-item g-portrait"><picture><source srcset="photo7.webp" type="image/webp"><img src="photo7.jpg" alt="Ambiance conviviale à la Guinguette du Dispensaire, Sartrouville" width="1050" height="1400" loading="lazy" decoding="async"></picture></div>
+            <div class="g-item g-portrait"><picture><source srcset="photo4.webp" type="image/webp"><img src="photo4.jpg" alt="Terrasse de la guinguette au Parc du Dispensaire à Sartrouville" width="1280" height="1706" loading="lazy" decoding="async"></picture></div>
+            <div class="g-item"><picture><source srcset="photo9.webp" type="image/webp"><img src="photo9.jpg" alt="Le Parc du Dispensaire à Sartrouville en bord de Seine" width="1280" height="960" loading="lazy" decoding="async"></picture></div>
+            <div class="g-item g-wide"><picture><source srcset="photo1.webp" type="image/webp"><img src="photo1.jpg" alt="Le bar de la Guinguette du Dispensaire à Sartrouville" width="1280" height="960" loading="lazy" decoding="async"></picture></div>
+            <div class="g-item g-portrait"><picture><source srcset="photo10.webp" type="image/webp"><img src="photo10.jpg" alt="Terrasse animée de la guinguette à Sartrouville (Yvelines)" width="1280" height="960" loading="lazy" decoding="async"></picture></div>
+            <div class="g-item g-wide"><picture><source srcset="photo11.webp" type="image/webp"><img src="photo11.jpg" alt="Le comptoir de la Guinguette du Dispensaire, bar terrasse à Sartrouville" width="1280" height="720" loading="lazy" decoding="async"></picture></div>
         </div>
     </div>
 </section>
@@ -381,6 +427,7 @@
     <div class="container">
         <p class="section-label" data-reveal>Ce qu'on vous sert</p>
         <h2 class="section-title" data-reveal>La carte</h2>
+        <p data-reveal style="margin:-0.75rem 0 1.75rem;font-size:0.9rem;color:#777">Retrouvez aussi notre <a href="menu.html" style="color:var(--terracotta);font-weight:700;text-decoration:underline">menu complet en version imprimable</a> (idéal pour le QR code à table).</p>
 
         <div class="carte-tabs" data-reveal>
             <button class="tab-btn active"  onclick="switchTab(this,'formules')">🎯 Formules</button>
@@ -439,21 +486,21 @@
             <p style="font-size:.83rem;color:#888;font-style:italic;margin-bottom:1.75rem">Vins sélectionnés par <strong style="color:#555">Pépites de Vin</strong> — servis au verre (12,5 cl) ou à la bouteille (75 cl)</p>
             <p class="menu-section-title">Rosé</p>
             <div class="menu-grid">
-                <div class="menu-item"><img src="wine-rose.png" class="wi-bottle" alt="Sainte Philomène"><div class="mi-info"><div class="mi-name">Sainte Philomène</div><div class="mi-desc">Rosé · Coteaux d'Aix-en-Provence AOP</div></div><div class="mi-price">5 € / 20 €<small>verre / bouteille</small></div></div>
+                <div class="menu-item"><picture><source srcset="wine-rose.webp" type="image/webp"><img src="wine-rose.png" class="wi-bottle" alt="Vin rosé Sainte Philomène, Coteaux d'Aix-en-Provence" width="180" height="320" loading="lazy" decoding="async"></picture><div class="mi-info"><div class="mi-name">Sainte Philomène</div><div class="mi-desc">Rosé · Coteaux d'Aix-en-Provence AOP</div></div><div class="mi-price">5 € / 20 €<small>verre / bouteille</small></div></div>
             </div>
             <p class="menu-section-title">Bulles</p>
             <div class="menu-grid">
-                <div class="menu-item"><img src="wine-prosecco.png" class="wi-bottle" alt="Prosecco Corvezzo"><div class="mi-info"><div class="mi-name">Prosecco Corvezzo BIO</div><div class="mi-desc">Bulles · DOC Prosecco · Italie</div></div><div class="mi-price">9 € / 28 €<small>verre / bouteille</small></div></div>
+                <div class="menu-item"><picture><source srcset="wine-prosecco.webp" type="image/webp"><img src="wine-prosecco.png" class="wi-bottle" alt="Prosecco Corvezzo BIO, DOC Prosecco Italie" width="180" height="320" loading="lazy" decoding="async"></picture><div class="mi-info"><div class="mi-name">Prosecco Corvezzo BIO</div><div class="mi-desc">Bulles · DOC Prosecco · Italie</div></div><div class="mi-price">9 € / 28 €<small>verre / bouteille</small></div></div>
             </div>
             <p class="menu-section-title">Blancs</p>
             <div class="menu-grid">
-                <div class="menu-item"><img src="wine-blanc1.png" class="wi-bottle" alt="Dom. Laffitte"><div class="mi-info"><div class="mi-name">Dom. Laffitte</div><div class="mi-desc">Blanc · Colombard-Sauvignon · Côtes de Gascogne AOP</div></div><div class="mi-price">6 € / 20 €<small>verre / bouteille</small></div></div>
-                <div class="menu-item"><img src="wine-blanc2.png" class="wi-bottle" alt="Mâcon-Villages"><div class="mi-info"><div class="mi-name">Mâcon-Villages</div><div class="mi-desc">Blanc · Bourgogne AOP</div></div><div class="mi-price">8 € / 29 €<small>verre / bouteille</small></div></div>
+                <div class="menu-item"><picture><source srcset="wine-blanc1.webp" type="image/webp"><img src="wine-blanc1.png" class="wi-bottle" alt="Vin blanc Domaine Laffitte, Côtes de Gascogne" width="180" height="320" loading="lazy" decoding="async"></picture><div class="mi-info"><div class="mi-name">Dom. Laffitte</div><div class="mi-desc">Blanc · Colombard-Sauvignon · Côtes de Gascogne AOP</div></div><div class="mi-price">6 € / 20 €<small>verre / bouteille</small></div></div>
+                <div class="menu-item"><picture><source srcset="wine-blanc2.webp" type="image/webp"><img src="wine-blanc2.png" class="wi-bottle" alt="Vin blanc Mâcon-Villages, Bourgogne" width="180" height="320" loading="lazy" decoding="async"></picture><div class="mi-info"><div class="mi-name">Mâcon-Villages</div><div class="mi-desc">Blanc · Bourgogne AOP</div></div><div class="mi-price">8 € / 29 €<small>verre / bouteille</small></div></div>
             </div>
             <p class="menu-section-title">Rouges</p>
             <div class="menu-grid">
-                <div class="menu-item"><img src="wine-rouge1.png" class="wi-bottle" alt="Ferraton La Tournée"><div class="mi-info"><div class="mi-name">Ferraton La Tournée</div><div class="mi-desc">Rouge · Vallée du Rhône AOP</div></div><div class="mi-price">6 € / 20 €<small>verre / bouteille</small></div></div>
-                <div class="menu-item"><img src="wine-rouge2.png" class="wi-bottle" alt="Costeplane 1850 BIO"><div class="mi-info"><div class="mi-name">Costeplane 1850 BIO</div><div class="mi-desc">Rouge · Languedoc AOP</div></div><div class="mi-price">8 € / 26 €<small>verre / bouteille</small></div></div>
+                <div class="menu-item"><picture><source srcset="wine-rouge1.webp" type="image/webp"><img src="wine-rouge1.png" class="wi-bottle" alt="Vin rouge Ferraton La Tournée, Vallée du Rhône" width="180" height="320" loading="lazy" decoding="async"></picture><div class="mi-info"><div class="mi-name">Ferraton La Tournée</div><div class="mi-desc">Rouge · Vallée du Rhône AOP</div></div><div class="mi-price">6 € / 20 €<small>verre / bouteille</small></div></div>
+                <div class="menu-item"><picture><source srcset="wine-rouge2.webp" type="image/webp"><img src="wine-rouge2.png" class="wi-bottle" alt="Vin rouge Costeplane 1850 BIO, Languedoc" width="180" height="320" loading="lazy" decoding="async"></picture><div class="mi-info"><div class="mi-name">Costeplane 1850 BIO</div><div class="mi-desc">Rouge · Languedoc AOP</div></div><div class="mi-price">8 € / 26 €<small>verre / bouteille</small></div></div>
             </div>
         </div>
 
@@ -515,7 +562,7 @@
                 </div>
             </div>
             <div class="events-photo">
-                <img src="photo10.jpg" alt="Terrasse animée à la guinguette du Dispensaire" loading="lazy">
+                <picture><source srcset="photo10.webp" type="image/webp"><img src="photo10.jpg" alt="Concerts et animations à la Guinguette du Dispensaire, Sartrouville" width="1280" height="960" loading="lazy" decoding="async"></picture>
             </div>
         </div>
     </div>
@@ -538,110 +585,4 @@
             <a class="press-card" href="https://www.sortiraparis.com/en/where-to-eat-in-paris/food-events/articles/346786-the-dispensary-s-guinguette-and-the-stables-food-truck-settle-in-this-park-in-sartrouville-yvelines" target="_blank" rel="noopener">
                 <div class="press-source">Sortir à Paris</div>
                 <div class="press-title">La guinguette et le food truck du Café des Écuries s'installent dans ce parc de Sartrouville cet été</div>
-                <div class="press-excerpt">Sortiraparis présente la Guinguette du Dispensaire et le Café des Écuries au Parc du Dispensaire à Sartrouville, l'adresse incontournable de l'été 2026 en Île-de-France.</div>
-                <div class="press-cta">Lire l'article</div>
-            </a>
-
-        </div>
-    </div>
-</section>
-
-<!-- INFOS & ACCÈS -->
-<section id="infos" class="infos">
-    <div class="container">
-        <p class="section-label" data-reveal>Venir nous voir</p>
-        <h2 class="section-title" data-reveal>Infos &amp; accès</h2>
-        <div class="infos-grid" data-reveal>
-            <div class="info-block">
-                <div class="ib-icon">📍</div>
-                <div class="ib-title">Adresse</div>
-                <div class="ib-body">
-                    <strong>Parc du Dispensaire</strong><br>
-                    Sartrouville, 78500<br><br>
-                    RER A — Sartrouville<br>
-                    Bus 73 — arrêt Dispensaire<br>
-                    Parking gratuit sur place
-                </div>
-            </div>
-            <div class="info-block">
-                <div class="ib-icon">🕐</div>
-                <div class="ib-title">Horaires</div>
-                <div class="ib-body">
-                    <strong>Juin à Octobre 2026</strong><br><br>
-                    <table style="width:100%;border-collapse:collapse;font-size:0.88rem;line-height:1.8">
-                      <tr><td>Dimanche</td><td style="text-align:right">10h–21h30</td></tr>
-                      <tr><td>Lundi</td><td style="text-align:right;color:#aaa">Fermé</td></tr>
-                      <tr><td>Mardi</td><td style="text-align:right">16h–21h30</td></tr>
-                      <tr><td>Mercredi</td><td style="text-align:right">10h–21h30</td></tr>
-                      <tr><td>Jeudi</td><td style="text-align:right">16h–21h30</td></tr>
-                      <tr><td>Vendredi</td><td style="text-align:right">16h–21h30</td></tr>
-                      <tr><td>Samedi</td><td style="text-align:right">10h–21h30</td></tr>
-                    </table>
-                    <br><em style="font-size:0.78rem;color:#aaa">Ouverture selon météo —<br>consultez nos réseaux</em>
-                </div>
-            </div>
-            <div class="info-block">
-                <div class="ib-icon">✉️</div>
-                <div class="ib-title">Contact</div>
-                <div class="ib-body">
-                    <a href="mailto:laguinguettedudispensaire@gmail.com">laguinguettedudispensaire<br>@gmail.com</a><br><br>
-                    <a href="https://www.facebook.com/profile.php?id=61590190707357" target="_blank" rel="noopener" style="display:inline-block;margin-bottom:0.4rem;color:inherit">📘 Facebook</a><br>
-                    <a href="https://www.instagram.com/guinguette.du.dispensaire/" target="_blank" rel="noopener" style="display:inline-block;margin-bottom:0.4rem;color:inherit">📷 Instagram</a><br><br>
-                    Programmation et événements<br>à venir sur nos réseaux.
-                </div>
-            </div>
-        </div>
-        <div class="map-wrap">
-            <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2621.3!2d2.1627!3d48.9380!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47e6668a6f3c6b5d%3A0x1234!2sParc+du+Dispensaire%2C+Sartrouville!5e0!3m2!1sfr!2sfr"
-                allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"
-                title="Carte Parc du Dispensaire, Sartrouville">
-            </iframe>
-        </div>
-    </div>
-</section>
-
-<!-- FOOTER -->
-<footer>
-    <img src="logo.png" alt="Logo" class="footer-logo">
-    <div class="footer-brand">La Guinguette du Dispensaire</div>
-    <div class="footer-sub">Sartrouville · Parc du Dispensaire · Saison 2026</div>
-    <ul class="footer-nav">
-        <li><a href="#concept">Le lieu</a></li>
-        <li><a href="#galerie">Photos</a></li>
-        <li><a href="#carte">La carte</a></li>
-        <li><a href="#animations">Animations</a></li>
-        <li><a href="#presse">Presse</a></li>
-        <li><a href="#infos">Infos &amp; accès</a></li>
-    </ul>
-    <div class="footer-copy">© 2026 La Guinguette du Dispensaire — Tous droits réservés</div>
-</footer>
-
-<script>
-/* ---- Tabs carte ---- */
-function switchTab(btn, id) {
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-    btn.classList.add('active');
-    document.getElementById('tab-' + id).classList.add('active');
-}
-
-/* ---- Scroll reveal ---- */
-const revealEls = document.querySelectorAll('[data-reveal]');
-if ('IntersectionObserver' in window) {
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-                observer.unobserve(entry.target);
-            }
-        });
-    }, { threshold: 0.12 });
-    revealEls.forEach(el => observer.observe(el));
-} else {
-    revealEls.forEach(el => el.classList.add('visible'));
-}
-</script>
-
-</body>
-</html>
+                <div class="press-excerpt">Sortiraparis présente la Guinguette du Dispensaire et le Café des Écuries au Parc du Dispe

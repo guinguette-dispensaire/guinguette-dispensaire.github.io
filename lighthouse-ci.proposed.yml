@@ -1,0 +1,74 @@
+# ─────────────────────────────────────────────────────────────────────────
+#  WORKFLOW PROPOSÉ — NON ACTIF en l'état (volontairement).
+#
+#  Pour l'ACTIVER : déplacer ce fichier vers  .github/workflows/lighthouse-ci.yml
+#  (GitHub Actions n'exécute que les workflows situés dans .github/workflows/).
+#
+#  Ce qu'il fait :
+#   - Mesure automatiquement les Core Web Vitals via Lighthouse (mobile)
+#     sur les pages live, 3 fois, et garde la médiane.
+#   - S'exécute le 1er de chaque mois (suivi saisonnier) + à chaque push sur main
+#     + manuellement (bouton "Run workflow").
+#   - Publie les rapports en artefact téléchargeable (archivage des scores).
+#
+#  Aucun secret requis : on utilise le "temporary public storage" de Lighthouse CI.
+# ─────────────────────────────────────────────────────────────────────────
+name: Lighthouse CI
+
+on:
+  schedule:
+    - cron: '0 6 1 * *'      # le 1er de chaque mois à 06:00 UTC
+  push:
+    branches: [ main ]
+  workflow_dispatch:          # déclenchement manuel
+
+permissions:
+  contents: read
+
+jobs:
+  lighthouse:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Lighthouse CI
+        run: npm install -g @lhci/cli@0.14.x
+
+      - name: Run Lighthouse CI (mobile)
+        run: |
+          lhci autorun \
+            --collect.url=https://guinguette-dispensaire.github.io/ \
+            --collect.url=https://guinguette-dispensaire.github.io/menu.html \
+            --collect.numberOfRuns=3 \
+            --collect.settings.preset=desktop=false \
+            --upload.target=temporary-public-storage
+        # Les liens vers les rapports apparaissent dans les logs du job
+        # et restent consultables ~7 jours (stockage temporaire public).
+
+      - name: Archive Lighthouse reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-reports-${{ github.run_number }}
+          path: .lighthouseci/
+          retention-days: 90
+
+# ─── Variante avec seuils bloquants (assert) ────────────────────────────────
+# Ajouter un fichier lighthouserc.json à la racine pour fixer des budgets, ex. :
+# {
+#   "ci": {
+#     "assert": {
+#       "assertions": {
+#         "categories:performance": ["warn", {"minScore": 0.8}],
+#         "categories:seo":         ["error", {"minScore": 0.9}],
+#         "categories:accessibility": ["warn", {"minScore": 0.9}]
+#       }
+#     }
+#   }
+# }
