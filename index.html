@@ -104,7 +104,17 @@
       "currenciesAccepted": "EUR",
       "paymentAccepted": "Espèces, Carte bancaire",
       "servesCuisine": ["Française", "Tapas", "Bar à vin"],
-      "acceptsReservations": "https://www.facebook.com/profile.php?id=61590190707357",
+      "acceptsReservations": "https://guinguette-dispensaire.github.io/#reservation",
+      "potentialAction": {
+        "@type": "ReserveAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://guinguette-dispensaire.github.io/#reservation",
+          "inLanguage": "fr",
+          "actionPlatform": ["http://schema.org/DesktopWebPlatform", "http://schema.org/MobileWebPlatform"]
+        },
+        "result": { "@type": "Reservation", "name": "Réservation de table à La Guinguette du Dispensaire" }
+      },
       "publicAccess": true,
       "isAccessibleForFree": true,
       "smokingAllowed": false,
@@ -115,6 +125,7 @@
     </script>
 
         <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -322,6 +333,30 @@
             .gallery-grid { grid-template-columns: 1fr; }
             .gallery-grid .g-item.g-wide, .gallery-grid .g-item.g-portrait { grid-column: span 1; aspect-ratio: 4/3; }
         }
+    
+        /* Réservation + FAQ + nav CTA */
+        .nav-cta { background: var(--gold); color: var(--dark) !important; padding: 0.4rem 1rem; border-radius: 50px; }
+        .reservation { background: var(--cream); }
+        .resa-intro { max-width: 640px; margin: 0 auto 2.25rem; text-align: center; color: #555; }
+        .resa-form { max-width: 680px; margin: 0 auto; display: flex; flex-direction: column; gap: 1.1rem; background: var(--white); padding: 2.25rem; border-radius: 18px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); }
+        .resa-form label { display: flex; flex-direction: column; gap: 0.4rem; font-size: 0.82rem; font-weight: 700; color: var(--dark-green); flex: 1; }
+        .resa-row { display: flex; gap: 1.1rem; flex-wrap: wrap; }
+        .resa-form input, .resa-form textarea { font-family: 'Lato', sans-serif; font-size: 0.95rem; padding: 0.7rem 0.85rem; border: 1.5px solid rgba(0,0,0,0.15); border-radius: 10px; background: var(--cream); color: var(--dark); font-weight: 400; width: 100%; }
+        .resa-form input:focus, .resa-form textarea:focus { outline: none; border-color: var(--gold); }
+        .resa-btn { border: none; cursor: pointer; align-self: center; margin-top: 0.5rem; }
+        .resa-note { font-size: 0.78rem; color: #999; text-align: center; }
+        .resa-result { text-align: center; font-weight: 700; font-size: 0.9rem; min-height: 1.2em; }
+        .resa-result.ok { color: var(--dark-green); }
+        .resa-result.err { color: var(--burgundy); }
+        .faq { background: var(--white); }
+        .faq-list { max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 0.75rem; }
+        .faq-list details { border: 1px solid rgba(0,0,0,0.1); border-radius: 12px; padding: 0 1.25rem; background: var(--cream); }
+        .faq-list summary { cursor: pointer; font-weight: 700; color: var(--dark-green); padding: 1.05rem 0; list-style: none; font-size: 0.98rem; }
+        .faq-list summary::-webkit-details-marker { display: none; }
+        .faq-list summary::after { content: '+'; float: right; color: var(--gold); font-size: 1.3rem; line-height: 1; }
+        .faq-list details[open] summary::after { content: '\2013'; }
+        .faq-list details p { padding: 0 0 1.1rem; color: #555; font-size: 0.92rem; line-height: 1.7; }
+        @media (max-width: 600px) { .resa-form { padding: 1.5rem; } }
     </style>
 </head>
 <body>
@@ -339,6 +374,7 @@
         <li><a href="#animations">Animations</a></li>
         <li><a href="#presse">Presse</a></li>
         <li><a href="#infos">Infos &amp; accès</a></li>
+        <li><a href="#reservation" class="nav-cta">Réserver</a></li>
     </ul>
 </nav>
 
@@ -362,7 +398,8 @@
             <span class="pill">👨‍👩‍👧 Familles bienvenues</span>
         </div>
         <div class="hero-btns">
-            <a href="#carte" class="btn">Voir la carte</a>
+            <a href="#reservation" class="btn">Réserver une table</a>
+            <a href="#carte" class="btn btn-outline">Voir la carte</a>
             <a href="#infos" class="btn btn-outline">Nous trouver</a>
         </div>
     </div>
@@ -594,6 +631,66 @@
 </section>
 
 <!-- INFOS & ACCÈS -->
+<!-- ═══ RÉSERVATION ═══ -->
+<section id="reservation" class="reservation">
+    <div class="container">
+        <p class="section-label" data-reveal>Réservez votre table</p>
+        <h2 class="section-title" data-reveal>Réserver une table</h2>
+        <p class="resa-intro" data-reveal>Un anniversaire, une tablée d'amis ou simplement l'envie d'être sûr d'avoir votre place au bord de la Seine ? Réservez en quelques secondes — on vous confirme par téléphone ou par email.</p>
+        <form id="resa-form" class="resa-form" data-reveal action="https://api.web3forms.com/submit" method="POST">
+            <input type="hidden" name="access_key" value="VOTRE_CLE_WEB3FORMS">
+            <input type="hidden" name="subject" value="Nouvelle demande de réservation — Guinguette du Dispensaire">
+            <input type="hidden" name="from_name" value="Site La Guinguette du Dispensaire">
+            <input type="checkbox" name="botcheck" style="display:none" tabindex="-1" autocomplete="off">
+            <div class="resa-row">
+                <label>Nom et prénom*<input type="text" name="Nom" required autocomplete="name"></label>
+                <label>Téléphone*<input type="tel" name="Téléphone" required autocomplete="tel"></label>
+            </div>
+            <div class="resa-row">
+                <label>Date*<input type="date" name="Date" required></label>
+                <label>Heure*<input type="time" name="Heure" required></label>
+                <label>Personnes*<input type="number" name="Nombre de personnes" min="1" max="50" value="2" required></label>
+            </div>
+            <label>Email (pour la confirmation)<input type="email" name="email" autocomplete="email"></label>
+            <label>Message (optionnel)<textarea name="Message" rows="3" placeholder="Occasion, emplacement souhaité, allergies…"></textarea></label>
+            <button type="submit" class="btn resa-btn">Envoyer ma demande</button>
+            <p class="resa-note">Demande envoyée à l'équipe — la réservation est confirmée après notre réponse. Ouverture selon météo. Vous pouvez aussi appeler le <a href="tel:+33667426565">06 67 42 65 65</a>.</p>
+            <p id="resa-result" class="resa-result" role="status" aria-live="polite"></p>
+        </form>
+    </div>
+</section>
+
+<!-- ═══ FAQ ═══ -->
+<section id="faq" class="faq">
+    <div class="container">
+        <p class="section-label" data-reveal>Bon à savoir</p>
+        <h2 class="section-title" data-reveal>Questions fréquentes</h2>
+        <div class="faq-list" data-reveal>
+            <details><summary>Où se trouve La Guinguette du Dispensaire ?</summary><p>Au Parc du Dispensaire, 1 Avenue Maurice Berteaux, 78500 Sartrouville (Yvelines), en bord de Seine. Accès en RER A (station Sartrouville), bus 73 arrêt Dispensaire, parking gratuit sur place.</p></details>
+            <details><summary>Quels sont les horaires d'ouverture ?</summary><p>La guinguette est ouverte de juin à octobre 2026, fermée le lundi. Dimanche, mercredi et samedi de 10h à 21h30 ; mardi, jeudi et vendredi de 16h à 21h30. L'ouverture dépend de la météo — pensez à consulter nos réseaux.</p></details>
+            <details><summary>Faut-il réserver une table ?</summary><p>Ce n'est pas obligatoire, mais c'est conseillé pour les groupes et le week-end. Réservez via le <a href="#reservation">formulaire en ligne</a>, par téléphone au 06 67 42 65 65, ou par message sur Facebook / Instagram.</p></details>
+            <details><summary>Proposez-vous un menu enfant ?</summary><p>Oui ! Un menu enfant à 9 € (nuggets, frites, boisson et glace). Les familles sont les bienvenues, avec un espace convivial dans le parc.</p></details>
+            <details><summary>Peut-on privatiser le lieu pour un événement ?</summary><p>Oui, La Guinguette du Dispensaire peut être privatisée pour vos événements (anniversaires, pots, associations…). Contactez-nous par téléphone ou via le formulaire pour étudier votre demande.</p></details>
+            <details><summary>Quels moyens de paiement acceptez-vous ?</summary><p>Espèces et carte bancaire.</p></details>
+        </div>
+    </div>
+</section>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "Où se trouve La Guinguette du Dispensaire ?", "acceptedAnswer": { "@type": "Answer", "text": "Au Parc du Dispensaire, 1 Avenue Maurice Berteaux, 78500 Sartrouville (Yvelines), en bord de Seine. Accès en RER A (station Sartrouville), bus 73 arrêt Dispensaire, parking gratuit sur place." } },
+    { "@type": "Question", "name": "Quels sont les horaires d'ouverture ?", "acceptedAnswer": { "@type": "Answer", "text": "Ouverte de juin à octobre 2026, fermée le lundi. Dimanche, mercredi et samedi de 10h à 21h30 ; mardi, jeudi et vendredi de 16h à 21h30. L'ouverture dépend de la météo." } },
+    { "@type": "Question", "name": "Faut-il réserver une table ?", "acceptedAnswer": { "@type": "Answer", "text": "Ce n'est pas obligatoire, mais conseillé pour les groupes et le week-end. Réservation via le formulaire en ligne, par téléphone au 06 67 42 65 65, ou par message sur Facebook et Instagram." } },
+    { "@type": "Question", "name": "Proposez-vous un menu enfant ?", "acceptedAnswer": { "@type": "Answer", "text": "Oui, un menu enfant à 9 € (nuggets, frites, boisson et glace). Les familles sont les bienvenues." } },
+    { "@type": "Question", "name": "Peut-on privatiser le lieu pour un événement ?", "acceptedAnswer": { "@type": "Answer", "text": "Oui, La Guinguette du Dispensaire peut être privatisée pour des événements. Contactez-nous par téléphone ou via le formulaire." } },
+    { "@type": "Question", "name": "Quels moyens de paiement acceptez-vous ?", "acceptedAnswer": { "@type": "Answer", "text": "Espèces et carte bancaire." } }
+  ]
+}
+</script>
+
 <section id="infos" class="infos">
     <div class="container">
         <p class="section-label" data-reveal>Venir nous voir</p>
@@ -604,7 +701,8 @@
                 <div class="ib-title">Adresse</div>
                 <div class="ib-body">
                     <strong>Parc du Dispensaire</strong><br>
-                    Sartrouville, 78500<br><br>
+                    1 Avenue Maurice Berteaux<br>
+                    78500 Sartrouville<br><br>
                     RER A — Sartrouville<br>
                     Bus 73 — arrêt Dispensaire<br>
                     Parking gratuit sur place
@@ -631,6 +729,7 @@
                 <div class="ib-icon">✉️</div>
                 <div class="ib-title">Contact</div>
                 <div class="ib-body">
+                    <a href="tel:+33667426565" style="font-weight:700">06 67 42 65 65</a><br><br>
                     <a href="mailto:laguinguettedudispensaire@gmail.com">laguinguettedudispensaire<br>@gmail.com</a><br><br>
                     <a href="https://www.facebook.com/profile.php?id=61590190707357" target="_blank" rel="noopener" style="display:inline-block;margin-bottom:0.4rem;color:inherit">📘 Facebook</a><br>
                     <a href="https://www.instagram.com/guinguette.du.dispensaire/" target="_blank" rel="noopener" style="display:inline-block;margin-bottom:0.4rem;color:inherit">📷 Instagram</a><br><br>
@@ -660,6 +759,7 @@
         <li><a href="#animations">Animations</a></li>
         <li><a href="#presse">Presse</a></li>
         <li><a href="#infos">Infos &amp; accès</a></li>
+        <li><a href="#reservation" class="nav-cta">Réserver</a></li>
         <li><a href="menu.html">Menu imprimable</a></li>
     </ul>
     <div class="footer-copy">© 2026 La Guinguette du Dispensaire — Tous droits réservés</div>
@@ -691,5 +791,26 @@ if ('IntersectionObserver' in window) {
 }
 </script>
 
+<script>
+  (function(){
+    var f=document.getElementById('resa-form');
+    if(!f) return;
+    f.addEventListener('submit', async function(e){
+      e.preventDefault();
+      var result=document.getElementById('resa-result');
+      var btn=f.querySelector('.resa-btn');
+      var data=new FormData(f);
+      result.textContent='Envoi en cours…'; result.className='resa-result';
+      btn.disabled=true;
+      try{
+        var r=await fetch('https://api.web3forms.com/submit',{method:'POST',body:data,headers:{'Accept':'application/json'}});
+        var j=await r.json();
+        if(j.success){ result.textContent='✓ Merci ! Votre demande est bien reçue. On vous recontacte vite pour confirmer.'; result.className='resa-result ok'; f.reset(); }
+        else { result.textContent="Une erreur est survenue. Appelez-nous au 06 67 42 65 65."; result.className='resa-result err'; }
+      }catch(err){ result.textContent="Connexion impossible. Appelez-nous au 06 67 42 65 65."; result.className='resa-result err'; }
+      btn.disabled=false;
+    });
+  })();
+</script>
 </body>
 </html>
