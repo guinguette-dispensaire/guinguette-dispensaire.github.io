@@ -22,6 +22,7 @@ Ce fichier est la **mémoire du suivi**. Relancer le même prompt périodiquemen
 |------|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
 | 2026-06-14 · audit initial | 78 | 85 | 70 | 65 | 55 | 72 | 45 | 68* | 67 | **67** |
 | 2026-06-14 · après corrections | 95 | 88 | 95 | 98 | 88 | 92 | 82 | 82* | 90 | **90** |
+| 2026-06-15 · contenu + réservation | 96 | 88 | 96 | 98 | 88 | 92 | 88 | 82* | 94 | **93** |
 
 > `*` Critère 8 : note **estimée en lab** à partir des preuves techniques (poids des images, image LCP, polices). L'API PageSpeed Insights n'était pas joignable depuis l'environnement d'exécution. Le workflow **Lighthouse CI** proposé fournira des mesures réelles et automatiques à partir de la prochaine exécution.
 
@@ -84,3 +85,38 @@ Aucune régression. ✅
 - **Titres Hn de `menu.html`** : convertir les `<span class="section-title">` en `<h2>` pour la sémantique.
 - **Off-site** : voir la checklist `checklist-offsite-seo.md` (Google Business Profile, citations locales, backlinks).
 - **`carte.png`** (954 Ko) n'est référencé par aucune page — fichier orphelin, peut être supprimé du dépôt (laissé en place pour l'instant, non chargé donc sans impact perf).
+
+
+---
+
+## Détail de l'audit — 2026-06-15 (contenu + réservation)
+
+### Deltas vs 2026-06-14 (après corrections) — Note globale 90 → **93** (↑ +3)
+
+| Critère | 14/06 | 15/06 | Delta |
+|---|:---:|:---:|:---:|
+| 1 · Titres & meta | 95 | 96 | ↑ +1 |
+| 3 · JSON-LD | 95 | 96 | ↑ +1 |
+| 7 · Maillage | 82 | 88 | ↑ +6 |
+| 9 · SEO local | 90 | 94 | ↑ +4 |
+| **Global** | **90** | **93** | **↑ +3** |
+
+Aucune régression. Les autres critères sont stables.
+
+### Ce qui a été ajouté
+
+- **Formulaire de réservation activé** : la clé Web3Forms a été insérée (le formulaire envoyait dans le vide auparavant). Test d'envoi réel validé (`success: true`). Les demandes arrivent dans la boîte mail de la guinguette. JSON-LD `ReserveAction` présent.
+- **Blog SEO local « Le journal »** (`blog.html`) avec 3 articles optimisés mots-clés, balisés `BlogPosting` + `BreadcrumbList` :
+  - `guinguette-sartrouville-terrasse-bord-de-seine.html` — requêtes « guinguette Sartrouville », « bar terrasse Sartrouville », « terrasse bord de Seine ».
+  - `que-faire-boucle-de-seine-sartrouville.html` — « que faire boucle de Seine », « sortir Sartrouville/Houilles/Maisons-Laffitte/Montesson ».
+  - `privatiser-guinguette-sartrouville.html` — « privatiser guinguette Sartrouville », « lieu événement Yvelines ».
+- **Maillage renforcé** : lien « Le journal » ajouté à la nav et au pied de page de l'accueil ; articles reliés entre eux et vers carte/menu/réservation.
+- **Sitemap.xml** étendu (accueil, menu, blog, 3 articles).
+- Note : une FAQ avec schema `FAQPage` était déjà présente (ajoutée hors de ce suivi).
+
+### Problèmes restants / prochaines étapes
+
+- **Off-site prioritaire** : Google Business Profile (description optimisée, catégories, services, lien réservation, posts) + cohérence NAP + citations locales. Voir `checklist-offsite-seo.md`.
+- **Perf (critère 8)** : toujours estimée ; activer le workflow Lighthouse CI pour des mesures réelles.
+- **Contenu** : alimenter le blog 1×/mois (saisonnalité, événements) pour entretenir la fraîcheur.
+- **Images responsives** : `srcset` multi-tailles pour gagner encore sur mobile.
