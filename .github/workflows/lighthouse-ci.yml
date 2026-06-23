@@ -1,0 +1,46 @@
+# Lighthouse CI — mesure automatique des Core Web Vitals (mobile)
+# Exécution : 1er de chaque mois, à chaque push sur main, et manuellement.
+# Rapports : artefact téléchargeable + temporary public storage (aucun secret requis).
+name: Lighthouse CI
+
+on:
+  schedule:
+    - cron: '0 6 1 * *'
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lighthouse:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Lighthouse CI
+        run: npm install -g @lhci/cli@0.14.x
+
+      - name: Run Lighthouse CI (mobile)
+        run: |
+          lhci autorun \
+            --collect.url=https://guinguette-dispensaire.github.io/ \
+            --collect.url=https://guinguette-dispensaire.github.io/menu.html \
+            --collect.numberOfRuns=3 \
+            --upload.target=temporary-public-storage
+
+      - name: Archive Lighthouse reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-reports-${{ github.run_number }}
+          path: .lighthouseci/
+          retention-days: 90
+
