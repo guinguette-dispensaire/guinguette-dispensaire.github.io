@@ -12,4 +12,6 @@ export const firebaseConfig = {
   authDomain: "guinguette-dispensaire.firebaseapp.com",
   projectId: "guinguette-dispensaire",
   storageBucket: "guinguette-dispensaire.firebasestorage.app",
-  messagin
+  messagingSenderId: "1016818763966",
+  appId: "1:1016818763966:web:35793009f87061b7e536ef"
+};
