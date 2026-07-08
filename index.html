@@ -811,26 +811,69 @@ if ('IntersectionObserver' in window) {
 }
 </script>
 
-<script>
-  (function(){
-    var f=document.getElementById('resa-form');
-    if(!f) return;
+<script type="module">
+  /* Réservations : enregistrement dans Firestore (suivi via admin.html)
+     + notification email à l'équipe via Web3Forms (comportement historique conservé). */
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { firebaseConfig } from "./firebase-config.js";
+
+  let db = null;
+  try {
+    if (!String(firebaseConfig.apiKey).startsWith("COLLER_ICI")) {
+      db = getFirestore(initializeApp(firebaseConfig));
+    }
+  } catch (e) { console.warn("Firebase non initialisé :", e); }
+
+  const f = document.getElementById('resa-form');
+  if (f) {
     f.addEventListener('submit', async function(e){
       e.preventDefault();
-      var result=document.getElementById('resa-result');
-      var btn=f.querySelector('.resa-btn');
-      var data=new FormData(f);
-      result.textContent='Envoi en cours…'; result.className='resa-result';
-      btn.disabled=true;
-      try{
-        var r=await fetch('https://api.web3forms.com/submit',{method:'POST',body:data,headers:{'Accept':'application/json'}});
-        var j=await r.json();
-        if(j.success){ result.textContent='✓ Merci ! Votre demande est bien reçue. On vous recontacte vite pour confirmer.'; result.className='resa-result ok'; f.reset(); }
-        else { result.textContent="Une erreur est survenue. Appelez-nous au 06 67 42 65 65."; result.className='resa-result err'; }
-      }catch(err){ result.textContent="Connexion impossible. Appelez-nous au 06 67 42 65 65."; result.className='resa-result err'; }
-      btn.disabled=false;
+      const result = document.getElementById('resa-result');
+      const btn = f.querySelector('.resa-btn');
+      const data = new FormData(f);
+      result.textContent = 'Envoi en cours…'; result.className = 'resa-result';
+      btn.disabled = true;
+
+      /* 1) Enregistrement de la demande dans Firestore */
+      let stored = false;
+      if (db) {
+        try {
+          await addDoc(collection(db, 'reservations'), {
+            nom:        (data.get('Nom') || '').trim(),
+            telephone:  (data.get('Téléphone') || '').trim(),
+            date:       data.get('Date') || '',
+            heure:      data.get('Heure') || '',
+            personnes:  parseInt(data.get('Nombre de personnes'), 10) || 1,
+            email:      (data.get('email') || '').trim(),
+            message:    (data.get('Message') || '').trim(),
+            statut:     'en_attente',
+            emailEnvoye: false,
+            creeLe:     serverTimestamp()
+          });
+          stored = true;
+        } catch (err) { console.warn('Firestore indisponible :', err); }
+      }
+
+      /* 2) Notification email à l'équipe (Web3Forms) */
+      let notified = false;
+      try {
+        const r = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: data, headers: { 'Accept': 'application/json' } });
+        const j = await r.json();
+        notified = !!j.success;
+      } catch (err) { /* non bloquant si Firestore a réussi */ }
+
+      if (stored || notified) {
+        result.textContent = '✓ Merci ! Votre demande est bien reçue. On vous recontacte vite pour confirmer.';
+        result.className = 'resa-result ok';
+        f.reset();
+      } else {
+        result.textContent = 'Connexion impossible. Appelez-nous au 06 67 42 65 65.';
+        result.className = 'resa-result err';
+      }
+      btn.disabled = false;
     });
-  })();
+  }
 </script>
 </body>
 </html>

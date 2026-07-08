@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Annuler ma réservation — La Guinguette du Dispensaire</title>
+<link rel="icon" href="logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream: #f5f0e6;
+  --dark-green: #2a4e14;
+  --sage: #5e7f42;
+  --burgundy: #742939;
+  --gold: #c8a448;
+  --dark: #1a1a1a;
+  --white: #fff;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Lato', sans-serif; background: var(--cream); color: var(--dark); line-height: 1.6; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1.5rem; }
+.card { background: var(--white); border-radius: 18px; box-shadow: 0 6px 32px rgba(0,0,0,0.10); padding: 2.5rem 2.25rem; width: 100%; max-width: 460px; text-align: center; }
+.card img { width: 80px; height: 80px; margin-bottom: 0.7rem; }
+.eyebrow { font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); font-weight: 700; margin-bottom: 0.3rem; }
+h1 { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--dark-green); margin-bottom: 1.25rem; line-height: 1.25; }
+.resume { background: var(--cream); border-radius: 12px; padding: 1rem 1.2rem; margin-bottom: 1.4rem; text-align: left; font-size: 0.95rem; }
+.resume b { color: var(--dark-green); }
+.resume .ligne { margin: 0.15rem 0; }
+p.txt { font-size: 0.92rem; color: #555; margin-bottom: 1.4rem; }
+.btn-annuler { display: inline-block; background: var(--burgundy); color: var(--white); border: none; border-radius: 50px; padding: 0.78rem 2rem; font-size: 0.95rem; font-weight: 700; cursor: pointer; font-family: 'Lato', sans-serif; }
+.btn-annuler:hover { opacity: 0.9; }
+.btn-annuler:disabled { opacity: 0.55; cursor: wait; }
+.btn-garder { display: inline-block; margin-top: 0.9rem; background: none; border: none; color: var(--dark-green); font-size: 0.85rem; text-decoration: underline; cursor: pointer; font-family: 'Lato', sans-serif; }
+.ok { color: var(--dark-green); font-weight: 700; }
+.err { color: var(--burgundy); font-weight: 700; }
+.note { font-size: 0.8rem; color: #999; margin-top: 1.4rem; }
+.note a { color: var(--dark-green); }
+.hidden { display: none !important; }
+</style>
+</head>
+<body>
+<div class="card">
+  <img src="logo.png" alt="La Guinguette du Dispensaire">
+  <p class="eyebrow">La Guinguette du Dispensaire</p>
+
+  <!-- Chargement -->
+  <div id="v-charge">
+    <h1>Un instant…</h1>
+    <p class="txt">Nous retrouvons votre réservation.</p>
+  </div>
+
+  <!-- Confirmation d'annulation -->
+  <div id="v-confirm" class="hidden">
+    <h1>Annuler votre réservation ?</h1>
+    <div class="resume" id="resume"></div>
+    <p class="txt">Cette action est définitive. Vous pourrez bien sûr refaire une demande à tout moment sur notre site.</p>
+    <button class="btn-annuler" id="btn-annuler">Oui, annuler ma réservation</button><br>
+    <button class="btn-garder" onclick="location.href='https://guinguette-dispensaire.github.io'">Non, je garde ma réservation</button>
+  </div>
+
+  <!-- Résultat -->
+  <div id="v-fin" class="hidden">
+    <h1 id="fin-titre"></h1>
+    <p class="txt" id="fin-txt"></p>
+  </div>
+
+  <p class="note">Une question ? Appelez-nous au <a href="tel:+33667426565">06 67 42 65 65</a> ou retrouvez-nous sur <a href="https://guinguette-dispensaire.github.io">notre site</a>.</p>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, doc, getDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { firebaseConfig } from "./firebase-config.js";
+
+const $ = id => document.getElementById(id);
+const montrer = v => { ['v-charge','v-confirm','v-fin'].forEach(x => $(x).classList.toggle('hidden', x !== v)); };
+const fin = (titre, txt, ok) => { $('fin-titre').textContent = titre; $('fin-titre').className = ok ? 'ok' : 'err'; $('fin-txt').textContent = txt; montrer('v-fin'); };
+const dateFR = iso => { const [y,m,d] = (iso||'').split('-').map(Number); return new Date(y, m-1, d).toLocaleDateString('fr-FR', { weekday:'long', day:'numeric', month:'long' }); };
+
+const id = new URLSearchParams(location.search).get('id');
+let db, ref, resa;
+
+async function init() {
+  if (!id) return fin("Lien incomplet", "Ce lien d'annulation n'est pas valide. Utilisez le lien reçu dans votre email de confirmation, ou appelez-nous.");
+  try {
+    db = getFirestore(initializeApp(firebaseConfig));
+    ref = doc(db, 'reservations', id);
+    const snap = await getDoc(ref);
+    if (!snap.exists()) return fin("Réservation introuvable", "Ce lien ne correspond à aucune réservation. Appelez-nous si besoin.");
+    resa = snap.data();
+    if (resa.statut === 'annulee') return fin("Déjà annulée", "Cette réservation a déjà été annulée. À bientôt à la guinguette !", true);
+    if (resa.statut === 'refusee') return fin("Réservation non confirmée", "Cette demande n'avait pas pu être confirmée. Appelez-nous pour trouver un autre créneau.");
+    $('resume').innerHTML = `
+      <div class="ligne">👤 <b>${String(resa.nom||'').replace(/</g,'&lt;')}</b></div>
+      <div class="ligne">📅 <b>${dateFR(resa.date)}</b> à <b>${resa.heure}</b></div>
+      <div class="ligne">👥 ${resa.personnes} personne${resa.personnes > 1 ? 's' : ''}</div>`;
+    montrer('v-confirm');
+  } catch (e) {
+    console.error(e);
+    fin("Petit souci technique", "Impossible de charger votre réservation pour le moment. Réessayez dans quelques minutes ou appelez-nous au 06 67 42 65 65.");
+  }
+}
+
+$('btn-annuler').addEventListener('click', async () => {
+  const b = $('btn-annuler'); b.disabled = true;
+  try {
+    await updateDoc(ref, { statut: 'annulee', annuleParClient: true, annuleLe: serverTimestamp() });
+    fin("Réservation annulée ✓", "C'est noté, merci de nous avoir prévenus ! Au plaisir de vous accueillir une prochaine fois au Parc du Dispensaire.", true);
+    /* Prévenir l'équipe par email (non bloquant) */
+    try {
+      const fd = new FormData();
+      fd.append('access_key', 'ad7c2fd6-e8eb-4f74-8b9b-88a34d14fdc2');
+      fd.append('subject', `Annulation client — ${resa.nom} — ${dateFR(resa.date)} ${resa.heure}`);
+      fd.append('from_name', 'Site La Guinguette du Dispensaire');
+      fd.append('Type', 'Annulation par le client (lien email)');
+      fd.append('Nom', resa.nom || '');
+      fd.append('Date', `${dateFR(resa.date)} à ${resa.heure}`);
+      fd.append('Personnes', String(resa.personnes || ''));
+      fd.append('Téléphone', resa.telephone || '');
+      fetch('https://api.web3forms.com/submit', { method: 'POST', body: fd, headers: { 'Accept': 'application/json' } });
+    } catch (e) { /* silencieux */ }
+  } catch (e) {
+    console.error(e);
+    b.disabled = false;
+    fin("Petit souci technique", "L'annulation n'a pas pu être enregistrée. Appelez-nous au 06 67 42 65 65, nous nous en occupons.");
+  }
+});
+
+init();
+</script>
+</body>
+</html>
