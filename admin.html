@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr">h
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -243,9 +243,9 @@ import { firebaseConfig } from "./firebase-config.js";
    Laisser tel quel pour désactiver l'envoi d'emails.
 ═══════════════════════════════════════════════════════ */
 const EMAILJS = {
-  publicKey:  "COLLER_ICI_public_key",
-  serviceId:  "COLLER_ICI_service_id",
-  templateId: "COLLER_ICI_template_id"
+  publicKey:  "X1x_w95I8Es-BchF_",
+  serviceId:  "service_47qxczb",
+  templateId: "wkqvqkr"
 };
 const emailsActifs = !EMAILJS.publicKey.startsWith("COLLER_ICI");
 if (emailsActifs && window.emailjs) emailjs.init({ publicKey: EMAILJS.publicKey });
@@ -539,7 +539,7 @@ https://guinguette-dispensaire.github.io`;
 
 async function envoyerEmail(r, sujet, corps) {
   try {
-    await emailjs.send(EMAILJS.serviceId, EMAILJS.templateId, { to_email: r.email, sujet, corps });
+    await emailjs.send(EMAILJS.serviceId, EMAILJS.templateId, { to_email: r.email, name: r.nom, time: dateFR(r.date) + ' à ' + r.heure, message: corps });
     await updateDoc(doc(db, 'reservations', r.id), { emailEnvoye: true });
     toast(`Email envoyé à ${r.email} ✓`);
   } catch (ex) {
