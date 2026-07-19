@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">h
+<html lang="fr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -350,11 +350,11 @@ $('search').addEventListener('input', e => { recherche = e.target.value.toLowerC
 function filtrer() {
   const auj = todayStr();
   let out = resas.filter(r => {
-    if (filtre === 'attente')  return r.statut === 'en_attente';
+    if (filtre === 'attente')  return r.statut === 'en_attente' && r.date >= auj;
     if (filtre === 'avenir')   return r.date >= auj && (r.statut === 'en_attente' || r.statut === 'validee');
     if (filtre === 'jour')     return r.date === auj;
     if (filtre === 'archives') return r.statut === 'refusee' || r.statut === 'annulee' || r.date < auj;
-    return true; // toutes
+    return r.date >= auj; // toutes — les réservations passées sont dans Archives
   });
   if (recherche) {
     out = out.filter(r =>
