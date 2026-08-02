@@ -98,6 +98,17 @@
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap"></noscript>
 
   <style>
+/* --- Polices de repli calees sur les metriques de Playfair Display et Lato ---
+   Les polices web sont chargees en asynchrone (gain de vitesse). Sans ces regles,
+   le texte s'affiche d'abord dans Times/Arial, plus etroit, puis se recompose quand
+   la vraie police arrive : c'est ce saut qui faisait grimper le CLS a 0,133.
+   size-adjust / ascent-override ont ete mesures dans le navigateur (ecart residuel < 0,05 %). */
+@font-face{font-family:'Playfair repli';src:local('Times New Roman'),local('Liberation Serif'),local('Tinos');font-weight:400;font-style:normal;size-adjust:107.3%;ascent-override:100.7%;descent-override:23.3%;line-gap-override:0%}
+@font-face{font-family:'Playfair repli';src:local('Times New Roman Bold'),local('TimesNewRomanPS-BoldMT'),local('Liberation Serif Bold'),local('Tinos Bold');font-weight:700;font-style:normal;size-adjust:104.6%;ascent-override:103.2%;descent-override:23.9%;line-gap-override:0%}
+@font-face{font-family:'Playfair repli';src:local('Times New Roman Italic'),local('TimesNewRomanPS-ItalicMT'),local('Liberation Serif Italic'),local('Tinos Italic');font-weight:400;font-style:italic;size-adjust:104.4%;ascent-override:103.4%;descent-override:23.9%;line-gap-override:0%}
+@font-face{font-family:'Lato repli';src:local('Arial'),local('Liberation Sans'),local('Helvetica Neue'),local('Arimo');font-weight:400;font-style:normal;size-adjust:97.3%;ascent-override:101.7%;descent-override:21.6%;line-gap-override:0%}
+@font-face{font-family:'Lato repli';src:local('Arial Bold'),local('Arial-BoldMT'),local('Liberation Sans Bold'),local('Arimo Bold');font-weight:700;font-style:normal;size-adjust:93.7%;ascent-override:105.6%;descent-override:22.4%;line-gap-override:0%}
+
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
@@ -114,7 +125,7 @@
 
     html { scroll-behavior: smooth; }
     body {
-      font-family: 'Lato', sans-serif;
+      font-family: 'Lato','Lato repli',sans-serif;
       background: var(--cream);
       color: var(--dark);
       line-height: 1.6;
@@ -151,7 +162,7 @@
       margin-bottom: 0.5rem;
     }
     header h1 {
-      font-family: 'Playfair Display', serif;
+      font-family: 'Playfair Display','Playfair repli',serif;
       font-size: clamp(1.8rem, 6vw, 3rem);
       color: var(--white);
       line-height: 1.1;
@@ -219,7 +230,7 @@
       flex-shrink: 0;
     }
     .section-title {
-      font-family: 'Playfair Display', serif;
+      font-family: 'Playfair Display','Playfair repli',serif;
       font-size: 1.25rem;
       color: var(--dark-green);
       font-weight: 700;
@@ -258,7 +269,7 @@
       line-height: 1.4;
     }
     .item-price {
-      font-family: 'Playfair Display', serif;
+      font-family: 'Playfair Display','Playfair repli',serif;
       font-size: 1rem;
       font-weight: 700;
       color: var(--terracotta);
@@ -267,7 +278,7 @@
     }
     .item-price-sub {
       display: block;
-      font-family: 'Lato', sans-serif;
+      font-family: 'Lato','Lato repli',sans-serif;
       font-size: 0.7rem;
       color: #888;
       text-align: right;
@@ -283,7 +294,7 @@
       color: var(--white);
     }
     .star-title {
-      font-family: 'Playfair Display', serif;
+      font-family: 'Playfair Display','Playfair repli',serif;
       font-size: 1.05rem;
       color: var(--gold);
       margin-bottom: 0.6rem;
@@ -300,7 +311,7 @@
     .star-name { font-weight: 700; font-size: 1.02rem; }
     .star-desc { font-size: 0.78rem; opacity: 0.75; display: block; font-weight: 400; }
     .star-price {
-      font-family: 'Playfair Display', serif;
+      font-family: 'Playfair Display','Playfair repli',serif;
       font-weight: 700;
       font-size: 1.1rem;
       color: var(--gold);
@@ -341,7 +352,7 @@
       opacity: 0.15;
     }
     .enfant-price-badge {
-      font-family: 'Playfair Display', serif;
+      font-family: 'Playfair Display','Playfair repli',serif;
       font-size: 2rem;
       font-weight: 700;
       color: var(--gold);
@@ -349,7 +360,7 @@
       margin-bottom: 0.2rem;
     }
     .enfant-title {
-      font-family: 'Playfair Display', serif;
+      font-family: 'Playfair Display','Playfair repli',serif;
       font-size: 1.1rem;
       margin-bottom: 0.2rem;
     }
@@ -393,7 +404,7 @@
     }
     .avis-stars { font-size: 1.3rem; letter-spacing: 0.2em; margin-bottom: 0.5rem; }
     .avis-title {
-      font-family: 'Playfair Display', serif;
+      font-family: 'Playfair Display','Playfair repli',serif;
       font-size: 1.15rem;
       color: var(--dark-green);
       margin-bottom: 0.35rem;

@@ -12,6 +12,17 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" media="print" onload="this.media='all'">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap"></noscript>
 <style>
+/* --- Polices de repli calees sur les metriques de Playfair Display et Lato ---
+   Les polices web sont chargees en asynchrone (gain de vitesse). Sans ces regles,
+   le texte s'affiche d'abord dans Times/Arial, plus etroit, puis se recompose quand
+   la vraie police arrive : c'est ce saut qui faisait grimper le CLS a 0,133.
+   size-adjust / ascent-override ont ete mesures dans le navigateur (ecart residuel < 0,05 %). */
+@font-face{font-family:'Playfair repli';src:local('Times New Roman'),local('Liberation Serif'),local('Tinos');font-weight:400;font-style:normal;size-adjust:107.3%;ascent-override:100.7%;descent-override:23.3%;line-gap-override:0%}
+@font-face{font-family:'Playfair repli';src:local('Times New Roman Bold'),local('TimesNewRomanPS-BoldMT'),local('Liberation Serif Bold'),local('Tinos Bold');font-weight:700;font-style:normal;size-adjust:104.6%;ascent-override:103.2%;descent-override:23.9%;line-gap-override:0%}
+@font-face{font-family:'Playfair repli';src:local('Times New Roman Italic'),local('TimesNewRomanPS-ItalicMT'),local('Liberation Serif Italic'),local('Tinos Italic');font-weight:400;font-style:italic;size-adjust:104.4%;ascent-override:103.4%;descent-override:23.9%;line-gap-override:0%}
+@font-face{font-family:'Lato repli';src:local('Arial'),local('Liberation Sans'),local('Helvetica Neue'),local('Arimo');font-weight:400;font-style:normal;size-adjust:97.3%;ascent-override:101.7%;descent-override:21.6%;line-gap-override:0%}
+@font-face{font-family:'Lato repli';src:local('Arial Bold'),local('Arial-BoldMT'),local('Liberation Sans Bold'),local('Arimo Bold');font-weight:700;font-style:normal;size-adjust:93.7%;ascent-override:105.6%;descent-override:22.4%;line-gap-override:0%}
+
 :root {
   --cream: #f5f0e6;
   --dark-green: #2a4e14;
@@ -22,19 +33,19 @@
   --white: #fff;
 }
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: 'Lato', sans-serif; background: var(--cream); color: var(--dark); line-height: 1.6; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1.5rem; }
+body { font-family: 'Lato','Lato repli',sans-serif; background: var(--cream); color: var(--dark); line-height: 1.6; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1.5rem; }
 .card { background: var(--white); border-radius: 18px; box-shadow: 0 6px 32px rgba(0,0,0,0.10); padding: 2.5rem 2.25rem; width: 100%; max-width: 460px; text-align: center; }
 .card img { width: 80px; height: 80px; margin-bottom: 0.7rem; }
 .eyebrow { font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); font-weight: 700; margin-bottom: 0.3rem; }
-h1 { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--dark-green); margin-bottom: 1.25rem; line-height: 1.25; }
+h1 { font-family: 'Playfair Display','Playfair repli',serif; font-size: 1.5rem; color: var(--dark-green); margin-bottom: 1.25rem; line-height: 1.25; }
 .resume { background: var(--cream); border-radius: 12px; padding: 1rem 1.2rem; margin-bottom: 1.4rem; text-align: left; font-size: 0.95rem; }
 .resume b { color: var(--dark-green); }
 .resume .ligne { margin: 0.15rem 0; }
 p.txt { font-size: 0.92rem; color: #555; margin-bottom: 1.4rem; }
-.btn-annuler { display: inline-block; background: var(--burgundy); color: var(--white); border: none; border-radius: 50px; padding: 0.78rem 2rem; font-size: 0.95rem; font-weight: 700; cursor: pointer; font-family: 'Lato', sans-serif; }
+.btn-annuler { display: inline-block; background: var(--burgundy); color: var(--white); border: none; border-radius: 50px; padding: 0.78rem 2rem; font-size: 0.95rem; font-weight: 700; cursor: pointer; font-family: 'Lato','Lato repli',sans-serif; }
 .btn-annuler:hover { opacity: 0.9; }
 .btn-annuler:disabled { opacity: 0.55; cursor: wait; }
-.btn-garder { display: inline-block; margin-top: 0.9rem; background: none; border: none; color: var(--dark-green); font-size: 0.85rem; text-decoration: underline; cursor: pointer; font-family: 'Lato', sans-serif; }
+.btn-garder { display: inline-block; margin-top: 0.9rem; background: none; border: none; color: var(--dark-green); font-size: 0.85rem; text-decoration: underline; cursor: pointer; font-family: 'Lato','Lato repli',sans-serif; }
 .ok { color: var(--dark-green); font-weight: 700; }
 .err { color: var(--burgundy); font-weight: 700; }
 .note { font-size: 0.8rem; color: #999; margin-top: 1.4rem; }
