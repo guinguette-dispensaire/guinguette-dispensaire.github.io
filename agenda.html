@@ -3,9 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Agenda : concerts et animations à la guinguette de Sartrouville | La Guinguette du Dispensaire</title>
+<title>Agenda : concerts et animations à la guinguette de Sartrouville</title>
 <meta name="description" content="Tous les concerts et animations de La Guinguette du Dispensaire à Sartrouville : dates, artistes, horaires. Accès libre et gratuit au Parc du Dispensaire.">
 <link rel="canonical" href="https://laguinguettedudispensaire.fr/agenda.html">
+<link rel="alternate" type="application/rss+xml" title="Le journal de La Guinguette du Dispensaire" href="https://laguinguettedudispensaire.fr/flux.xml">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <meta name="geo.region" content="FR-78"><meta name="geo.placename" content="Sartrouville">
 <meta name="theme-color" content="#2a4e14">
@@ -13,7 +14,7 @@
 <link rel="apple-touch-icon" href="logo.png">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Agenda : concerts et animations à la guinguette de Sartrouville">
-<meta property="og:description" content="Toutes les dates de concerts et d'animations de La Guinguette du Dispensaire, au Parc du Dispensaire à Sartrouville. Accès libre et gratuit.">
+<meta property="og:description" content="Tous les concerts et animations de La Guinguette du Dispensaire à Sartrouville : dates, artistes, horaires. Accès libre et gratuit au Parc du Dispensaire.">
 <meta property="og:url" content="https://laguinguettedudispensaire.fr/agenda.html">
 <meta property="og:image" content="https://laguinguettedudispensaire.fr/photo10.jpg">
 <meta property="og:image:width" content="1280"><meta property="og:image:height" content="960">
@@ -22,7 +23,7 @@
 <meta property="og:site_name" content="La Guinguette du Dispensaire">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Agenda : concerts et animations à la guinguette de Sartrouville">
-<meta name="twitter:description" content="Toutes les dates de concerts et d'animations de La Guinguette du Dispensaire à Sartrouville. Accès libre et gratuit.">
+<meta name="twitter:description" content="Tous les concerts et animations de La Guinguette du Dispensaire à Sartrouville : dates, artistes, horaires. Accès libre et gratuit au Parc du Dispensaire.">
 <meta name="twitter:image" content="https://laguinguettedudispensaire.fr/photo10.jpg">
 <script type="application/ld+json">
 [
@@ -395,7 +396,8 @@
  }
 ]
 </script>
-<link rel="preload" as="image" href="photo10-960.webp" type="image/webp" fetchpriority="high">
+<link rel="preload" as="image" href="photo10-640.webp" type="image/webp" media="(max-width: 999px)" fetchpriority="high">
+<link rel="preload" as="image" href="photo10-960.webp" type="image/webp" media="(min-width: 1000px)" fetchpriority="high">
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" media="print" onload="this.media='all'">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap"></noscript>
@@ -490,6 +492,10 @@ footer{background:var(--dark);color:rgba(255,255,255,.62);padding:3rem 2rem;text
 .ville-list li{padding:.7rem 0;border-bottom:1px solid rgba(0,0,0,.08)}
 .ville-list strong{color:#2a4e14}
 @media(max-width:700px){.ev{flex-direction:column}.ev-img{flex:none;width:100%}}
+
+/* Image de couverture : la version 640 px suffit sur mobile (LCP) */
+.article-hero{background-image:linear-gradient(155deg,rgba(42,78,20,.85),rgba(116,41,57,.72) 60%,rgba(30,20,10,.78)),url('photo10-640.jpg');background-image:linear-gradient(155deg,rgba(42,78,20,.85),rgba(116,41,57,.72) 60%,rgba(30,20,10,.78)),image-set(url('photo10-640.webp') type('image/webp'),url('photo10-640.jpg') type('image/jpeg'))}
+@media(min-width:1000px){.article-hero{background-image:linear-gradient(155deg,rgba(42,78,20,.85),rgba(116,41,57,.72) 60%,rgba(30,20,10,.78)),url('photo10-960.jpg');background-image:linear-gradient(155deg,rgba(42,78,20,.85),rgba(116,41,57,.72) 60%,rgba(30,20,10,.78)),image-set(url('photo10-960.webp') type('image/webp'),url('photo10-960.jpg') type('image/jpeg'))}}
 </style>
 </head>
 <body>
@@ -504,7 +510,7 @@ footer{background:var(--dark);color:rgba(255,255,255,.62);padding:3rem 2rem;text
     <li><a href="index.html#reservation" class="nav-cta">Réserver</a></li>
   </ul>
 </nav>
-<header class="article-hero" style="background-image:linear-gradient(155deg,rgba(42,78,20,.85),rgba(116,41,57,.72) 60%,rgba(30,20,10,.78)),url('photo10-960.jpg');background-image:linear-gradient(155deg,rgba(42,78,20,.85),rgba(116,41,57,.72) 60%,rgba(30,20,10,.78)),image-set(url('photo10-960.webp') type('image/webp'),url('photo10-960.jpg') type('image/jpeg'))">
+<header class="article-hero">
   <div class="inner"><p class="eyebrow">Saison 2026 &middot; Sartrouville</p><h1>Agenda des concerts et animations</h1></div>
 </header>
 <p class="breadcrumb"><a href="index.html">Accueil</a> &rsaquo; Agenda</p>
@@ -516,7 +522,7 @@ footer{background:var(--dark);color:rgba(255,255,255,.62);padding:3rem 2rem;text
 
 <div class="agenda-sec"><h2>À venir</h2></div>
   <article class="ev" id="yipikiyay">
-    <div class="ev-img"><picture><source srcset="photo10-640.webp 640w, photo10-960.webp 960w" sizes="(max-width:700px) 92vw, 320px" type="image/webp"><img src="photo10-640.jpg" srcset="photo10-640.jpg 640w, photo10-960.jpg 960w" sizes="(max-width:700px) 92vw, 320px" alt="Yipikiyay en concert à la Guinguette du Dispensaire, Sartrouville" loading="lazy" decoding="async"></picture></div>
+    <div class="ev-img"><picture><source srcset="photo10-640.webp 640w, photo10-960.webp 960w" sizes="(max-width:700px) 92vw, 320px" type="image/webp"><img src="photo10-640.jpg" srcset="photo10-640.jpg 640w, photo10-960.jpg 960w" sizes="(max-width:700px) 92vw, 320px" alt="Yipikiyay en concert à la Guinguette du Dispensaire, Sartrouville" loading="lazy" decoding="async" width="640" height="480"></picture></div>
     <div class="ev-txt">
       <p class="ev-date"><time datetime="2026-09-10">10 septembre 2026</time> · 19:00–21:30 · Concert</p>
       <h3>Yipikiyay en concert</h3>
@@ -531,7 +537,7 @@ footer{background:var(--dark);color:rgba(255,255,255,.62);padding:3rem 2rem;text
 <p>On garde la trace de tout ce qui s'est joué ici. C'est aussi une façon de vous montrer à quoi ressemble une soirée à la guinguette avant de venir.</p>
 </div>
   <article class="ev ev-passe" id="blind-test">
-    <div class="ev-img"><picture><source srcset="photo16-640.webp 640w, photo16-960.webp 960w" sizes="(max-width:700px) 92vw, 320px" type="image/webp"><img src="photo16-640.jpg" srcset="photo16-640.jpg 640w, photo16-960.jpg 960w" sizes="(max-width:700px) 92vw, 320px" alt="Blind test musical à la Guinguette du Dispensaire, Sartrouville" loading="lazy" decoding="async"></picture></div>
+    <div class="ev-img"><picture><source srcset="photo16-640.webp 640w, photo16-960.webp 960w" sizes="(max-width:700px) 92vw, 320px" type="image/webp"><img src="photo16-640.jpg" srcset="photo16-640.jpg 640w, photo16-960.jpg 960w" sizes="(max-width:700px) 92vw, 320px" alt="Blind test musical à la Guinguette du Dispensaire, Sartrouville" loading="lazy" decoding="async" width="640" height="961"></picture></div>
     <div class="ev-txt">
       <p class="ev-date"><time datetime="2026-07-30">30 juillet 2026</time> · 19:00–21:00 · Animation</p>
       <h3>Blind test musical</h3>
@@ -541,7 +547,7 @@ footer{background:var(--dark);color:rgba(255,255,255,.62);padding:3rem 2rem;text
     </div>
   </article>
   <article class="ev ev-passe" id="roxane">
-    <div class="ev-img"><picture><source srcset="photo21-640.webp 640w, photo21-960.webp 960w" sizes="(max-width:700px) 92vw, 320px" type="image/webp"><img src="photo21-640.jpg" srcset="photo21-640.jpg 640w, photo21-960.jpg 960w" sizes="(max-width:700px) 92vw, 320px" alt="Roxane en concert à la Guinguette du Dispensaire, Sartrouville" loading="lazy" decoding="async"></picture></div>
+    <div class="ev-img"><picture><source srcset="photo21-640.webp 640w, photo21-960.webp 960w" sizes="(max-width:700px) 92vw, 320px" type="image/webp"><img src="photo21-640.jpg" srcset="photo21-640.jpg 640w, photo21-960.jpg 960w" sizes="(max-width:700px) 92vw, 320px" alt="Roxane en concert à la Guinguette du Dispensaire, Sartrouville" loading="lazy" decoding="async" width="640" height="961"></picture></div>
     <div class="ev-txt">
       <p class="ev-date"><time datetime="2026-07-23">23 juillet 2026</time> · 19:00–21:00 · Concert</p>
       <h3>Roxane en concert</h3>
@@ -551,7 +557,7 @@ footer{background:var(--dark);color:rgba(255,255,255,.62);padding:3rem 2rem;text
     </div>
   </article>
   <article class="ev ev-passe" id="the-gates">
-    <div class="ev-img"><picture><source srcset="photo7-640.webp 640w, photo7-960.webp 960w" sizes="(max-width:700px) 92vw, 320px" type="image/webp"><img src="photo7-640.jpg" srcset="photo7-640.jpg 640w, photo7-960.jpg 960w" sizes="(max-width:700px) 92vw, 320px" alt="The Gates en concert à la Guinguette du Dispensaire, Sartrouville" loading="lazy" decoding="async"></picture></div>
+    <div class="ev-img"><picture><source srcset="photo7-640.webp 640w, photo7-960.webp 960w" sizes="(max-width:700px) 92vw, 320px" type="image/webp"><img src="photo7-640.jpg" srcset="photo7-640.jpg 640w, photo7-960.jpg 960w" sizes="(max-width:700px) 92vw, 320px" alt="The Gates en concert à la Guinguette du Dispensaire, Sartrouville" loading="lazy" decoding="async" width="640" height="853"></picture></div>
     <div class="ev-txt">
       <p class="ev-date"><time datetime="2026-07-16">16 juillet 2026</time> · 19:00–21:00 · Concert</p>
       <h3>The Gates en concert</h3>
@@ -561,7 +567,7 @@ footer{background:var(--dark);color:rgba(255,255,255,.62);padding:3rem 2rem;text
     </div>
   </article>
   <article class="ev ev-passe" id="sylvain-sayim">
-    <div class="ev-img"><picture><source srcset="photo15-640.webp 640w, photo15-960.webp 960w" sizes="(max-width:700px) 92vw, 320px" type="image/webp"><img src="photo15-640.jpg" srcset="photo15-640.jpg 640w, photo15-960.jpg 960w" sizes="(max-width:700px) 92vw, 320px" alt="Sylvain Sayim en concert à la Guinguette du Dispensaire, Sartrouville" loading="lazy" decoding="async"></picture></div>
+    <div class="ev-img"><picture><source srcset="photo15-640.webp 640w, photo15-960.webp 960w" sizes="(max-width:700px) 92vw, 320px" type="image/webp"><img src="photo15-640.jpg" srcset="photo15-640.jpg 640w, photo15-960.jpg 960w" sizes="(max-width:700px) 92vw, 320px" alt="Sylvain Sayim en concert à la Guinguette du Dispensaire, Sartrouville" loading="lazy" decoding="async" width="640" height="961"></picture></div>
     <div class="ev-txt">
       <p class="ev-date"><time datetime="2026-07-10">10 juillet 2026</time> · 18:30–21:00 · Concert</p>
       <h3>Sylvain Sayim en concert</h3>
@@ -571,7 +577,7 @@ footer{background:var(--dark);color:rgba(255,255,255,.62);padding:3rem 2rem;text
     </div>
   </article>
   <article class="ev ev-passe" id="bal-burning-legs">
-    <div class="ev-img"><picture><source srcset="photo12-640.webp 640w, photo12-960.webp 960w" sizes="(max-width:700px) 92vw, 320px" type="image/webp"><img src="photo12-640.jpg" srcset="photo12-640.jpg 640w, photo12-960.jpg 960w" sizes="(max-width:700px) 92vw, 320px" alt="Bal Burning Legs à la Guinguette du Dispensaire, Sartrouville" loading="lazy" decoding="async"></picture></div>
+    <div class="ev-img"><picture><source srcset="photo12-640.webp 640w, photo12-960.webp 960w" sizes="(max-width:700px) 92vw, 320px" type="image/webp"><img src="photo12-640.jpg" srcset="photo12-640.jpg 640w, photo12-960.jpg 960w" sizes="(max-width:700px) 92vw, 320px" alt="Bal Burning Legs à la Guinguette du Dispensaire, Sartrouville" loading="lazy" decoding="async" width="640" height="961"></picture></div>
     <div class="ev-txt">
       <p class="ev-date"><time datetime="2026-07-02">2 juillet 2026</time> · 19:00–21:00 · Concert</p>
       <h3>Bal Burning Legs</h3>
@@ -581,7 +587,7 @@ footer{background:var(--dark);color:rgba(255,255,255,.62);padding:3rem 2rem;text
     </div>
   </article>
   <article class="ev ev-passe" id="dj-set-ouverture">
-    <div class="ev-img"><picture><source srcset="photo22-640.webp 640w, photo22-960.webp 960w" sizes="(max-width:700px) 92vw, 320px" type="image/webp"><img src="photo22-640.jpg" srcset="photo22-640.jpg 640w, photo22-960.jpg 960w" sizes="(max-width:700px) 92vw, 320px" alt="DJ set — première soirée musicale de la saison à la Guinguette du Dispensaire, Sartrouville" loading="lazy" decoding="async"></picture></div>
+    <div class="ev-img"><picture><source srcset="photo22-640.webp 640w, photo22-960.webp 960w" sizes="(max-width:700px) 92vw, 320px" type="image/webp"><img src="photo22-640.jpg" srcset="photo22-640.jpg 640w, photo22-960.jpg 960w" sizes="(max-width:700px) 92vw, 320px" alt="DJ set — première soirée musicale de la saison à la Guinguette du Dispensaire, Sartrouville" loading="lazy" decoding="async" width="640" height="961"></picture></div>
     <div class="ev-txt">
       <p class="ev-date"><time datetime="2026-06-20">20 juin 2026</time> · 19:00–21:00 · Soirée</p>
       <h3>DJ set — première soirée musicale de la saison</h3>

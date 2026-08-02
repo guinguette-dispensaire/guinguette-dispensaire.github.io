@@ -4,4 +4,13 @@ Allow: /
 # Pages de redirection (non indexées via meta robots noindex)
 # grandeur-nature.html et menu-evenement.html redirigent vers /menu.html
 
+# Documents de travail internes — pas destinés à l'index
+Disallow: /seo-suivi.md
+Disallow: /checklist-offsite-seo.md
+Disallow: /RAPPORT_DEPLOIEMENT_COWORK.md
+Disallow: /lighthouse-ci.proposed.yml
+Disallow: /firebase-config.js
+Disallow: /admin.html
+Disallow: /annulation.html
+
 Sitemap: https://laguinguettedudispensaire.fr/sitemap.xml

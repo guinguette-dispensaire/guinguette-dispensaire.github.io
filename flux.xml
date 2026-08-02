@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Le journal de La Guinguette du Dispensaire</title>
+    <link>https://laguinguettedudispensaire.fr/blog.html</link>
+    <atom:link href="https://laguinguettedudispensaire.fr/flux.xml" rel="self" type="application/rss+xml"/>
+    <description>Sortir a Sartrouville et dans la boucle de Seine : la guinguette du Parc du Dispensaire, ses concerts, sa carte et ses idees de sorties.</description>
+    <language>fr-FR</language>
+    <copyright>La Guinguette du Dispensaire</copyright>
+    <lastBuildDate>Sun, 02 Aug 2026 09:00:00 +0000</lastBuildDate>
+    <image>
+      <url>https://laguinguettedudispensaire.fr/logo.png</url>
+      <title>Le journal de La Guinguette du Dispensaire</title>
+      <link>https://laguinguettedudispensaire.fr/blog.html</link>
+    </image>
+    <item>
+      <title>Sortie en famille à Sartrouville</title>
+      <link>https://laguinguettedudispensaire.fr/sortie-famille-sartrouville-bord-de-seine.html</link>
+      <guid isPermaLink="true">https://laguinguettedudispensaire.fr/sortie-famille-sartrouville-bord-de-seine.html</guid>
+      <description>Parc gratuit, jeux en plein air et menu enfant au cœur du parc.</description>
+      <pubDate>Sun, 14 Jun 2026 09:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>Guinguette à Sartrouville : la terrasse au Parc du Dispensaire</title>
+      <link>https://laguinguettedudispensaire.fr/guinguette-sartrouville-terrasse-bord-de-seine.html</link>
+      <guid isPermaLink="true">https://laguinguettedudispensaire.fr/guinguette-sartrouville-terrasse-bord-de-seine.html</guid>
+      <description>Le bar en plein air du Parc du Dispensaire : bières, vins, planches, concerts.</description>
+      <pubDate>Sun, 14 Jun 2026 09:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>Que faire dans la boucle de Seine ?</title>
+      <link>https://laguinguettedudispensaire.fr/que-faire-boucle-de-seine-sartrouville.html</link>
+      <guid isPermaLink="true">https://laguinguettedudispensaire.fr/que-faire-boucle-de-seine-sartrouville.html</guid>
+      <description>Idées de sorties autour de Sartrouville, Houilles, Maisons-Laffitte et Montesson.</description>
+      <pubDate>Sun, 14 Jun 2026 09:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>Réserver pour votre événement</title>
+      <link>https://laguinguettedudispensaire.fr/evenement-anniversaire-guinguette-sartrouville.html</link>
+      <guid isPermaLink="true">https://laguinguettedudispensaire.fr/evenement-anniversaire-guinguette-sartrouville.html</guid>
+      <description>Anniversaires, afterworks, fêtes : un lieu nature en plein air, au Parc du Dispensaire.</description>
+      <pubDate>Sun, 14 Jun 2026 09:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>Comment venir à la Guinguette du Dispensaire à Sartrouville</title>
+      <link>https://laguinguettedudispensaire.fr/venir-guinguette-sartrouville-acces-rer-parking.html</link>
+      <guid isPermaLink="true">https://laguinguettedudispensaire.fr/venir-guinguette-sartrouville-acces-rer-parking.html</guid>
+      <description>RER A, bus 73, parking gratuit et horaires : tout pour nous trouver.</description>
+      <pubDate>Wed, 29 Jul 2026 09:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>Afterwork à Sartrouville : où se retrouver après le travail ?</title>
+      <link>https://laguinguettedudispensaire.fr/afterwork-sartrouville.html</link>
+      <guid isPermaLink="true">https://laguinguettedudispensaire.fr/afterwork-sartrouville.html</guid>
+      <description>Une terrasse dans un parc, ouverte dès 16h du mardi au vendredi.</description>
+      <pubDate>Wed, 29 Jul 2026 09:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>Un bar en terrasse près de Houilles, Montesson et Maisons-Laffitte</title>
+      <link>https://laguinguettedudispensaire.fr/bar-terrasse-houilles-montesson-maisons-laffitte.html</link>
+      <guid isPermaLink="true">https://laguinguettedudispensaire.fr/bar-terrasse-houilles-montesson-maisons-laffitte.html</guid>
+      <description>À quelques minutes des communes voisines, dans la boucle de Seine.</description>
+      <pubDate>Wed, 29 Jul 2026 09:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>Une guinguette près de Paris, accessible en RER A</title>
+      <link>https://laguinguettedudispensaire.fr/guinguette-pres-de-paris-rer-a.html</link>
+      <guid isPermaLink="true">https://laguinguettedudispensaire.fr/guinguette-pres-de-paris-rer-a.html</guid>
+      <description>20 min de La Défense, 30 min de Châtelet, puis 10 min à pied.</description>
+      <pubDate>Sun, 02 Aug 2026 09:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>Où boire un verre en terrasse à Sartrouville ?</title>
+      <link>https://laguinguettedudispensaire.fr/ou-boire-un-verre-terrasse-sartrouville.html</link>
+      <guid isPermaLink="true">https://laguinguettedudispensaire.fr/ou-boire-un-verre-terrasse-sartrouville.html</guid>
+      <description>Une terrasse ombragée sous les arbres, bières pression, vins et planches.</description>
+      <pubDate>Sun, 02 Aug 2026 09:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>Afterwork dans la boucle de Seine</title>
+      <link>https://laguinguettedudispensaire.fr/afterwork-boucle-de-seine.html</link>
+      <guid isPermaLink="true">https://laguinguettedudispensaire.fr/afterwork-boucle-de-seine.html</guid>
+      <description>Sartrouville, Houilles, Montesson, Maisons-Laffitte : les temps de trajet.</description>
+      <pubDate>Sun, 02 Aug 2026 09:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>Saison 2027 : ce qu'on sait déjà</title>
+      <link>https://laguinguettedudispensaire.fr/saison-2027-guinguette-sartrouville.html</link>
+      <guid isPermaLink="true">https://laguinguettedudispensaire.fr/saison-2027-guinguette-sartrouville.html</guid>
+      <description>Réouverture prévue en juin 2027, concerts, carte et comment être prévenu.</description>
+      <pubDate>Sun, 02 Aug 2026 09:00:00 +0000</pubDate>
+    </item>
+  </channel>
+</rss>

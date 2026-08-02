@@ -1,20 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://laguinguettedudispensaire.fr/</loc><lastmod>2026-08-02</lastmod><changefreq>weekly</changefreq><priority>1.0</priority></url>
-  <url><loc>https://laguinguettedudispensaire.fr/menu.html</loc><lastmod>2026-08-02</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://laguinguettedudispensaire.fr/agenda.html</loc><lastmod>2026-08-02</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://laguinguettedudispensaire.fr/blog.html</loc><lastmod>2026-08-02</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://laguinguettedudispensaire.fr/guinguette-sartrouville-terrasse-bord-de-seine.html</loc><lastmod>2026-08-02</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://laguinguettedudispensaire.fr/que-faire-boucle-de-seine-sartrouville.html</loc><lastmod>2026-08-02</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://laguinguettedudispensaire.fr/evenement-anniversaire-guinguette-sartrouville.html</loc><lastmod>2026-08-02</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://laguinguettedudispensaire.fr/sortie-famille-sartrouville-bord-de-seine.html</loc><lastmod>2026-08-02</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://laguinguettedudispensaire.fr/venir-guinguette-sartrouville-acces-rer-parking.html</loc><lastmod>2026-08-02</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://laguinguettedudispensaire.fr/afterwork-sartrouville.html</loc><lastmod>2026-08-02</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://laguinguettedudispensaire.fr/bar-terrasse-houilles-montesson-maisons-laffitte.html</loc><lastmod>2026-08-02</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://laguinguettedudispensaire.fr/guinguette-pres-de-paris-rer-a.html</loc><lastmod>2026-08-02</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://laguinguettedudispensaire.fr/ou-boire-un-verre-terrasse-sartrouville.html</loc><lastmod>2026-08-02</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://laguinguettedudispensaire.fr/afterwork-boucle-de-seine.html</loc><lastmod>2026-08-02</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://laguinguettedudispensaire.fr/saison-2027-guinguette-sartrouville.html</loc><lastmod>2026-08-02</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url><loc>https://laguinguettedudispensaire.fr/</loc><lastmod>2026-08-02</lastmod><changefreq>weekly</changefreq><priority>1.0</priority>
+    <image:image><image:loc>https://laguinguettedudispensaire.fr/photo3.jpg</image:loc><image:title>Terrasse de La Guinguette du Dispensaire sous les arbres du Parc du Dispensaire a Sartrouville</image:title></image:image>
+    <image:image><image:loc>https://laguinguettedudispensaire.fr/photo1.jpg</image:loc><image:title>Le bar de La Guinguette du Dispensaire a Sartrouville</image:title></image:image>
+    <image:image><image:loc>https://laguinguettedudispensaire.fr/photo13.jpg</image:loc><image:title>La guinguette dans les anciennes ecuries du Parc du Dispensaire</image:title></image:image>
+    <image:image><image:loc>https://laguinguettedudispensaire.fr/photo16.jpg</image:loc><image:title>Verres et tables en terrasse a la guinguette de Sartrouville</image:title></image:image>
+    <image:image><image:loc>https://laguinguettedudispensaire.fr/photo12.jpg</image:loc><image:title>Facade de La Guinguette du Dispensaire au Parc du Dispensaire</image:title></image:image>
+  </url>
+  <url><loc>https://laguinguettedudispensaire.fr/menu.html</loc><lastmod>2026-08-02</lastmod><changefreq>monthly</changefreq><priority>0.8</priority>
+    <image:image><image:loc>https://laguinguettedudispensaire.fr/photo1.jpg</image:loc><image:title>La carte de La Guinguette du Dispensaire : planches, frites maison, bieres pression</image:title></image:image>
+  </url>
+  <url><loc>https://laguinguettedudispensaire.fr/agenda.html</loc><lastmod>2026-08-02</lastmod><changefreq>weekly</changefreq><priority>0.9</priority>
+    <image:image><image:loc>https://laguinguettedudispensaire.fr/photo7.jpg</image:loc><image:title>Concert a la guinguette de Sartrouville</image:title></image:image>
+    <image:image><image:loc>https://laguinguettedudispensaire.fr/photo21.jpg</image:loc><image:title>Concert en plein air au Parc du Dispensaire</image:title></image:image>
+  </url>
+  <url><loc>https://laguinguettedudispensaire.fr/blog.html</loc><lastmod>2026-08-02</lastmod><changefreq>monthly</changefreq><priority>0.6</priority>
+    <image:image><image:loc>https://laguinguettedudispensaire.fr/photo9.jpg</image:loc><image:title>Le Parc du Dispensaire a Sartrouville</image:title></image:image>
+  </url>
+  <url><loc>https://laguinguettedudispensaire.fr/guinguette-sartrouville-terrasse-bord-de-seine.html</loc><lastmod>2026-08-02</lastmod><changefreq>monthly</changefreq><priority>0.7</priority>
+    <image:image><image:loc>https://laguinguettedudispensaire.fr/photo3.jpg</image:loc><image:title>La terrasse de la guinguette au Parc du Dispensaire a Sartrouville</image:title></image:image>
+  </url>
+  <url><loc>https://laguinguettedudispensaire.fr/que-faire-boucle-de-seine-sartrouville.html</loc><lastmod>2026-08-02</lastmod><changefreq>monthly</changefreq><priority>0.7</priority>
+    <image:image><image:loc>https://laguinguettedudispensaire.fr/photo9.jpg</image:loc><image:title>Les anciennes ecuries et la pelouse du Parc du Dispensaire</image:title></image:image>
+  </url>
+  <url><loc>https://laguinguettedudispensaire.fr/evenement-anniversaire-guinguette-sartrouville.html</loc><lastmod>2026-08-02</lastmod><changefreq>monthly</changefreq><priority>0.7</priority>
+    <image:image><image:loc>https://laguinguettedudispensaire.fr/photo1.jpg</image:loc><image:title>Grande tablee sous les arbres a la guinguette de Sartrouville</image:title></image:image>
+  </url>
+  <url><loc>https://laguinguettedudispensaire.fr/sortie-famille-sartrouville-bord-de-seine.html</loc><lastmod>2026-08-02</lastmod><changefreq>monthly</changefreq><priority>0.6</priority>
+    <image:image><image:loc>https://laguinguettedudispensaire.fr/photo9.jpg</image:loc><image:title>Sortie en famille au Parc du Dispensaire a Sartrouville</image:title></image:image>
+  </url>
+  <url><loc>https://laguinguettedudispensaire.fr/venir-guinguette-sartrouville-acces-rer-parking.html</loc><lastmod>2026-08-02</lastmod><changefreq>monthly</changefreq><priority>0.7</priority>
+    <image:image><image:loc>https://laguinguettedudispensaire.fr/photo10.jpg</image:loc><image:title>Le Parc du Dispensaire, acces a la guinguette de Sartrouville</image:title></image:image>
+  </url>
+  <url><loc>https://laguinguettedudispensaire.fr/afterwork-sartrouville.html</loc><lastmod>2026-08-02</lastmod><changefreq>monthly</changefreq><priority>0.7</priority>
+    <image:image><image:loc>https://laguinguettedudispensaire.fr/photo12.jpg</image:loc><image:title>Afterwork en terrasse a Sartrouville</image:title></image:image>
+  </url>
+  <url><loc>https://laguinguettedudispensaire.fr/bar-terrasse-houilles-montesson-maisons-laffitte.html</loc><lastmod>2026-08-02</lastmod><changefreq>monthly</changefreq><priority>0.7</priority>
+    <image:image><image:loc>https://laguinguettedudispensaire.fr/photo13.jpg</image:loc><image:title>Bar en terrasse pres de Houilles, Montesson et Maisons-Laffitte</image:title></image:image>
+  </url>
+  <url><loc>https://laguinguettedudispensaire.fr/guinguette-pres-de-paris-rer-a.html</loc><lastmod>2026-08-02</lastmod><changefreq>monthly</changefreq><priority>0.7</priority>
+    <image:image><image:loc>https://laguinguettedudispensaire.fr/photo2.jpg</image:loc><image:title>Terrasse ombragee de la guinguette, a 20 minutes de La Defense en RER A</image:title></image:image>
+  </url>
+  <url><loc>https://laguinguettedudispensaire.fr/ou-boire-un-verre-terrasse-sartrouville.html</loc><lastmod>2026-08-02</lastmod><changefreq>monthly</changefreq><priority>0.7</priority>
+    <image:image><image:loc>https://laguinguettedudispensaire.fr/photo16.jpg</image:loc><image:title>Boire un verre en terrasse ombragee a Sartrouville</image:title></image:image>
+  </url>
+  <url><loc>https://laguinguettedudispensaire.fr/afterwork-boucle-de-seine.html</loc><lastmod>2026-08-02</lastmod><changefreq>monthly</changefreq><priority>0.7</priority>
+    <image:image><image:loc>https://laguinguettedudispensaire.fr/photo17.jpg</image:loc><image:title>Afterwork dans la boucle de Seine</image:title></image:image>
+  </url>
+  <url><loc>https://laguinguettedudispensaire.fr/saison-2027-guinguette-sartrouville.html</loc><lastmod>2026-08-02</lastmod><changefreq>monthly</changefreq><priority>0.7</priority>
+    <image:image><image:loc>https://laguinguettedudispensaire.fr/photo18.jpg</image:loc><image:title>La guinguette du Parc du Dispensaire, saison 2027</image:title></image:image>
+  </url>
   <url><loc>https://laguinguettedudispensaire.fr/mentions-legales.html</loc><lastmod>2026-08-02</lastmod><changefreq>yearly</changefreq><priority>0.2</priority></url>
   <url><loc>https://laguinguettedudispensaire.fr/confidentialite.html</loc><lastmod>2026-08-02</lastmod><changefreq>yearly</changefreq><priority>0.2</priority></url>
 </urlset>

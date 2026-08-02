@@ -6,6 +6,54 @@
 <title>Mentions légales — La Guinguette du Dispensaire</title>
 <meta name="description" content="Mentions légales de La Guinguette du Dispensaire à Sartrouville : éditeur, hébergeur, propriété intellectuelle et contact.">
 <link rel="canonical" href="https://laguinguettedudispensaire.fr/mentions-legales.html">
+<link rel="preload" as="image" href="photo12-640.webp" type="image/webp" media="(max-width: 999px)" fetchpriority="high">
+<link rel="preload" as="image" href="photo12-960.webp" type="image/webp" media="(min-width: 1000px)" fetchpriority="high">
+<link rel="alternate" type="application/rss+xml" title="Le journal de La Guinguette du Dispensaire" href="https://laguinguettedudispensaire.fr/flux.xml">
+<script type="application/ld+json">
+[
+ {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "Mentions légales",
+  "description": "Mentions légales de La Guinguette du Dispensaire : éditeur, hébergeur, propriété intellectuelle et contact.",
+  "inLanguage": "fr",
+  "url": "https://laguinguettedudispensaire.fr/mentions-legales.html",
+  "isPartOf": {
+   "@type": "WebSite",
+   "name": "La Guinguette du Dispensaire",
+   "url": "https://laguinguettedudispensaire.fr/"
+  },
+  "publisher": {
+   "@type": "Organization",
+   "name": "La Guinguette du Dispensaire",
+   "url": "https://laguinguettedudispensaire.fr/",
+   "logo": {
+    "@type": "ImageObject",
+    "url": "https://laguinguettedudispensaire.fr/logo.png"
+   }
+  }
+ },
+ {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+   {
+    "@type": "ListItem",
+    "position": 1,
+    "name": "Accueil",
+    "item": "https://laguinguettedudispensaire.fr/"
+   },
+   {
+    "@type": "ListItem",
+    "position": 2,
+    "name": "Mentions légales",
+    "item": "https://laguinguettedudispensaire.fr/mentions-legales.html"
+   }
+  ]
+ }
+]
+</script>
+
 <meta name="robots" content="index, follow">
 <meta name="theme-color" content="#2a4e14">
 <link rel="icon" href="logo.webp" type="image/webp">
@@ -84,6 +132,10 @@ footer{background:var(--dark);color:rgba(255,255,255,.62);padding:3rem 2rem;text
 .footer-copy{color:rgba(255,255,255,.55)}
 .breadcrumb{color:#6f6a5c}
 .breadcrumb a{color:#4a6633}
+
+/* Image de couverture : la version 640 px suffit sur mobile (LCP) */
+.article-hero{background-image:linear-gradient(155deg,rgba(42,78,20,.85),rgba(116,41,57,.72) 60%,rgba(30,20,10,.78)),url('photo12-640.jpg');background-image:linear-gradient(155deg,rgba(42,78,20,.85),rgba(116,41,57,.72) 60%,rgba(30,20,10,.78)),image-set(url('photo12-640.webp') type('image/webp'),url('photo12-640.jpg') type('image/jpeg'))}
+@media(min-width:1000px){.article-hero{background-image:linear-gradient(155deg,rgba(42,78,20,.85),rgba(116,41,57,.72) 60%,rgba(30,20,10,.78)),url('photo12-960.jpg');background-image:linear-gradient(155deg,rgba(42,78,20,.85),rgba(116,41,57,.72) 60%,rgba(30,20,10,.78)),image-set(url('photo12-960.webp') type('image/webp'),url('photo12-960.jpg') type('image/jpeg'))}}
 </style>
 </head>
 <body>
@@ -98,7 +150,7 @@ footer{background:var(--dark);color:rgba(255,255,255,.62);padding:3rem 2rem;text
     <li><a href="index.html#reservation" class="nav-cta">Réserver</a></li>
   </ul>
 </nav>
-<header class="article-hero" style="background-image:linear-gradient(155deg,rgba(42,78,20,.85),rgba(116,41,57,.72) 60%,rgba(30,20,10,.78)),url('photo12-960.jpg');background-image:linear-gradient(155deg,rgba(42,78,20,.85),rgba(116,41,57,.72) 60%,rgba(30,20,10,.78)),image-set(url('photo12-960.webp') type('image/webp'),url('photo12-960.jpg') type('image/jpeg'))">
+<header class="article-hero">
   <div class="inner"><p class="eyebrow">Informations légales</p><h1>Mentions légales</h1></div>
 </header>
 <p class="breadcrumb"><a href="index.html">Accueil</a> &rsaquo; Mentions légales</p>
