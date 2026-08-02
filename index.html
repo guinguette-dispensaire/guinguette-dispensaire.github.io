@@ -13,10 +13,11 @@
     <meta name="geo.position" content="48.9397;2.1608">
     <meta name="ICBM" content="48.9397, 2.1608">
     <meta name="theme-color" content="#2a4e14">
-    <link rel="icon" href="logo.png" type="image/png">
+    <link rel="icon" href="logo.webp" type="image/webp">
     <link rel="apple-touch-icon" href="logo.png">
     <!-- Préchargement de l'image LCP (fond du hero) -->
-    <link rel="preload" as="image" href="photo3.webp" type="image/webp" fetchpriority="high">
+    <link rel="preload" as="image" href="photo3-960.webp" type="image/webp" media="(max-width: 999px)" fetchpriority="high">
+    <link rel="preload" as="image" href="photo3.webp" type="image/webp" media="(min-width: 1000px)" fetchpriority="high">
 
     <!-- Open Graph -->
     <meta property="og:type"        content="restaurant">
@@ -230,7 +231,9 @@
 
         <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap"></noscript>
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         :root {
@@ -269,10 +272,14 @@
         /* HERO */
         .hero {
             min-height: 100vh;
-            background: url('photo3.jpg') center/cover no-repeat;
-            background-image: image-set(url('photo3.webp') type('image/webp'), url('photo3.jpg') type('image/jpeg'));
+            background: url('photo3-960.jpg') center/cover no-repeat;
+            background-image: image-set(url('photo3-960.webp') type('image/webp'), url('photo3-960.jpg') type('image/jpeg'));
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             text-align: center; padding: 7rem 2rem 5rem; position: relative; overflow: hidden;
+        }
+        @media (min-width: 1000px) {
+            .hero { background-image: url('photo3.jpg'); }
+            .hero { background-image: image-set(url('photo3.webp') type('image/webp'), url('photo3.jpg') type('image/jpeg')); }
         }
         .hero::before {
             content: ''; position: absolute; inset: 0;
@@ -407,14 +414,14 @@
         .press-cta::after { content: '→'; }
 
         /* FOOTER */
-        footer { background: var(--dark); color: rgba(255,255,255,0.45); padding: 3.5rem 2rem; text-align: center; }
+        footer { background: var(--dark); color: rgba(255,255,255,0.6); padding: 3.5rem 2rem; text-align: center; }
         .footer-logo { height: 60px; width: 60px; object-fit: contain; border-radius: 50%; opacity: 0.85; margin-bottom: 1rem; }
         .footer-brand { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--gold); margin-bottom: 0.4rem; }
-        .footer-sub { font-size: 0.75rem; letter-spacing: 0.12em; color: rgba(255,255,255,0.35); margin-bottom: 2.25rem; }
+        .footer-sub { font-size: 0.75rem; letter-spacing: 0.12em; color: rgba(255,255,255,0.6); margin-bottom: 2.25rem; }
         .footer-nav { display: flex; justify-content: center; flex-wrap: wrap; gap: 1.75rem; list-style: none; margin-bottom: 2rem; }
-        .footer-nav a { color: rgba(255,255,255,0.45); text-decoration: none; font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; transition: color 0.2s; }
+        .footer-nav a { color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; transition: color 0.2s; }
         .footer-nav a:hover { color: var(--gold); }
-        .footer-copy { font-size: 0.72rem; color: rgba(255,255,255,0.25); }
+        .footer-copy { font-size: 0.72rem; color: rgba(255,255,255,0.55); }
 
         /* REVEAL */
         [data-reveal] { opacity: 0; transform: translateY(22px); transition: opacity 0.65s ease, transform 0.65s ease; }

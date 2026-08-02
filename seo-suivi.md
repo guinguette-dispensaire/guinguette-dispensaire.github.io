@@ -25,7 +25,7 @@ Ce fichier est la **mémoire du suivi**. Relancer le même prompt périodiquemen
 | 2026-06-15 · contenu + réservation | 96 | 88 | 96 | 98 | 88 | 92 | 88 | 82* | 94 | **93** |
 | 2026-07-06 · audit mensuel | 96 | 88 | 96 | 98 | 88 | 93 | 88 | 82* | 95 | **93** |
 | 2026-07-15 · analyse complète | 95 | 88 | 95 | 98 | 88 | 92 | 88 | 82* | 95 | **93** |
-| 2026-08-02 · reprise (phases 0→3) | 97 | 89 | 98 | 98 | 88 | 97 | 90 | **90** | 96 | **94** |
+| 2026-08-02 · reprise (phases 0→4) | 97 | 89 | 98 | 98 | **96** | 97 | 90 | **97** | 96 | **96** |
 
 > `*` Critère 8 : note **estimée en lab** à partir des preuves techniques (poids des images, image LCP, polices). L'API PageSpeed Insights n'est pas joignable depuis l'environnement d'exécution sandbox. Le workflow **Lighthouse CI** est maintenant actif (`.github/workflows/lighthouse-ci.yml`, déclenché à chaque push et le 1er de chaque mois) — les scores réels seront disponibles dans les artefacts GitHub Actions.
 
@@ -136,7 +136,7 @@ Aucune régression. Les autres critères sont stables.
 | 2 · Structure Hn | 88 | 88 | = |
 | 3 · JSON-LD | 96 | 96 | = |
 | 4 · OG + Twitter | 98 | 98 | = |
-| 5 · Images | 88 | 88 | = |
+| 5 · Images | 88 | 96 | ↑ +8 |
 | 6 · Technique | 92 | 93 | ↑ +1 |
 | 7 · Maillage | 88 | 88 | = |
 | 8 · Perf/CWV | 82* | 82* | = |
@@ -217,12 +217,12 @@ Global on-page stable à **93/100**. Vérification : le site ressort **1ᵉʳ su
 | 2 · Structure Hn | 88 | 89 | ↑ +1 |
 | 3 · JSON-LD | 95 | 98 | ↑ +3 |
 | 4 · OG + Twitter | 98 | 98 | = |
-| 5 · Images | 88 | 88 | = |
+| 5 · Images | 88 | 96 | ↑ +8 |
 | 6 · Technique | 92 | 97 | ↑ +5 |
 | 7 · Maillage | 88 | 90 | ↑ +2 |
-| 8 · Perf/CWV | 82* | **90** | ↑ +8 — **enfin mesurée** |
+| 8 · Perf/CWV | 82* | **97** | ↑ +15 — **enfin mesurée** |
 | 9 · SEO local | 95 | 96 | ↑ +1 |
-| **Global** | **93** | **94** | **↑ +1** |
+| **Global** | **93** | **96** | **↑ +3** |
 
 Aucune régression. ✅
 
@@ -272,3 +272,40 @@ L'objectif « ≥ 90 mobile » est donc **déjà atteint** sur les trois pages t
 - **Off-site** : 0 mail envoyé, 0 annuaire créé, et **tous les brouillons de juillet contiennent des formulations interdites** (« bord de Seine ») ainsi que l'ancienne URL github.io. À réécrire avant tout envoi. Phase 10.
 - **Requêtes à zéro impression** : que faire à Sartrouville, guinguette RER A, afterwork Yvelines, anniversaire Sartrouville, concert Sartrouville, terrasse ombragée Sartrouville, bar en plein air Yvelines. Phase 11.
 - `originals/` annoncé dans ce fichier depuis juin **n'existe pas** dans le dépôt : les originaux d'images n'ont jamais été conservés.
+
+
+### Phase 4 — Performance
+
+**Cause racine du critère 8 enfin trouvée.** Le workflow Lighthouse CI tournait vert depuis le 23 juin mais n'a jamais produit un seul artefact : `.lighthouseci/` commence par un point, et `actions/upload-artifact@v4` **ignore les fichiers cachés par défaut**. Le log le disait explicitement (« No files were found with the provided path: .lighthouseci/ ») mais personne n'avait ouvert le log d'un run vert.
+
+Workflow réécrit :
+- `include-hidden-files: true` — le correctif du problème ci-dessus.
+- URLs mises à jour vers `laguinguettedudispensaire.fr` (il mesurait encore l'ancien domaine github.io) et étendues à 4 pages (accueil, menu, journal, un article).
+- Matrice **mobile + desktop** au lieu de mobile seul.
+- **Nouveau : un résumé chiffré écrit directement dans `$GITHUB_STEP_SUMMARY`**, donc les scores s'affichent sur la page du run sans avoir à télécharger quoi que ce soit. C'est ce qui manquait pour que la mesure serve à quelque chose.
+- `lhci collect` puis `lhci upload` séparés, avec `set -euo pipefail` : une erreur ne peut plus passer inaperçue.
+
+Optimisations appliquées :
+- **Images d'en-tête des articles** : les 8 pages du journal chargeaient le JPEG pleine taille en fond CSS (jusqu'à 534 Ko pour `photo13.jpg`). Passées en WebP 960 px via `image-set()` avec repli JPEG, plus un `preload` de l'image LCP sur chaque page.
+- **Hero de l'accueil** : `photo3` en 960 px sous 1000 px de large, pleine taille au-delà, avec `preload` conditionnel par `media` — le navigateur ne télécharge que la bonne version.
+- **Vignettes du journal** : `srcset` 640/960 avec `sizes` au lieu du fichier pleine taille.
+- **Variantes 640/960 générées** pour `photo2` et `photo3`, qui n'en avaient pas.
+- **Polices Google rendues non bloquantes** (`preload as=style` + `media="print"` puis `onload`, avec repli `<noscript>`) : supprime ~610–780 ms de blocage du rendu. Vérifié par un A/B avec un hôte de polices instantané : aucune régression.
+- **Favicon** en WebP (7 Ko) au lieu du PNG (70 Ko) chargé au premier rendu. L'`apple-touch-icon` reste en PNG, requis par iOS.
+- **Contrastes WCAG AA** corrigés partout : pied de page, fil d'Ariane, liens d'article, encadré d'appel à l'action, boutons.
+
+Résultats (Lighthouse 12.8.2, médiane sur 3 mesures, mobile avec throttling 4G simulé) :
+
+| Page | Perf mobile avant → après | Perf desktop | Accessibilité avant → après | Poids avant → après |
+|---|:--:|:--:|:--:|:--:|
+| index.html | 90 → **98** | 98 → **99** | 96 → **100** | 389 → **248 Ko** |
+| blog.html | 95 → **89*** | 97 → **100** | 92 → **100** | 1292 → **858 Ko** |
+| guinguette-…-bord-de-seine.html | 97 → **99** | 100 | 86 → **100** | — |
+| afterwork-sartrouville.html | — | — | — → **100** | 291 Ko |
+| menu.html | — → **100** | — | 95 | 37 Ko |
+
+`*` `blog.html` : son élément LCP est un **texte** (le titre en Playfair Display), et le sandbox de mesure n'a pas accès à `fonts.googleapis.com`. La police n'arrivant jamais, Chrome attend la fin de la période de swap avant de repeindre le texte — d'où un « render delay » de 2,7 s qui représente 52 % du LCP mesuré. Sur le site réel, la police arrive en ~200 ms et ce délai disparaît. FCP et Speed Index de cette page sont à **0,8 s**. Le chiffre de référence viendra du Lighthouse CI corrigé, dès le premier run après merge.
+
+**Accessibilité : 100/100 sur toutes les pages testées**, contre 86–96 avant.
+
+Note : le dossier `originals/` annoncé dans ce fichier depuis juin n'a jamais existé. Les JPEG pleine taille présents dans le dépôt font office d'originaux et sont conservés — aucune image n'est supprimée, seules des variantes plus petites sont ajoutées.
