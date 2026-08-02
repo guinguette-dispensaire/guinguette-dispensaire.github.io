@@ -366,3 +366,28 @@ Deux pages créées : `mentions-legales.html` et `confidentialite.html`, dans la
 - Les deux pages sont en `index, follow` et ajoutées au sitemap avec une priorité basse : des mentions légales complètes sont un signal de confiance pour Google, autant qu'elles soient indexées.
 
 **Zones surlignées en jaune dans les deux pages** = informations qu'il me manque et que je ne peux pas inventer : raison sociale exacte, RCS, capital social, n° de TVA, nom du directeur de la publication, durée de conservation retenue.
+
+### Phase 7 — Agenda des événements
+
+Page `agenda.html` créée. C'était le plus gros trou du site : **aucune date n'était publiée nulle part**, ni sur le site, ni dans l'agenda de la Ville, ni chez Sortiraparis ou Infos Yvelines. Toute la programmation vivait uniquement sur Instagram et Facebook, c'est-à-dire invisible pour Google.
+
+**7 événements retrouvés et sourcés** (recherche sur Facebook, Instagram, sartrouville.fr, infosyvelines.fr, sortiraparis.com, actu.fr) :
+
+| Date | Événement | Source |
+|---|---|---|
+| 10/09/2026 | Yipikiyay en concert | ⚠️ **aucune source publique trouvée** — repris du JSON-LD du site |
+| 30/07/2026 | Blind test musical | Instagram |
+| 23/07/2026 | Roxane en concert | Événement Facebook |
+| 16/07/2026 | The Gates en concert | Affiche Facebook |
+| 10/07/2026 | Sylvain Sayim en concert | Instagram + Facebook |
+| 02/07/2026 | Bal Burning Legs | Instagram + Facebook |
+| 20/06/2026 | DJ set — première soirée de la saison | Événement Facebook |
+
+- **Un bloc `Event` JSON-LD par événement** (7 au total) + `BreadcrumbList`, avec `location`, `organizer`, `performer`, `offers` à 0 € et `isAccessibleForFree: true`.
+- **Les événements passés ne disparaissent pas** : ils basculent dans une section « Déjà passés — la saison 2026 en images ». C'est ce contenu daté qui fera vivre la page hors saison.
+- Une troisième section liste les rendez-vous organisés par la **Ville de Sartrouville** au Parc du Dispensaire (cardio, zumba, spectacle famille, salon des associations, journées du patrimoine), avec attribution explicite : la guinguette n'en est pas l'organisateur. Ça capte les requêtes « que faire à Sartrouville » sans rien s'attribuer indûment.
+- Lien depuis la **navigation principale**, le **pied de page**, la section **Animations** de l'accueil, et ajout au **sitemap** (priorité 0,9, `changefreq` hebdomadaire).
+
+**Deux constats issus de la recherche :**
+1. Le concert **Yipikiyay du 10/09** n'est annoncé nulle part publiquement — ni sur Facebook, ni sur Instagram, ni dans l'agenda de la Ville. Il figure dans le JSON-LD du site depuis juillet. À confirmer.
+2. **sartrouville.fr publie des horaires faux** pour la guinguette (« tous les jours 10h-21h30 »), et la Ville supprime ses fiches événement une fois passées (la page « Concert à la Guinguette du Dispensaire » renvoie une 404 alors qu'elle est encore dans l'index Google). À signaler à la Ville en Phase 10.
