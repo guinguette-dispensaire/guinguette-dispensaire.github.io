@@ -309,3 +309,26 @@ Résultats (Lighthouse 12.8.2, médiane sur 3 mesures, mobile avec throttling 4G
 **Accessibilité : 100/100 sur toutes les pages testées**, contre 86–96 avant.
 
 Note : le dossier `originals/` annoncé dans ce fichier depuis juin n'a jamais existé. Les JPEG pleine taille présents dans le dépôt font office d'originaux et sont conservés — aucune image n'est supprimée, seules des variantes plus petites sont ajoutées.
+
+### Phase 5 — Mesure d'audience et conversion
+
+**Umami confirmé sans cookie** : le script `cloud.umami.is/script.js` ne dépose aucun cookie et ne stocke rien côté navigateur. **Aucun bandeau de consentement n'est donc requis.** (Si l'outil avait été GA4, un bandeau aurait été obligatoire.)
+
+- Umami était absent de 4 pages (`venir-…-rer-parking`, `afterwork-sartrouville`, `bar-terrasse-houilles-…`, `annulation`) — les pages publiées après son installation. **Il est maintenant sur les 11 pages publiques, exactement une fois par page, sans aucun doublon.** Aucun second outil de mesure n'a été installé.
+- **9 événements de conversion** ajoutés via un écouteur délégué unique de 15 lignes (plus robuste que des attributs `data-umami-event` disséminés sur 11 pages, et plus facile à auditer). Chaque événement porte la page d'origine en propriété, ce qui permet de savoir quelle page convertit.
+
+| Événement | Déclencheur | Vérifié |
+|---|---|:--:|
+| `clic-reserver` | tout lien vers `#reservation` ou libellé « Réserver » | ✅ |
+| `reservation-envoyee` | succès réel de l'envoi du formulaire (+ nombre de personnes) | ✅ |
+| `reservation-echec` | échec de l'envoi — permet de détecter une panne silencieuse | ✅ |
+| `clic-telephone` | `tel:+33667426565` | ✅ |
+| `clic-email` | `mailto:` | ✅ |
+| `clic-instagram` | lien Instagram | ✅ |
+| `clic-facebook` | lien Facebook | ✅ |
+| `clic-itineraire-avis-google` | lien Google Maps (itinéraire et avis) | ✅ |
+| `ouverture-menu` | ouverture du menu imprimable | ✅ |
+
+**Méthode de test** : Chromium piloté par Playwright, `window.umami.track` remplacé par un espion, Firebase et Web3Forms simulés pour parcourir la vraie branche de succès du formulaire. Les 9 événements se déclenchent avec le bon nom et le bon contexte de page. Le formulaire renvoie bien « ✓ Merci ! Votre demande est bien reçue » et émet `reservation-envoyee {personnes:"6"}`.
+
+**Reste à faire** : vérifier la remontée réelle dans le tableau de bord Umami — cela suppose que la branche soit mergée (les événements ne peuvent pas remonter depuis une branche non déployée) et un accès au tableau de bord.

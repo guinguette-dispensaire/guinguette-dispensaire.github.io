@@ -134,5 +134,26 @@ footer{background:var(--dark);color:rgba(255,255,255,.62);padding:3rem 2rem;text
   </ul>
   <div class="footer-copy">© 2026 La Guinguette du Dispensaire — Bar terrasse au Parc du Dispensaire, Sartrouville (Yvelines)</div>
 </footer>
+<script>
+/* Suivi des conversions — Umami (sans cookie, aucun consentement requis) */
+(function () {
+  function t(n, d) { try { if (window.umami && window.umami.track) window.umami.track(n, d || {}); } catch (e) {} }
+  window.guingTrack = t;
+  document.addEventListener('click', function (e) {
+    var el = e.target && e.target.closest ? e.target.closest('a,button') : null;
+    if (!el) return;
+    var href = (el.getAttribute('href') || '').toLowerCase();
+    var txt = (el.textContent || '').trim().toLowerCase();
+    var p = { page: location.pathname.split('/').pop() || 'index.html' };
+    if (href.indexOf('tel:') === 0) t('clic-telephone', p);
+    else if (href.indexOf('mailto:') === 0) t('clic-email', p);
+    else if (href.indexOf('instagram.com') > -1) t('clic-instagram', p);
+    else if (href.indexOf('facebook.com') > -1) t('clic-facebook', p);
+    else if (href.indexOf('maps.google') > -1 || href.indexOf('google.com/maps') > -1 || href.indexOf('goo.gl/maps') > -1) t('clic-itineraire-avis-google', p);
+    else if (/menu\.html/.test(href)) t('ouverture-menu', p);
+    else if (href.indexOf('#reservation') > -1 || txt.indexOf('r\u00e9server') > -1) t('clic-reserver', p);
+  }, true);
+})();
+</script>
 </body>
 </html>
