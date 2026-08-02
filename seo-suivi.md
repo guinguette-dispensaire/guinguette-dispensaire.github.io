@@ -27,6 +27,9 @@ Ce fichier est la **mémoire du suivi**. Relancer le même prompt périodiquemen
 | 2026-07-15 · analyse complète | 95 | 88 | 95 | 98 | 88 | 92 | 88 | 82* | 95 | **93** |
 | 2026-08-02 · reprise (phases 0→6) | 97 | 89 | 98 | 98 | 96 | 97 | 90 | 78 | 96 | **94** |
 | 2026-08-02 · clôture (phases 7→12) | 97 | 90 | **99** | 98 | 96 | **98** | **96** | 78* | **97** | **95** |
+| 2026-08-02 · correctif CLS, mise en ligne | 97 | 90 | 99 | 98 | 96 | 98 | 96 | **93** | 97 | **96** |
+| 2026-08-02 · audit re-mesuré | 88 | 92 | 96 | 98 | 90 | 97 | 86 | 93 | 97 | **93,5** |
+| 2026-08-02 · lot technique | **96** | 92 | **97** | **99** | **96** | **98** | 90 | **96** | **98** | **95,8** |
 
 > `*` Critère 8 : note **estimée en lab** à partir des preuves techniques (poids des images, image LCP, polices). L'API PageSpeed Insights n'est pas joignable depuis l'environnement d'exécution sandbox. Le workflow **Lighthouse CI** est maintenant actif (`.github/workflows/lighthouse-ci.yml`, déclenché à chaque push et le 1er de chaque mois) — les scores réels seront disponibles dans les artefacts GitHub Actions.
 
@@ -80,6 +83,78 @@ Aucune régression. ✅
 - **Technique** : `canonical` + metas géo + `theme-color` + `apple-touch-icon` sur les 2 pages, sitemap mis à jour (accueil + menu, lastmod 2026-06-14), redirections en `noindex, follow`.
 - **Maillage** : accueil → menu (section carte + footer) et menu → accueil (logo + footer) ⇒ réciprocité.
 - **SEO local** : `areaServed`, metas `geo.*`/`ICBM`, mots-clés géographiques renforcés dans les alt et le schema.
+
+### Correctif CLS — la régression que la phase 4 avait introduite
+
+Le passage des polices Google en chargement asynchrone (phase 4) a fait gagner 1,8 s de LCP et 12 points de performance, mais il a fait **passer le CLS de la page d'article de 0,031 à 0,133** (run n° 65). Le texte s'affichait d'abord en Times / Arial, plus étroit, puis se recomposait à l'arrivée de Playfair Display et Lato.
+
+**Correctif** : cinq déclarations `@font-face` de repli avec `size-adjust`, `ascent-override`, `descent-override` et `line-gap-override`, sur les 19 pages. Les valeurs ont été **mesurées dans le navigateur** (`canvas.measureText`), pas estimées : l'écart de largeur passe de 7,3 % / 6,3 % à moins de 0,05 %. Simulation sur la page en ligne : sans le correctif, 15 blocs sur 20 se déplacent jusqu'à 66 px ; avec, **zéro pixel**.
+
+**Confirmé en ligne** (run n° 66) : CLS de la page d'article **0,133 → 0,067**, sous le seuil de 0,1, et la performance mobile monte de 93 à 97.
+
+### Audit re-mesuré — deux critères corrigés à la baisse
+
+Jusqu'ici les critères 1 et 7 étaient évalués en lisant le HTML. Cette fois ils ont été mesurés côté Google.
+
+- **Critère 1 : 97 → 88.** 15 titres sur 17 dépassaient 65 caractères et étaient tronqués dans les résultats ; 12 descriptions dépassaient 160.
+- **Critère 7 : 96 → 86.** L'accueil, seule page à porter l'autorité du domaine (5 107 impressions sur 5 120), ne renvoyait qu'à **2 articles sur 12**.
+- **Critère 8 : 78 estimé → 93 mesuré.**
+
+**Indexation — le verrou.** Le rapport Search Console annonçait 2 pages indexées. Vérification faite **URL par URL avec l'outil d'inspection** : c'est **6, pas 2** (`blog.html` et `agenda.html` sont bien indexées, le rapport est en retard). 10 pages restent hors index, dont la moitié avec la mention « Google ne reconnaît pas cette URL » et « aucun sitemap référent détecté » — un problème de fraîcheur d'exploration, pas de qualité.
+
+Actions déclenchées le jour même : **sitemap renvoyé** et **10 demandes d'indexation manuelles** envoyées et confirmées.
+
+### Lot technique du 2 août — ce qui a été mis en ligne
+
+**Titres et métas** — 15 titres ramenés sous 65 caractères, 15 descriptions sous 160, `og:` et `twitter:` réalignés sur les 20 pages. Contrôle automatique : 0 dépassement, 0 désynchronisation.
+
+**Données structurées**
+
+| Page | Ajout |
+|---|---|
+| `menu.html` | schéma `Menu` complet : 9 sections, **48 items avec leurs prix** (il n'en déclarait que 9) |
+| `blog.html` | `ItemList` des 11 articles |
+| `mentions-legales`, `confidentialite` | `WebPage` + `BreadcrumbList` (aucun balisage auparavant) |
+| `index.html` | `containedInPlace` — le Parc du Dispensaire déclaré comme `Park` public et gratuit — et 5 images au lieu d'une |
+| 20 pages | 32 images complétées avec `width` et `height` |
+
+Test des résultats enrichis de Google : **3 éléments valides, 0 erreur** sur l'accueil comme sur le menu.
+
+**Maillage** — nouveau bloc « Le journal » sur l'accueil : **12 liens** vers les articles et l'agenda. L'accueil passe de 8 à 16 liens internes ; chaque article est désormais à **un clic** de la seule page indexée qui porte l'autorité.
+
+**Nouveaux canaux de découverte** — cinq leviers qui n'existaient pas :
+
+| Levier | Ce que ça fait |
+|---|---|
+| `404.html` | page utile avec 6 liens, au lieu du 404 nu de GitHub Pages (vérifié en ligne : HTTP 404 + notre page) |
+| `flux.xml` | flux RSS des 11 articles, déclaré sur les 20 pages |
+| `llms.txt` | fiche du lieu pour les moteurs de réponse (ChatGPT, Perplexity…), avec les trois règles de fond écrites noir sur blanc |
+| **IndexNow** | clé posée et **17 URL soumises à Bing et Yandex — réponse HTTP 202 confirmée**. Indexation en heures au lieu de semaines, sur un canal que Google ne contrôle pas |
+| sitemap images | 20 images déclarées avec leurs légendes, pour Google Images |
+
+`robots.txt` écarte désormais les documents de travail internes de l'index.
+
+**Performance** — images de couverture des 15 pages d'article rendues responsives : 640 px sur mobile au lieu de 960, soit 80 à 140 Ko de moins sur l'élément LCP, sans perte visible (la couverture est masquée par un dégradé à 85 %).
+
+**Résultat mesuré, run Lighthouse CI n° 68 (site en ligne, mobile) :**
+
+| Page | Avant (n° 66) | Après (n° 68) |
+|---|:--:|:--:|
+| `/blog.html` | 87 · LCP 3,3 s | **98** · LCP 2,8 s |
+| `/…terrasse-bord-de-seine.html` | 97 · LCP 2,4 s | **98** · LCP 2,0 s |
+| `/menu.html` | 99 | **99** |
+| `/` | 96 | **92** |
+
+**Plus aucune page sous 90.** Desktop : 99 / 100 / 99 / 99. SEO 100 et bonnes pratiques 100 partout.
+
+L'accueil recule de 4 points, sur deux runs consécutifs — c'est probablement le coût du bloc de 12 liens ajouté. À surveiller, mais l'échange est bon : 4 points de performance contre le déblocage de l'indexation de 10 pages. À noter que ce runner est bruyant sur cette page (TBT 0 ms au run 67, 1 010 ms au run 68, à contenu identique).
+
+### Ce qui reste
+
+- **FAQ visibles** à ajouter sur 8 pages avant de pouvoir les baliser en `FAQPage` — rédaction, donc en attente de validation.
+- **Accessibilité** : 92 à 96 selon les pages, jamais 100.
+- **CLS résiduel** de 0,067 sur la page d'article — sous le seuil, mais pas à zéro.
+- Le reste inchangé, voir la section suivante.
 
 ### Problèmes restants à traiter (prochaines itérations)
 
@@ -510,4 +585,6 @@ Commit `e5f0226` sur la branche `PDV86-patch-2` (PR #2).
 - **Photos de l'agenda** : les visuels des groupes manquent ; les publications de la guinguette ne mentionnent aucun compte, donc les groupes ne sont pas identifiables sans Thomas.
 - **Concert Yipikiyay du 10/09** toujours non confirmé publiquement.
 - **sartrouville.fr publie de faux horaires** et laisse des 404 indexées.
+- **infosyvelines.fr annonce « du 3 juin au 30 septembre » et « 17h-21h en semaine »** — faux, et l'article le signale lui-même comme à confirmer. Correction à demander.
+- **Aucune inscription à Destination Yvelines ni à Sortiraparis** : leurs pages « guinguettes » citent 12 et 11 adresses, aucune à Sartrouville.
 - **CLS de la page d’article** : correctif poussé, à confirmer par le run Lighthouse CI qui suivra la mise en ligne de la PR #2.
