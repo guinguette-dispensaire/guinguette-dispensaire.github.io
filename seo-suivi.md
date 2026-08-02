@@ -365,7 +365,22 @@ Deux pages créées : `mentions-legales.html` et `confidentialite.html`, dans la
 - **Mention de consentement sous le formulaire de réservation** : « vos coordonnées sont utilisées uniquement pour traiter votre réservation, elles ne sont ni revendues ni utilisées pour vous démarcher ».
 - Les deux pages sont en `index, follow` et ajoutées au sitemap avec une priorité basse : des mentions légales complètes sont un signal de confiance pour Google, autant qu'elles soient indexées.
 
-**Zones surlignées en jaune dans les deux pages** = informations qu'il me manque et que je ne peux pas inventer : raison sociale exacte, RCS, capital social, n° de TVA, nom du directeur de la publication, durée de conservation retenue.
+**Complété le 02/08/2026** à partir des sources officielles (API `recherche-entreprises.api.gouv.fr` de la DINUM, qui alimente l'annuaire des entreprises de l'État, recoupée avec Pappers et societe.com pour le capital et le greffe que l'INSEE ne publie pas) :
+
+| Champ | Valeur | Source |
+|---|---|---|
+| Dénomination | LA GUINGUETTE DU DISPENSAIRE | API annuaire-entreprises |
+| Forme juridique | SAS (code INSEE 5710) | API annuaire-entreprises |
+| Capital social | 1 000 € | Pappers + societe.com (RNE/INPI) |
+| RCS | Versailles 104 994 215, immatriculée le 15/05/2026 | Pappers |
+| SIRET | 104 994 215 00010 (établissement unique) | API annuaire-entreprises |
+| TVA intracommunautaire | FR 86 104994215 | **publiée** par l'API officielle (et confirmée par le calcul de clé) |
+| Code APE | 5630Z — débits de boissons | API annuaire-entreprises |
+| Représentation | Présidente : TMC CAPITAL (SAS, RCS Versailles 104 506 217), représentée par M. Thomas Carpentier de Changy | API annuaire-entreprises |
+
+**Durée de conservation retenue : 12 mois** à compter de la date de réservation (validé par Thomas).
+
+**Point relevé au passage** : *Le Café des Écuries* est une **société distincte** (LE CAFE DES ECURIES, EURL, RCS Versailles 989 189 188, siège 5 rue du Temple à Sartrouville), et non une seconde enseigne de la guinguette. Les mentions légales le précisent désormais, pour que le site n'engage que La Guinguette du Dispensaire.
 
 ### Phase 7 — Agenda des événements
 
