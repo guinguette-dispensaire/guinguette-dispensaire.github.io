@@ -1,6 +1,7 @@
-# Lighthouse CI — mesure automatique des Core Web Vitals (mobile)
+# Lighthouse CI — mesure automatique des Core Web Vitals (mobile + desktop)
 # Exécution : 1er de chaque mois, à chaque push sur main, et manuellement.
-# Rapports : artefact téléchargeable + temporary public storage (aucun secret requis).
+# Résultats : résumé chiffré directement dans l'onglet Actions + artefact téléchargeable
+#             + rapports en ligne (temporary public storage). Aucun secret requis.
 name: Lighthouse CI
 
 on:
@@ -16,6 +17,10 @@ permissions:
 jobs:
   lighthouse:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        preset: [ mobile, desktop ]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -23,24 +28,74 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
 
       - name: Install Lighthouse CI
-        run: npm install -g @lhci/cli@0.14.x
+        run: npm install -g @lhci/cli@0.15.x
 
-      - name: Run Lighthouse CI (mobile)
+      - name: Run Lighthouse CI (${{ matrix.preset }})
         run: |
-          lhci autorun \
-            --collect.url=https://guinguette-dispensaire.github.io/ \
-            --collect.url=https://guinguette-dispensaire.github.io/menu.html \
-            --collect.numberOfRuns=3 \
-            --upload.target=temporary-public-storage
+          set -euo pipefail
+          # Attention : Lighthouse n'accepte que 'desktop', 'perf' et 'experimental' comme preset.
+          # Le mobile EST le comportement par defaut : lui passer --settings.preset=mobile fait echouer la commande.
+          PRESET_ARG=""
+          if [ "${{ matrix.preset }}" = "desktop" ]; then PRESET_ARG="--settings.preset=desktop"; fi
+          lhci collect \
+            --url=https://laguinguettedudispensaire.fr/ \
+            --url=https://laguinguettedudispensaire.fr/menu.html \
+            --url=https://laguinguettedudispensaire.fr/blog.html \
+            --url=https://laguinguettedudispensaire.fr/guinguette-sartrouville-terrasse-bord-de-seine.html \
+            --numberOfRuns=3 \
+            $PRESET_ARG
+          echo "--- contenu de .lighthouseci ---"
+          ls -la .lighthouseci/
 
+      - name: Upload reports to temporary public storage
+        continue-on-error: true
+        run: lhci upload --target=temporary-public-storage
+
+      # Sans cette etape, les scores restent enfermes dans un artefact que personne
+      # ne telecharge. Ici ils s'affichent directement sur la page du run.
+      - name: Resume chiffre dans l'onglet Actions
+        if: always()
+        env:
+          PRESET: ${{ matrix.preset }}
+        run: |
+          node - <<'EOF' >> "$GITHUB_STEP_SUMMARY"
+          const fs = require('fs');
+          const dir = '.lighthouseci';
+          const preset = process.env.PRESET || '';
+          console.log(`## Lighthouse — ${preset}\n`);
+          if (!fs.existsSync(dir)) { console.log('Aucun rapport produit.'); process.exit(0); }
+          const files = fs.readdirSync(dir).filter(f => /^lhr-.*\.json$/.test(f));
+          if (!files.length) { console.log('Aucun rapport lhr-*.json trouve.'); process.exit(0); }
+          const byUrl = {};
+          for (const f of files) {
+            const r = JSON.parse(fs.readFileSync(`${dir}/${f}`, 'utf8'));
+            const url = r.finalDisplayedUrl || r.finalUrl || r.requestedUrl;
+            (byUrl[url] = byUrl[url] || []).push(r);
+          }
+          const median = a => a.slice().sort((x, y) => x - y)[Math.floor(a.length / 2)];
+          console.log('| Page | Perf | Access. | Bonnes pratiques | SEO | LCP | CLS | TBT |');
+          console.log('|---|:--:|:--:|:--:|:--:|:--:|:--:|:--:|');
+          for (const url of Object.keys(byUrl)) {
+            const runs = byUrl[url];
+            const g = k => median(runs.map(r => Math.round(((r.categories[k] || {}).score || 0) * 100)));
+            const a = k => (runs[0].audits[k] || {}).displayValue || '-';
+            const path = url.replace('https://laguinguettedudispensaire.fr', '') || '/';
+            console.log(`| ${path} | ${g('performance')} | ${g('accessibility')} | ${g('best-practices')} | ${g('seo')} | ${a('largest-contentful-paint')} | ${a('cumulative-layout-shift')} | ${a('total-blocking-time')} |`);
+          }
+          EOF
+
+      # include-hidden-files est indispensable : .lighthouseci commence par un point,
+      # et upload-artifact@v4 ignore les fichiers caches par defaut.
+      # C'est ce qui faisait que 61 executions vertes n'ont jamais produit un seul artefact.
       - name: Archive Lighthouse reports
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: lighthouse-reports-${{ github.run_number }}
+          name: lighthouse-${{ matrix.preset }}-${{ github.run_number }}
           path: .lighthouseci/
+          include-hidden-files: true
+          if-no-files-found: warn
           retention-days: 90
-

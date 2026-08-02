@@ -524,11 +524,11 @@ Rendez-vous au Parc du Dispensaire, 1 avenue Maurice Berteaux, 78500 Sartrouvill
 Petit rappel : l'ouverture dépend de la météo — en cas de doute, consultez nos réseaux ou appelez-nous au 06 67 42 65 65.
 
 ${blocPerso}Un empêchement ? Vous pouvez annuler votre réservation en un clic :
-https://guinguette-dispensaire.github.io/annulation.html?id=${r.id}
+https://laguinguettedudispensaire.fr/annulation.html?id=${r.id}
 
 À très vite,
 L'équipe de La Guinguette du Dispensaire
-https://guinguette-dispensaire.github.io`;
+https://laguinguettedudispensaire.fr`;
   return { sujet: `Votre réservation du ${dFR} est confirmée — La Guinguette du Dispensaire`, corps };
 }
 
@@ -556,7 +556,7 @@ Malheureusement, nous ne pouvons pas confirmer votre réservation du ${dFR} à $
 N'hésitez pas à nous appeler au 06 67 42 65 65 pour trouver un autre moment ensemble, ou à refaire une demande sur notre site.
 
 L'équipe de La Guinguette du Dispensaire
-https://guinguette-dispensaire.github.io`;
+https://laguinguettedudispensaire.fr`;
   await envoyerEmail(r, `Votre demande de réservation du ${dFR} — La Guinguette du Dispensaire`, corps);
 }
 

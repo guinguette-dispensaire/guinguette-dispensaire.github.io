@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>La Guinguette du Dispensaire — Bar terrasse Sartrouville</title>
-    <meta name="description" content="Guinguette au Parc du Dispensaire à Sartrouville. Bières pression, vins, planches, concerts. Mar.–dim., juin à octobre 2026.">
+    <title>La Guinguette du Dispensaire — bar & restaurant terrasse Sartrouville</title>
+    <meta name="description" content="Bar, restaurant et guinguette en terrasse ombragée au Parc du Dispensaire à Sartrouville. Planches, bières, vins, concerts gratuits. Juin à octobre 2026.">
     <link rel="canonical" href="https://laguinguettedudispensaire.fr">
     <meta name="robots" content="index, follow, max-image-preview:large">
     <meta name="author" content="La Guinguette du Dispensaire">
@@ -13,14 +13,15 @@
     <meta name="geo.position" content="48.9397;2.1608">
     <meta name="ICBM" content="48.9397, 2.1608">
     <meta name="theme-color" content="#2a4e14">
-    <link rel="icon" href="logo.png" type="image/png">
+    <link rel="icon" href="logo.webp" type="image/webp">
     <link rel="apple-touch-icon" href="logo.png">
     <!-- Préchargement de l'image LCP (fond du hero) -->
-    <link rel="preload" as="image" href="photo3.webp" type="image/webp" fetchpriority="high">
+    <link rel="preload" as="image" href="photo3-960.webp" type="image/webp" media="(max-width: 999px)" fetchpriority="high">
+    <link rel="preload" as="image" href="photo3.webp" type="image/webp" media="(min-width: 1000px)" fetchpriority="high">
 
     <!-- Open Graph -->
     <meta property="og:type"        content="restaurant">
-    <meta property="og:title"       content="La Guinguette du Dispensaire — Bar terrasse Sartrouville">
+    <meta property="og:title"       content="La Guinguette du Dispensaire — bar & restaurant terrasse Sartrouville">
     <meta property="og:description" content="Bar terrasse saisonnier au Parc du Dispensaire, Sartrouville. Bières, vins, planches, concerts. Mar.–ven. 16h–22h · sam. & dim. 11h–22h.">
     <meta property="og:url"         content="https://laguinguettedudispensaire.fr">
     <meta property="og:image"       content="https://laguinguettedudispensaire.fr/photo1.jpg">
@@ -49,95 +50,195 @@
 
     <!-- JSON-LD Local Business -->
     <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": ["Restaurant", "BarOrPub"],
-      "@id": "https://laguinguettedudispensaire.fr/#guinguette",
-      "name": "La Guinguette du Dispensaire",
-      "alternateName": "Guinguette du Dispensaire Sartrouville",
-      "description": "Guinguette saisonnière en plein air au Parc du Dispensaire à Sartrouville (78). Bar terrasse, bières pression, vins sélectionnés, planches, frites maison, concerts et animations. Ouverte de juin à octobre 2026. Réservation de grandes tablées pour vos événements.",
-      "slogan": "On s'y retrouve, on s'y attarde, et on y revient.",
-      "sameAs": [
-        "https://www.facebook.com/profile.php?id=61590190707357",
-        "https://www.instagram.com/guinguette.du.dispensaire/",
-        "https://maps.google.com/?cid=5422210577195196381"
-      ],
-      "url": "https://laguinguettedudispensaire.fr",
-      "telephone": "+33667426565",
-      "email": "laguinguettedudispensaire@gmail.com",
-      "image": [
-        "https://laguinguettedudispensaire.fr/photo1.jpg",
-        "https://laguinguettedudispensaire.fr/photo3.jpg",
-        "https://laguinguettedudispensaire.fr/photo11.jpg"
-      ],
-      "logo": "https://laguinguettedudispensaire.fr/logo.png",
-      "address": {
-        "@type": "PostalAddress",
-        "streetAddress": "Parc du Dispensaire, 1 Avenue Maurice Berteaux",
-        "addressLocality": "Sartrouville",
-        "postalCode": "78500",
-        "addressRegion": "Île-de-France",
-        "addressCountry": "FR"
-      },
-      "geo": {
-        "@type": "GeoCoordinates",
-        "latitude": 48.9397,
-        "longitude": 2.1608
-      },
-      "hasMap": "https://maps.google.com/?cid=5422210577195196381",
-      "areaServed": [
-        { "@type": "City", "name": "Sartrouville" },
-        { "@type": "City", "name": "Houilles" },
-        { "@type": "City", "name": "Maisons-Laffitte" },
-        { "@type": "City", "name": "Le Mesnil-le-Roi" },
-        { "@type": "City", "name": "Montesson" },
-        { "@type": "AdministrativeArea", "name": "Yvelines" }
-      ],
-      "openingHoursSpecification": [
-        {
-          "@type": "OpeningHoursSpecification",
-          "dayOfWeek": ["Tuesday", "Wednesday", "Thursday", "Friday"],
-          "opens": "16:00",
-          "closes": "22:00",
-          "validFrom": "2026-06-01",
-          "validThrough": "2026-10-31"
-        },
-        {
-          "@type": "OpeningHoursSpecification",
-          "dayOfWeek": ["Saturday", "Sunday"],
-          "opens": "11:00",
-          "closes": "22:00",
-          "validFrom": "2026-06-01",
-          "validThrough": "2026-10-31"
-        }
-      ],
-      "priceRange": "€€",
-      "currenciesAccepted": "EUR",
-      "paymentAccepted": "Espèces, Carte bancaire",
-      "servesCuisine": ["Française", "Tapas", "Bar à vin"],
-      "acceptsReservations": "https://laguinguettedudispensaire.fr/#reservation",
-      "potentialAction": {
-        "@type": "ReserveAction",
-        "target": {
-          "@type": "EntryPoint",
-          "urlTemplate": "https://laguinguettedudispensaire.fr/#reservation",
-          "inLanguage": "fr",
-          "actionPlatform": ["http://schema.org/DesktopWebPlatform", "http://schema.org/MobileWebPlatform"]
-        },
-        "result": { "@type": "Reservation", "name": "Réservation de table à La Guinguette du Dispensaire" }
-      },
-      "publicAccess": true,
-      "isAccessibleForFree": true,
-      "smokingAllowed": false,
-      "hasMenu": "https://laguinguettedudispensaire.fr/menu.html",
-      "menu": "https://laguinguettedudispensaire.fr/menu.html",
-      "keywords": "guinguette Sartrouville, bar terrasse Sartrouville, guinguette Yvelines, Parc du Dispensaire, guinguette parc Sartrouville, terrasse Sartrouville"
-    }
-    </script>
+{
+ "@context": "https://schema.org",
+ "@type": [
+  "Restaurant",
+  "BarOrPub"
+ ],
+ "@id": "https://laguinguettedudispensaire.fr/#guinguette",
+ "name": "La Guinguette du Dispensaire",
+ "alternateName": "Guinguette du Dispensaire Sartrouville",
+ "description": "Guinguette saisonnière en plein air au cœur du Parc du Dispensaire à Sartrouville (78) : bar et restaurant en terrasse ombragée sous les arbres, bières pression, vins sélectionnés, planches, frites maison, concerts et animations gratuites. Parc public en accès libre, à deux pas de la Seine. Ouverte de juin à octobre 2026. Réservation de grandes tablées pour vos anniversaires, afterworks et fêtes.",
+ "slogan": "On s'y retrouve, on s'y attarde, et on y revient.",
+ "sameAs": [
+  "https://www.facebook.com/profile.php?id=61590190707357",
+  "https://www.instagram.com/guinguette.du.dispensaire/",
+  "https://maps.google.com/?cid=5422210577195196381"
+ ],
+ "url": "https://laguinguettedudispensaire.fr",
+ "telephone": "+33667426565",
+ "email": "laguinguettedudispensaire@gmail.com",
+ "image": [
+  "https://laguinguettedudispensaire.fr/photo1.jpg",
+  "https://laguinguettedudispensaire.fr/photo3.jpg",
+  "https://laguinguettedudispensaire.fr/photo11.jpg"
+ ],
+ "logo": "https://laguinguettedudispensaire.fr/logo.png",
+ "address": {
+  "@type": "PostalAddress",
+  "streetAddress": "Parc du Dispensaire, 1 Avenue Maurice Berteaux",
+  "addressLocality": "Sartrouville",
+  "postalCode": "78500",
+  "addressRegion": "Île-de-France",
+  "addressCountry": "FR"
+ },
+ "geo": {
+  "@type": "GeoCoordinates",
+  "latitude": 48.9397,
+  "longitude": 2.1608
+ },
+ "hasMap": "https://maps.google.com/?cid=5422210577195196381",
+ "areaServed": [
+  {
+   "@type": "City",
+   "name": "Sartrouville"
+  },
+  {
+   "@type": "City",
+   "name": "Houilles"
+  },
+  {
+   "@type": "City",
+   "name": "Maisons-Laffitte"
+  },
+  {
+   "@type": "City",
+   "name": "Le Mesnil-le-Roi"
+  },
+  {
+   "@type": "City",
+   "name": "Montesson"
+  },
+  {
+   "@type": "AdministrativeArea",
+   "name": "Yvelines"
+  }
+ ],
+ "openingHoursSpecification": [
+  {
+   "@type": "OpeningHoursSpecification",
+   "dayOfWeek": [
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday"
+   ],
+   "opens": "16:00",
+   "closes": "22:00",
+   "validFrom": "2026-06-01",
+   "validThrough": "2026-10-31"
+  },
+  {
+   "@type": "OpeningHoursSpecification",
+   "dayOfWeek": [
+    "Saturday",
+    "Sunday"
+   ],
+   "opens": "11:00",
+   "closes": "22:00",
+   "validFrom": "2026-06-01",
+   "validThrough": "2026-10-31"
+  }
+ ],
+ "priceRange": "€€",
+ "currenciesAccepted": "EUR",
+ "paymentAccepted": "Espèces, Carte bancaire",
+ "servesCuisine": [
+  "Française",
+  "Tapas",
+  "Bar à vin"
+ ],
+ "acceptsReservations": "https://laguinguettedudispensaire.fr/#reservation",
+ "potentialAction": {
+  "@type": "ReserveAction",
+  "target": {
+   "@type": "EntryPoint",
+   "urlTemplate": "https://laguinguettedudispensaire.fr/#reservation",
+   "inLanguage": "fr",
+   "actionPlatform": [
+    "http://schema.org/DesktopWebPlatform",
+    "http://schema.org/MobileWebPlatform"
+   ]
+  },
+  "result": {
+   "@type": "Reservation",
+   "name": "Réservation de table à La Guinguette du Dispensaire"
+  }
+ },
+ "publicAccess": true,
+ "isAccessibleForFree": true,
+ "smokingAllowed": false,
+ "hasMenu": "https://laguinguettedudispensaire.fr/menu.html",
+ "menu": "https://laguinguettedudispensaire.fr/menu.html",
+ "keywords": "guinguette Sartrouville, bar terrasse Sartrouville, restaurant Sartrouville, guinguette Yvelines, Parc du Dispensaire, terrasse ombragée Sartrouville, guinguette dans un parc, bar en plein air Yvelines, concert Sartrouville, afterwork Yvelines, anniversaire Sartrouville",
+ "amenityFeature": [
+  {
+   "@type": "LocationFeatureSpecification",
+   "name": "Terrasse ombragée sous les arbres",
+   "value": true
+  },
+  {
+   "@type": "LocationFeatureSpecification",
+   "name": "Jeux de plein air (babyfoot, jeux en bois)",
+   "value": true
+  },
+  {
+   "@type": "LocationFeatureSpecification",
+   "name": "Menu enfant",
+   "value": true
+  },
+  {
+   "@type": "LocationFeatureSpecification",
+   "name": "Adapté aux familles",
+   "value": true
+  },
+  {
+   "@type": "LocationFeatureSpecification",
+   "name": "Enfants bienvenus",
+   "value": true
+  },
+  {
+   "@type": "LocationFeatureSpecification",
+   "name": "Animaux acceptés (chiens)",
+   "value": true
+  },
+  {
+   "@type": "LocationFeatureSpecification",
+   "name": "Parking gratuit à proximité",
+   "value": true
+  },
+  {
+   "@type": "LocationFeatureSpecification",
+   "name": "Accès libre et gratuit au parc",
+   "value": true
+  },
+  {
+   "@type": "LocationFeatureSpecification",
+   "name": "Concerts et animations",
+   "value": true
+  },
+  {
+   "@type": "LocationFeatureSpecification",
+   "name": "Réservation de grande tablée pour un événement",
+   "value": true
+  },
+  {
+   "@type": "LocationFeatureSpecification",
+   "name": "Accessible en RER A (gare de Sartrouville)",
+   "value": true
+  }
+ ],
+ "additionalType": "https://www.wikidata.org/wiki/Q3120167",
+ "knowsLanguage": "fr"
+}
+</script>
 
         <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap"></noscript>
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         :root {
@@ -176,10 +277,14 @@
         /* HERO */
         .hero {
             min-height: 100vh;
-            background: url('photo3.jpg') center/cover no-repeat;
-            background-image: image-set(url('photo3.webp') type('image/webp'), url('photo3.jpg') type('image/jpeg'));
+            background: url('photo3-960.jpg') center/cover no-repeat;
+            background-image: image-set(url('photo3-960.webp') type('image/webp'), url('photo3-960.jpg') type('image/jpeg'));
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             text-align: center; padding: 7rem 2rem 5rem; position: relative; overflow: hidden;
+        }
+        @media (min-width: 1000px) {
+            .hero { background-image: url('photo3.jpg'); }
+            .hero { background-image: image-set(url('photo3.webp') type('image/webp'), url('photo3.jpg') type('image/jpeg')); }
         }
         .hero::before {
             content: ''; position: absolute; inset: 0;
@@ -314,14 +419,14 @@
         .press-cta::after { content: '→'; }
 
         /* FOOTER */
-        footer { background: var(--dark); color: rgba(255,255,255,0.45); padding: 3.5rem 2rem; text-align: center; }
+        footer { background: var(--dark); color: rgba(255,255,255,0.6); padding: 3.5rem 2rem; text-align: center; }
         .footer-logo { height: 60px; width: 60px; object-fit: contain; border-radius: 50%; opacity: 0.85; margin-bottom: 1rem; }
         .footer-brand { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--gold); margin-bottom: 0.4rem; }
-        .footer-sub { font-size: 0.75rem; letter-spacing: 0.12em; color: rgba(255,255,255,0.35); margin-bottom: 2.25rem; }
+        .footer-sub { font-size: 0.75rem; letter-spacing: 0.12em; color: rgba(255,255,255,0.6); margin-bottom: 2.25rem; }
         .footer-nav { display: flex; justify-content: center; flex-wrap: wrap; gap: 1.75rem; list-style: none; margin-bottom: 2rem; }
-        .footer-nav a { color: rgba(255,255,255,0.45); text-decoration: none; font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; transition: color 0.2s; }
+        .footer-nav a { color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; transition: color 0.2s; }
         .footer-nav a:hover { color: var(--gold); }
-        .footer-copy { font-size: 0.72rem; color: rgba(255,255,255,0.25); }
+        .footer-copy { font-size: 0.72rem; color: rgba(255,255,255,0.55); }
 
         /* REVEAL */
         [data-reveal] { opacity: 0; transform: translateY(22px); transition: opacity 0.65s ease, transform 0.65s ease; }
@@ -434,7 +539,8 @@
         <li><a href="#animations">Animations</a></li>
         <li><a href="#presse">Presse</a></li>
         <li><a href="#infos">Infos &amp; accès</a></li>
-        <li><a href="blog.html">Le journal</a></li>
+        <li><a href="agenda.html">Agenda</a></li>
+    <li><a href="blog.html">Le journal</a></li>
         <li><a href="#reservation" class="nav-cta">Réserver</a></li>
     </ul>
 </nav>
@@ -682,7 +788,7 @@
             <div>
                 <p class="section-label">Toute la saison</p>
                 <h2 class="section-title" style="color:var(--cream)">Animations &amp; événements</h2>
-                <p class="events-lead">La Guinguette du Dispensaire, c'est aussi une programmation festive tout l'été : concerts live, soirées thématiques, jeux de plein air et surprises… Suivez-nous sur les réseaux pour ne rien manquer !</p>
+                <p class="events-lead">La Guinguette du Dispensaire, c'est aussi une programmation festive tout l'été : concerts live, soirées thématiques, jeux de plein air et surprises… Suivez-nous sur les réseaux pour ne rien manquer ! <a href="agenda.html" style="color:#c8a448;font-weight:700;text-decoration:underline">Voir l'agenda complet des concerts</a></p>
                 <div class="events-chips">
                     <span class="event-chip">🎵 Concerts live</span>
                     <span class="event-chip">🌅 Soirées estivales</span>
@@ -748,6 +854,7 @@
             <label>Message (optionnel)<textarea name="Message" rows="3" placeholder="Occasion, emplacement souhaité, allergies…"></textarea></label>
             <button type="submit" class="btn resa-btn">Envoyer ma demande</button>
             <p class="resa-note">Demande envoyée à l'équipe — la réservation est confirmée après notre réponse. Ouverture selon météo. Vous pouvez aussi appeler le <a href="tel:+33667426565">06 67 42 65 65</a>.</p>
+<p class="resa-note" style="font-size:.78rem">En envoyant ce formulaire, vous acceptez que vos coordonnées soient utilisées <strong>uniquement pour traiter votre réservation</strong>. Elles ne sont ni revendues ni utilisées pour vous démarcher. <a href="confidentialite.html">Politique de confidentialité</a>.</p>
             <p id="resa-result" class="resa-result" role="status" aria-live="polite"></p>
         </form>
     </div>
@@ -852,14 +959,16 @@
         <li><a href="#animations">Animations</a></li>
         <li><a href="#presse">Presse</a></li>
         <li><a href="#infos">Infos &amp; accès</a></li>
-        <li><a href="blog.html">Le journal</a></li>
+        <li><a href="agenda.html">Agenda</a></li>
+    <li><a href="blog.html">Le journal</a></li>
         <li><a href="#reservation" class="nav-cta">Réserver</a></li>
         <li><a href="guinguette-sartrouville-terrasse-bord-de-seine.html">Guinguette à Sartrouville</a></li>
         <li><a href="que-faire-boucle-de-seine-sartrouville.html">Que faire dans la boucle de Seine</a></li>
-        <li><a href="privatiser-guinguette-sartrouville.html">Réserver pour un événement</a></li>
+        <li><a href="evenement-anniversaire-guinguette-sartrouville.html">Réserver pour un événement</a></li>
         <li><a href="menu.html">Menu imprimable</a></li>
     </ul>
-    <div class="footer-copy">© 2026 La Guinguette du Dispensaire — Tous droits réservés</div>
+    <div class="footer-legal" style="font-size:.72rem;margin-bottom:.6rem"><a href="mentions-legales.html">Mentions légales</a> &nbsp;·&nbsp; <a href="confidentialite.html">Politique de confidentialité</a></div>
+  <div class="footer-copy">© 2026 La Guinguette du Dispensaire — Tous droits réservés</div>
 </footer>
 
 <script>
@@ -943,14 +1052,37 @@ if ('IntersectionObserver' in window) {
       if (stored || notified) {
         result.textContent = '✓ Merci ! Votre demande est bien reçue. On vous recontacte vite pour confirmer.';
         result.className = 'resa-result ok';
+        if (window.guingTrack) window.guingTrack('reservation-envoyee', { personnes: String(data.get('Nombre de personnes') || ''), page: 'index.html' });
         f.reset();
       } else {
         result.textContent = 'Connexion impossible. Appelez-nous au 06 67 42 65 65.';
         result.className = 'resa-result err';
+        if (window.guingTrack) window.guingTrack('reservation-echec', { page: 'index.html' });
       }
       btn.disabled = false;
     });
   }
+</script>
+<script>
+/* Suivi des conversions — Umami (sans cookie, aucun consentement requis) */
+(function () {
+  function t(n, d) { try { if (window.umami && window.umami.track) window.umami.track(n, d || {}); } catch (e) {} }
+  window.guingTrack = t;
+  document.addEventListener('click', function (e) {
+    var el = e.target && e.target.closest ? e.target.closest('a,button') : null;
+    if (!el) return;
+    var href = (el.getAttribute('href') || '').toLowerCase();
+    var txt = (el.textContent || '').trim().toLowerCase();
+    var p = { page: location.pathname.split('/').pop() || 'index.html' };
+    if (href.indexOf('tel:') === 0) t('clic-telephone', p);
+    else if (href.indexOf('mailto:') === 0) t('clic-email', p);
+    else if (href.indexOf('instagram.com') > -1) t('clic-instagram', p);
+    else if (href.indexOf('facebook.com') > -1) t('clic-facebook', p);
+    else if (href.indexOf('maps.google') > -1 || href.indexOf('google.com/maps') > -1 || href.indexOf('goo.gl/maps') > -1) t('clic-itineraire-avis-google', p);
+    else if (/menu\.html/.test(href)) t('ouverture-menu', p);
+    else if (href.indexOf('#reservation') > -1 || txt.indexOf('r\u00e9server') > -1) t('clic-reserver', p);
+  }, true);
+})();
 </script>
 </body>
 </html>
