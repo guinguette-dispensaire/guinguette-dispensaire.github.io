@@ -472,6 +472,35 @@ Tests : 0 formulation interdite · tous les JSON-LD parsent · toutes les images
 - **Skill `seo-guinguette`** livré : il lit `seo-suivi.md` au démarrage pour repartir de l'état réel, porte les règles de fond, les faits de référence, les contraintes techniques découvertes (upload photo par Maps, iframe de l'éditeur, mesures sandbox trompeuses), le déroulé en 7 phases et les 9 critères de notation.
 - **PR #2** ouverte pour la Phase 11.
 
+### Correctif CLS — la régression que la phase 4 avait introduite
+
+Le passage des polices Google en chargement asynchrone (phase 4) a fait gagner 1,8 s de LCP et 12 points de performance, mais il a fait **passer le CLS de la page d'article de 0,031 à 0,133** (run Lighthouse CI n° 65, site en ligne, mobile) — au-dessus du seuil « bon » de Google, fixé à 0,1. Le texte s'affichait d'abord en Times / Arial, plus étroit, puis se recomposait à l'arrivée de Playfair Display et Lato.
+
+**Correctif** : cinq déclarations `@font-face` de repli (`Playfair repli`, `Lato repli`) avec `size-adjust`, `ascent-override`, `descent-override` et `line-gap-override`, plus l'extension des piles de polices sur les 19 pages. Aucun fichier ajouté, aucun compromis sur la vitesse : les polices restent non bloquantes.
+
+**Les valeurs ont été mesurées, pas estimées.** Le sandbox n'atteint pas `fonts.googleapis.com` ; les métriques ont donc été relevées dans le navigateur, sur la page en ligne, via `canvas.measureText` :
+
+| Police | Écart de largeur avant | Après |
+|---|:--:|:--:|
+| Playfair Display 400 | 7,3 % | 0,01 % |
+| Playfair Display 700 | 4,6 % | 0,02 % |
+| Playfair Display italique | 4,4 % | 0,01 % |
+| Lato 400 | 2,7 % | 0,04 % |
+| Lato 700 | 6,3 % | 0,04 % |
+
+**Simulation du rendu « avant chargement des polices » sur la page d'article en ligne** — on force la pile de repli et on mesure le déplacement de 20 blocs :
+
+| | Blocs déplacés | Décalage max | Hauteur de page |
+|---|:--:|:--:|:--:|
+| Sans le correctif (état actuel) | 15 / 20 | 66 px | +65 px |
+| Avec le correctif | **0 / 20** | **0 px** | **identique** |
+
+Tests locaux : les 5 `@font-face` sont bien enregistrées dans `document.fonts` sur les 6 pages contrôlées en Chromium headless · 0 erreur JS · CSS complet (157 règles sur l'accueil, 61 sur les articles) · les 19 fichiers sont, au caractère près, la version de la branche plus ce seul correctif.
+
+**Ce qui reste à confirmer** : le CLS réel ne peut pas être reproduit hors ligne, faute d'accès aux polices Google depuis le sandbox. Le chiffre à surveiller est le **CLS de `/guinguette-sartrouville-terrasse-bord-de-seine.html`** dans le prochain run Lighthouse CI déclenché par la mise en ligne — objectif < 0,1, valeur actuelle 0,133.
+
+Commit `e5f0226` sur la branche `PDV86-patch-2` (PR #2).
+
 ### Problèmes restants
 
 - **Demandes d'indexation manuelles** à déclencher (voir Phase 8).
@@ -481,3 +510,4 @@ Tests : 0 formulation interdite · tous les JSON-LD parsent · toutes les images
 - **Photos de l'agenda** : les visuels des groupes manquent ; les publications de la guinguette ne mentionnent aucun compte, donc les groupes ne sont pas identifiables sans Thomas.
 - **Concert Yipikiyay du 10/09** toujours non confirmé publiquement.
 - **sartrouville.fr publie de faux horaires** et laisse des 404 indexées.
+- **CLS de la page d’article** : correctif poussé, à confirmer par le run Lighthouse CI qui suivra la mise en ligne de la PR #2.
