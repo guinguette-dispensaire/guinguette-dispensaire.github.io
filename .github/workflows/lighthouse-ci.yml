@@ -36,13 +36,17 @@ jobs:
       - name: Run Lighthouse CI (${{ matrix.preset }})
         run: |
           set -euo pipefail
+          # Attention : Lighthouse n'accepte que 'desktop', 'perf' et 'experimental' comme preset.
+          # Le mobile EST le comportement par defaut : lui passer --settings.preset=mobile fait echouer la commande.
+          PRESET_ARG=""
+          if [ "${{ matrix.preset }}" = "desktop" ]; then PRESET_ARG="--settings.preset=desktop"; fi
           lhci collect \
             --url=https://laguinguettedudispensaire.fr/ \
             --url=https://laguinguettedudispensaire.fr/menu.html \
             --url=https://laguinguettedudispensaire.fr/blog.html \
             --url=https://laguinguettedudispensaire.fr/guinguette-sartrouville-terrasse-bord-de-seine.html \
             --numberOfRuns=3 \
-            --settings.preset=${{ matrix.preset }}
+            $PRESET_ARG
           echo "--- contenu de .lighthouseci ---"
           ls -la .lighthouseci/
 
