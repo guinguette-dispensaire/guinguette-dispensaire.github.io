@@ -107,6 +107,17 @@ footer{background:var(--dark);color:rgba(255,255,255,.62);padding:3rem 2rem;text
 /* Image de couverture : la version 640 px suffit sur mobile (LCP) */
 .article-hero{background-image:linear-gradient(155deg,rgba(42,78,20,.85),rgba(116,41,57,.72) 60%,rgba(30,20,10,.78)),url('photo13-640.jpg');background-image:linear-gradient(155deg,rgba(42,78,20,.85),rgba(116,41,57,.72) 60%,rgba(30,20,10,.78)),image-set(url('photo13-640.webp') type('image/webp'),url('photo13-640.jpg') type('image/jpeg'))}
 @media(min-width:1000px){.article-hero{background-image:linear-gradient(155deg,rgba(42,78,20,.85),rgba(116,41,57,.72) 60%,rgba(30,20,10,.78)),url('photo13-960.jpg');background-image:linear-gradient(155deg,rgba(42,78,20,.85),rgba(116,41,57,.72) 60%,rgba(30,20,10,.78)),image-set(url('photo13-960.webp') type('image/webp'),url('photo13-960.jpg') type('image/jpeg'))}}
+
+/* Questions frequentes — les reponses etaient balisees sans jamais etre affichees */
+.faq-bloc{margin:2.6rem 0 0}
+.faq-bloc h2{margin-bottom:1rem}
+.faq-bloc details{background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:12px;margin-bottom:.6rem;overflow:hidden}
+.faq-bloc summary{cursor:pointer;padding:.95rem 1.15rem;font-weight:700;color:var(--dark-green);list-style:none;position:relative;padding-right:2.6rem}
+.faq-bloc summary::-webkit-details-marker{display:none}
+.faq-bloc summary::after{content:'+';position:absolute;right:1.1rem;top:50%;transform:translateY(-50%);font-size:1.3rem;line-height:1;color:var(--gold);font-weight:400}
+.faq-bloc details[open] summary::after{content:'\2013'}
+.faq-bloc summary:hover{background:rgba(0,0,0,.02)}
+.faq-bloc details p{padding:0 1.15rem 1.05rem;margin:0;color:#3a3a3a;font-size:.96rem;line-height:1.65}
 </style>
 <script defer src="https://cloud.umami.is/script.js" data-website-id="e2122b5d-7b90-4b67-b0ce-9c8d22844d19"></script>
 </head>
@@ -155,6 +166,12 @@ footer{background:var(--dark);color:rgba(255,255,255,.62);padding:3rem 2rem;text
   <a href="index.html#reservation" class="btn">Réserver une table</a>
   <a href="index.html#carte" class="btn btn-outline">Voir la carte</a>
 </div>
+
+<section class="faq-bloc">
+  <h2>Questions fréquentes</h2>
+  <details><summary>À quelle distance êtes-vous de Houilles ou Maisons-Laffitte ?</summary><p>La guinguette se trouve au Parc du Dispensaire à Sartrouville, à quelques minutes en voiture de Houilles, Montesson, Le Mesnil-le-Roi et Maisons-Laffitte.</p></details>
+  <details><summary>Faut-il réserver ?</summary><p>Pas pour venir boire un verre. La réservation est utile si vous venez en groupe et souhaitez une grande tablée.</p></details>
+</section>
 </article>
 <section class="related"><h2>À lire aussi</h2><a href="que-faire-boucle-de-seine-sartrouville.html">Que faire dans la boucle de Seine ?</a><a href="venir-guinguette-sartrouville-acces-rer-parking.html">Comment venir : RER A, bus et parking</a><a href="sortie-famille-sartrouville-bord-de-seine.html">Une sortie en famille à Sartrouville</a><a href="afterwork-boucle-de-seine.html">Afterwork dans la boucle de Seine</a><a href="guinguette-pres-de-paris-rer-a.html">Une guinguette près de Paris, accessible en RER A</a></section>
 <footer>

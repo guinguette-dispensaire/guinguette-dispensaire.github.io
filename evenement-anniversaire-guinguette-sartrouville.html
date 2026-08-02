@@ -110,8 +110,67 @@ footer{background:var(--dark);color:rgba(255,255,255,.62);padding:3rem 2rem;text
 /* Image de couverture : la version 640 px suffit sur mobile (LCP) */
 .article-hero{background-image:linear-gradient(155deg,rgba(42,78,20,.85),rgba(116,41,57,.72) 60%,rgba(30,20,10,.78)),url('photo1-640.jpg');background-image:linear-gradient(155deg,rgba(42,78,20,.85),rgba(116,41,57,.72) 60%,rgba(30,20,10,.78)),image-set(url('photo1-640.webp') type('image/webp'),url('photo1-640.jpg') type('image/jpeg'))}
 @media(min-width:1000px){.article-hero{background-image:linear-gradient(155deg,rgba(42,78,20,.85),rgba(116,41,57,.72) 60%,rgba(30,20,10,.78)),url('photo1-960.jpg');background-image:linear-gradient(155deg,rgba(42,78,20,.85),rgba(116,41,57,.72) 60%,rgba(30,20,10,.78)),image-set(url('photo1-960.webp') type('image/webp'),url('photo1-960.jpg') type('image/jpeg'))}}
+
+/* Questions frequentes */
+.faq-bloc{margin:2.6rem 0 0}
+.faq-bloc h2{margin-bottom:1rem}
+.faq-bloc details{background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:12px;margin-bottom:.6rem;overflow:hidden}
+.faq-bloc summary{cursor:pointer;padding:.95rem 1.15rem;font-weight:700;color:var(--dark-green);list-style:none;position:relative;padding-right:2.6rem}
+.faq-bloc summary::-webkit-details-marker{display:none}
+.faq-bloc summary::after{content:'+';position:absolute;right:1.1rem;top:50%;transform:translateY(-50%);font-size:1.3rem;line-height:1;color:var(--gold);font-weight:400}
+.faq-bloc details[open] summary::after{content:'\2013'}
+.faq-bloc summary:hover{background:rgba(0,0,0,.02)}
+.faq-bloc details p{padding:0 1.15rem 1.05rem;margin:0;color:#3a3a3a;font-size:.96rem;line-height:1.65}
 </style>
 <script defer src="https://cloud.umami.is/script.js" data-website-id="e2122b5d-7b90-4b67-b0ce-9c8d22844d19"></script>
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "FAQPage",
+ "mainEntity": [
+  {
+   "@type": "Question",
+   "name": "Fermez-vous la guinguette pour un groupe ?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Soyons clairs dès le départ, parce que c'est la première question qu'on nous pose : nous ne fermons pas la guinguette pour un groupe. Le Parc du Dispensaire est un parc public, en accès libre et gratuit."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Jusqu'à combien de personnes peut-on venir ?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Jusqu'à 12 personnes, une grande tablée suffit. De 12 à 30 personnes, nous rapprochons plusieurs tables pour former un espace commun. Au-delà de 30 personnes, c'est possible, mais parlons-en tôt."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Y a-t-il un supplément pour un événement ?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Il n'y a pas de forfait « événement » avec supplément. Vous avez accès à la carte habituelle, et trois formules qui simplifient la vie quand on est nombreux."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Quel délai pour réserver ?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Notre conseil : deux à trois semaines à l'avance pour un groupe. Une semaine minimum pour un groupe de plus de dix personnes. Trois à quatre semaines pour un samedi ou un dimanche de juillet et août, et pour les soirs de concert."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Et s'il pleut ?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Tout se passe en plein air, donc l'ouverture dépend de la météo. On ne peut pas garantir un événement contre la pluie."
+   }
+  }
+ ]
+}
+</script>
 </head>
 <body>
 <nav>
@@ -193,6 +252,15 @@ footer{background:var(--dark);color:rgba(255,255,255,.62);padding:3rem 2rem;text
   <a href="index.html#carte" class="btn btn-outline">Voir la carte</a>
 </div>
 
+
+<section class="faq-bloc">
+  <h2>Questions fréquentes</h2>
+  <details><summary>Fermez-vous la guinguette pour un groupe ?</summary><p>Soyons clairs dès le départ, parce que c'est la première question qu'on nous pose : nous ne fermons pas la guinguette pour un groupe. Le Parc du Dispensaire est un parc public, en accès libre et gratuit.</p></details>
+  <details><summary>Jusqu'à combien de personnes peut-on venir ?</summary><p>Jusqu'à 12 personnes, une grande tablée suffit. De 12 à 30 personnes, nous rapprochons plusieurs tables pour former un espace commun. Au-delà de 30 personnes, c'est possible, mais parlons-en tôt.</p></details>
+  <details><summary>Y a-t-il un supplément pour un événement ?</summary><p>Il n'y a pas de forfait « événement » avec supplément. Vous avez accès à la carte habituelle, et trois formules qui simplifient la vie quand on est nombreux.</p></details>
+  <details><summary>Quel délai pour réserver ?</summary><p>Notre conseil : deux à trois semaines à l'avance pour un groupe. Une semaine minimum pour un groupe de plus de dix personnes. Trois à quatre semaines pour un samedi ou un dimanche de juillet et août, et pour les soirs de concert.</p></details>
+  <details><summary>Et s'il pleut ?</summary><p>Tout se passe en plein air, donc l'ouverture dépend de la météo. On ne peut pas garantir un événement contre la pluie.</p></details>
+</section>
 </article>
 <section class="related"><h2>À lire aussi</h2><a href="afterwork-boucle-de-seine.html">Afterwork dans la boucle de Seine : Sartrouville, Houilles, Montesson, Maisons-Laffitte</a><a href="afterwork-sartrouville.html">Afterwork à Sartrouville : où se retrouver après le travail ?</a><a href="saison-2027-guinguette-sartrouville.html">Saison 2027 : ce qu'on sait déjà</a><a href="guinguette-sartrouville-terrasse-bord-de-seine.html">Guinguette à Sartrouville : la terrasse au Parc du Dispensaire</a><a href="venir-guinguette-sartrouville-acces-rer-parking.html">Comment venir : RER A, bus et parking</a><a href="menu.html">Voir le menu complet de la guinguette</a></section>
 <footer>

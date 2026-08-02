@@ -110,8 +110,51 @@ footer{background:var(--dark);color:rgba(255,255,255,.62);padding:3rem 2rem;text
 /* Image de couverture : la version 640 px suffit sur mobile (LCP) */
 .article-hero{background-image:linear-gradient(155deg,rgba(42,78,20,.85),rgba(116,41,57,.72) 60%,rgba(30,20,10,.78)),url('photo9-640.jpg');background-image:linear-gradient(155deg,rgba(42,78,20,.85),rgba(116,41,57,.72) 60%,rgba(30,20,10,.78)),image-set(url('photo9-640.webp') type('image/webp'),url('photo9-640.jpg') type('image/jpeg'))}
 @media(min-width:1000px){.article-hero{background-image:linear-gradient(155deg,rgba(42,78,20,.85),rgba(116,41,57,.72) 60%,rgba(30,20,10,.78)),url('photo9-960.jpg');background-image:linear-gradient(155deg,rgba(42,78,20,.85),rgba(116,41,57,.72) 60%,rgba(30,20,10,.78)),image-set(url('photo9-960.webp') type('image/webp'),url('photo9-960.jpg') type('image/jpeg'))}}
+
+/* Questions frequentes */
+.faq-bloc{margin:2.6rem 0 0}
+.faq-bloc h2{margin-bottom:1rem}
+.faq-bloc details{background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:12px;margin-bottom:.6rem;overflow:hidden}
+.faq-bloc summary{cursor:pointer;padding:.95rem 1.15rem;font-weight:700;color:var(--dark-green);list-style:none;position:relative;padding-right:2.6rem}
+.faq-bloc summary::-webkit-details-marker{display:none}
+.faq-bloc summary::after{content:'+';position:absolute;right:1.1rem;top:50%;transform:translateY(-50%);font-size:1.3rem;line-height:1;color:var(--gold);font-weight:400}
+.faq-bloc details[open] summary::after{content:'\2013'}
+.faq-bloc summary:hover{background:rgba(0,0,0,.02)}
+.faq-bloc details p{padding:0 1.15rem 1.05rem;margin:0;color:#3a3a3a;font-size:.96rem;line-height:1.65}
 </style>
 <script defer src="https://cloud.umami.is/script.js" data-website-id="e2122b5d-7b90-4b67-b0ce-9c8d22844d19"></script>
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "FAQPage",
+ "mainEntity": [
+  {
+   "@type": "Question",
+   "name": "Que faire autour de Sartrouville, dans la boucle de Seine ?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Entre Sartrouville, Houilles, Le Mesnil-le-Roi et Maisons-Laffitte, les berges de Seine offrent de belles balades à pied ou à vélo."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Qu'est-ce que le Parc du Dispensaire ?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "En plein centre de Sartrouville, le Parc du Dispensaire est un écrin de verdure idéal pour une pause en famille. On s'y promène, les enfants jouent, et l'on peut s'installer à la guinguette pour un rafraîchissement à l'ombre des arbres."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Où prendre un verre après la balade ?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Après la balade, cap sur La Guinguette du Dispensaire : bières pression, vins sélectionnés, planches et frites maison, le tout en terrasse. C'est l'adresse conviviale de la boucle de Seine, facilement accessible depuis Montesson, Houilles ou Maisons-Laffitte et bien desservie par le RER A."
+   }
+  }
+ ]
+}
+</script>
 </head>
 <body>
 <nav>
@@ -156,6 +199,13 @@ footer{background:var(--dark);color:rgba(255,255,255,.62);padding:3rem 2rem;text
   <a href="index.html#carte" class="btn btn-outline">Voir la carte</a>
 </div>
 
+
+<section class="faq-bloc">
+  <h2>Questions fréquentes</h2>
+  <details><summary>Que faire autour de Sartrouville, dans la boucle de Seine ?</summary><p>Entre Sartrouville, Houilles, Le Mesnil-le-Roi et Maisons-Laffitte, les berges de Seine offrent de belles balades à pied ou à vélo.</p></details>
+  <details><summary>Qu'est-ce que le Parc du Dispensaire ?</summary><p>En plein centre de Sartrouville, le Parc du Dispensaire est un écrin de verdure idéal pour une pause en famille. On s'y promène, les enfants jouent, et l'on peut s'installer à la guinguette pour un rafraîchissement à l'ombre des arbres.</p></details>
+  <details><summary>Où prendre un verre après la balade ?</summary><p>Après la balade, cap sur La Guinguette du Dispensaire : bières pression, vins sélectionnés, planches et frites maison, le tout en terrasse. C'est l'adresse conviviale de la boucle de Seine, facilement accessible depuis Montesson, Houilles ou Maisons-Laffitte et bien desservie par le RER A.</p></details>
+</section>
 </article>
 <section class="related"><h2>À lire aussi</h2><a href="guinguette-sartrouville-terrasse-bord-de-seine.html">Guinguette à Sartrouville : la terrasse au Parc du Dispensaire</a><a href="evenement-anniversaire-guinguette-sartrouville.html">Réserver une grande tablée pour votre événement</a><a href="menu.html">Voir le menu complet de la guinguette</a><a href="bar-terrasse-houilles-montesson-maisons-laffitte.html">Un bar en terrasse près de Houilles, Montesson et Maisons-Laffitte</a><a href="venir-guinguette-sartrouville-acces-rer-parking.html">Comment venir : RER A, bus et parking</a><a href="ou-boire-un-verre-terrasse-sartrouville.html">Où boire un verre en terrasse à Sartrouville ?</a><a href="guinguette-pres-de-paris-rer-a.html">Une guinguette près de Paris, accessible en RER A</a></section>
 <footer>

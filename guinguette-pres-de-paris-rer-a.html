@@ -109,6 +109,17 @@ footer{background:var(--dark);color:rgba(255,255,255,.62);padding:3rem 2rem;text
 /* Image de couverture : la version 640 px suffit sur mobile (LCP) */
 .article-hero{background-image:linear-gradient(155deg,rgba(42,78,20,.85),rgba(116,41,57,.72) 60%,rgba(30,20,10,.78)),url('photo2-640.jpg');background-image:linear-gradient(155deg,rgba(42,78,20,.85),rgba(116,41,57,.72) 60%,rgba(30,20,10,.78)),image-set(url('photo2-640.webp') type('image/webp'),url('photo2-640.jpg') type('image/jpeg'))}
 @media(min-width:1000px){.article-hero{background-image:linear-gradient(155deg,rgba(42,78,20,.85),rgba(116,41,57,.72) 60%,rgba(30,20,10,.78)),url('photo2-960.jpg');background-image:linear-gradient(155deg,rgba(42,78,20,.85),rgba(116,41,57,.72) 60%,rgba(30,20,10,.78)),image-set(url('photo2-960.webp') type('image/webp'),url('photo2-960.jpg') type('image/jpeg'))}}
+
+/* Questions frequentes — les reponses etaient balisees sans jamais etre affichees */
+.faq-bloc{margin:2.6rem 0 0}
+.faq-bloc h2{margin-bottom:1rem}
+.faq-bloc details{background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:12px;margin-bottom:.6rem;overflow:hidden}
+.faq-bloc summary{cursor:pointer;padding:.95rem 1.15rem;font-weight:700;color:var(--dark-green);list-style:none;position:relative;padding-right:2.6rem}
+.faq-bloc summary::-webkit-details-marker{display:none}
+.faq-bloc summary::after{content:'+';position:absolute;right:1.1rem;top:50%;transform:translateY(-50%);font-size:1.3rem;line-height:1;color:var(--gold);font-weight:400}
+.faq-bloc details[open] summary::after{content:'\2013'}
+.faq-bloc summary:hover{background:rgba(0,0,0,.02)}
+.faq-bloc details p{padding:0 1.15rem 1.05rem;margin:0;color:#3a3a3a;font-size:.96rem;line-height:1.65}
 </style>
 <script defer src="https://cloud.umami.is/script.js" data-website-id="e2122b5d-7b90-4b67-b0ce-9c8d22844d19"></script>
 </head>
@@ -188,6 +199,14 @@ footer{background:var(--dark);color:rgba(255,255,255,.62);padding:3rem 2rem;text
   <a href="index.html#reservation" class="btn">Réserver une table</a>
   <a href="index.html#carte" class="btn btn-outline">Voir la carte</a>
 </div>
+
+<section class="faq-bloc">
+  <h2>Questions fréquentes</h2>
+  <details><summary>La guinguette est-elle accessible en RER A ?</summary><p>Oui. La Guinguette du Dispensaire se trouve à Sartrouville (Yvelines), desservie par la ligne A du RER. Depuis la gare de Sartrouville, comptez une dizaine de minutes à pied jusqu'au Parc du Dispensaire, ou prenez le bus 73, arrêt Dispensaire.</p></details>
+  <details><summary>Combien de temps depuis Paris ?</summary><p>Comptez environ 30 minutes depuis Châtelet-Les Halles et environ 20 minutes depuis La Défense, sans changement. Ce sont des ordres de grandeur en heures normales.</p></details>
+  <details><summary>Faut-il payer pour entrer ?</summary><p>Non. Le Parc du Dispensaire est un parc public, l'accès est libre et gratuit. Seules les consommations au bar de la guinguette sont payantes.</p></details>
+  <details><summary>Peut-on venir sans réserver ?</summary><p>Oui. La réservation n'est pas obligatoire, mais elle est conseillée le week-end, les soirs de concert et pour les groupes.</p></details>
+</section>
 </article>
 <section class="related"><h2>À lire aussi</h2><a href="venir-guinguette-sartrouville-acces-rer-parking.html">Comment venir : RER A, bus et parking</a><a href="ou-boire-un-verre-terrasse-sartrouville.html">Où boire un verre en terrasse à Sartrouville ?</a><a href="que-faire-boucle-de-seine-sartrouville.html">Que faire dans la boucle de Seine autour de Sartrouville ?</a><a href="agenda.html">L'agenda des concerts et animations</a><a href="menu.html">Voir le menu complet de la guinguette</a></section>
 <footer>
