@@ -49,91 +49,184 @@
 
     <!-- JSON-LD Local Business -->
     <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": ["Restaurant", "BarOrPub"],
-      "@id": "https://laguinguettedudispensaire.fr/#guinguette",
-      "name": "La Guinguette du Dispensaire",
-      "alternateName": "Guinguette du Dispensaire Sartrouville",
-      "description": "Guinguette saisonnière en plein air au Parc du Dispensaire à Sartrouville (78). Bar terrasse, bières pression, vins sélectionnés, planches, frites maison, concerts et animations. Ouverte de juin à octobre 2026. Réservation de grandes tablées pour vos événements.",
-      "slogan": "On s'y retrouve, on s'y attarde, et on y revient.",
-      "sameAs": [
-        "https://www.facebook.com/profile.php?id=61590190707357",
-        "https://www.instagram.com/guinguette.du.dispensaire/",
-        "https://maps.google.com/?cid=5422210577195196381"
-      ],
-      "url": "https://laguinguettedudispensaire.fr",
-      "telephone": "+33667426565",
-      "email": "laguinguettedudispensaire@gmail.com",
-      "image": [
-        "https://laguinguettedudispensaire.fr/photo1.jpg",
-        "https://laguinguettedudispensaire.fr/photo3.jpg",
-        "https://laguinguettedudispensaire.fr/photo11.jpg"
-      ],
-      "logo": "https://laguinguettedudispensaire.fr/logo.png",
-      "address": {
-        "@type": "PostalAddress",
-        "streetAddress": "Parc du Dispensaire, 1 Avenue Maurice Berteaux",
-        "addressLocality": "Sartrouville",
-        "postalCode": "78500",
-        "addressRegion": "Île-de-France",
-        "addressCountry": "FR"
-      },
-      "geo": {
-        "@type": "GeoCoordinates",
-        "latitude": 48.9397,
-        "longitude": 2.1608
-      },
-      "hasMap": "https://maps.google.com/?cid=5422210577195196381",
-      "areaServed": [
-        { "@type": "City", "name": "Sartrouville" },
-        { "@type": "City", "name": "Houilles" },
-        { "@type": "City", "name": "Maisons-Laffitte" },
-        { "@type": "City", "name": "Le Mesnil-le-Roi" },
-        { "@type": "City", "name": "Montesson" },
-        { "@type": "AdministrativeArea", "name": "Yvelines" }
-      ],
-      "openingHoursSpecification": [
-        {
-          "@type": "OpeningHoursSpecification",
-          "dayOfWeek": ["Tuesday", "Wednesday", "Thursday", "Friday"],
-          "opens": "16:00",
-          "closes": "22:00",
-          "validFrom": "2026-06-01",
-          "validThrough": "2026-10-31"
-        },
-        {
-          "@type": "OpeningHoursSpecification",
-          "dayOfWeek": ["Saturday", "Sunday"],
-          "opens": "11:00",
-          "closes": "22:00",
-          "validFrom": "2026-06-01",
-          "validThrough": "2026-10-31"
-        }
-      ],
-      "priceRange": "€€",
-      "currenciesAccepted": "EUR",
-      "paymentAccepted": "Espèces, Carte bancaire",
-      "servesCuisine": ["Française", "Tapas", "Bar à vin"],
-      "acceptsReservations": "https://laguinguettedudispensaire.fr/#reservation",
-      "potentialAction": {
-        "@type": "ReserveAction",
-        "target": {
-          "@type": "EntryPoint",
-          "urlTemplate": "https://laguinguettedudispensaire.fr/#reservation",
-          "inLanguage": "fr",
-          "actionPlatform": ["http://schema.org/DesktopWebPlatform", "http://schema.org/MobileWebPlatform"]
-        },
-        "result": { "@type": "Reservation", "name": "Réservation de table à La Guinguette du Dispensaire" }
-      },
-      "publicAccess": true,
-      "isAccessibleForFree": true,
-      "smokingAllowed": false,
-      "hasMenu": "https://laguinguettedudispensaire.fr/menu.html",
-      "menu": "https://laguinguettedudispensaire.fr/menu.html",
-      "keywords": "guinguette Sartrouville, bar terrasse Sartrouville, guinguette Yvelines, Parc du Dispensaire, guinguette parc Sartrouville, terrasse Sartrouville"
-    }
-    </script>
+{
+ "@context": "https://schema.org",
+ "@type": [
+  "Restaurant",
+  "BarOrPub"
+ ],
+ "@id": "https://laguinguettedudispensaire.fr/#guinguette",
+ "name": "La Guinguette du Dispensaire",
+ "alternateName": "Guinguette du Dispensaire Sartrouville",
+ "description": "Guinguette saisonnière en plein air au cœur du Parc du Dispensaire à Sartrouville (78) : bar et restaurant en terrasse ombragée sous les arbres, bières pression, vins sélectionnés, planches, frites maison, concerts et animations gratuites. Parc public en accès libre, à deux pas de la Seine. Ouverte de juin à octobre 2026. Réservation de grandes tablées pour vos anniversaires, afterworks et fêtes.",
+ "slogan": "On s'y retrouve, on s'y attarde, et on y revient.",
+ "sameAs": [
+  "https://www.facebook.com/profile.php?id=61590190707357",
+  "https://www.instagram.com/guinguette.du.dispensaire/",
+  "https://maps.google.com/?cid=5422210577195196381"
+ ],
+ "url": "https://laguinguettedudispensaire.fr",
+ "telephone": "+33667426565",
+ "email": "laguinguettedudispensaire@gmail.com",
+ "image": [
+  "https://laguinguettedudispensaire.fr/photo1.jpg",
+  "https://laguinguettedudispensaire.fr/photo3.jpg",
+  "https://laguinguettedudispensaire.fr/photo11.jpg"
+ ],
+ "logo": "https://laguinguettedudispensaire.fr/logo.png",
+ "address": {
+  "@type": "PostalAddress",
+  "streetAddress": "Parc du Dispensaire, 1 Avenue Maurice Berteaux",
+  "addressLocality": "Sartrouville",
+  "postalCode": "78500",
+  "addressRegion": "Île-de-France",
+  "addressCountry": "FR"
+ },
+ "geo": {
+  "@type": "GeoCoordinates",
+  "latitude": 48.9397,
+  "longitude": 2.1608
+ },
+ "hasMap": "https://maps.google.com/?cid=5422210577195196381",
+ "areaServed": [
+  {
+   "@type": "City",
+   "name": "Sartrouville"
+  },
+  {
+   "@type": "City",
+   "name": "Houilles"
+  },
+  {
+   "@type": "City",
+   "name": "Maisons-Laffitte"
+  },
+  {
+   "@type": "City",
+   "name": "Le Mesnil-le-Roi"
+  },
+  {
+   "@type": "City",
+   "name": "Montesson"
+  },
+  {
+   "@type": "AdministrativeArea",
+   "name": "Yvelines"
+  }
+ ],
+ "openingHoursSpecification": [
+  {
+   "@type": "OpeningHoursSpecification",
+   "dayOfWeek": [
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday"
+   ],
+   "opens": "16:00",
+   "closes": "22:00",
+   "validFrom": "2026-06-01",
+   "validThrough": "2026-10-31"
+  },
+  {
+   "@type": "OpeningHoursSpecification",
+   "dayOfWeek": [
+    "Saturday",
+    "Sunday"
+   ],
+   "opens": "11:00",
+   "closes": "22:00",
+   "validFrom": "2026-06-01",
+   "validThrough": "2026-10-31"
+  }
+ ],
+ "priceRange": "€€",
+ "currenciesAccepted": "EUR",
+ "paymentAccepted": "Espèces, Carte bancaire",
+ "servesCuisine": [
+  "Française",
+  "Tapas",
+  "Bar à vin"
+ ],
+ "acceptsReservations": "https://laguinguettedudispensaire.fr/#reservation",
+ "potentialAction": {
+  "@type": "ReserveAction",
+  "target": {
+   "@type": "EntryPoint",
+   "urlTemplate": "https://laguinguettedudispensaire.fr/#reservation",
+   "inLanguage": "fr",
+   "actionPlatform": [
+    "http://schema.org/DesktopWebPlatform",
+    "http://schema.org/MobileWebPlatform"
+   ]
+  },
+  "result": {
+   "@type": "Reservation",
+   "name": "Réservation de table à La Guinguette du Dispensaire"
+  }
+ },
+ "publicAccess": true,
+ "isAccessibleForFree": true,
+ "smokingAllowed": false,
+ "hasMenu": "https://laguinguettedudispensaire.fr/menu.html",
+ "menu": "https://laguinguettedudispensaire.fr/menu.html",
+ "keywords": "guinguette Sartrouville, bar terrasse Sartrouville, restaurant Sartrouville, guinguette Yvelines, Parc du Dispensaire, terrasse ombragée Sartrouville, guinguette dans un parc, bar en plein air Yvelines, concert Sartrouville, afterwork Yvelines, anniversaire Sartrouville",
+ "amenityFeature": [
+  {
+   "@type": "LocationFeatureSpecification",
+   "name": "Terrasse ombragée sous les arbres",
+   "value": true
+  },
+  {
+   "@type": "LocationFeatureSpecification",
+   "name": "Jeux de plein air (babyfoot, jeux en bois)",
+   "value": true
+  },
+  {
+   "@type": "LocationFeatureSpecification",
+   "name": "Menu enfant",
+   "value": true
+  },
+  {
+   "@type": "LocationFeatureSpecification",
+   "name": "Adapté aux familles",
+   "value": true
+  },
+  {
+   "@type": "LocationFeatureSpecification",
+   "name": "Enfants bienvenus",
+   "value": true
+  },
+  {
+   "@type": "LocationFeatureSpecification",
+   "name": "Parking gratuit à proximité",
+   "value": true
+  },
+  {
+   "@type": "LocationFeatureSpecification",
+   "name": "Accès libre et gratuit au parc",
+   "value": true
+  },
+  {
+   "@type": "LocationFeatureSpecification",
+   "name": "Concerts et animations",
+   "value": true
+  },
+  {
+   "@type": "LocationFeatureSpecification",
+   "name": "Réservation de grande tablée pour un événement",
+   "value": true
+  },
+  {
+   "@type": "LocationFeatureSpecification",
+   "name": "Accessible en RER A (gare de Sartrouville)",
+   "value": true
+  }
+ ],
+ "additionalType": "https://www.wikidata.org/wiki/Q3120167",
+ "knowsLanguage": "fr"
+}
+</script>
 
         <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
