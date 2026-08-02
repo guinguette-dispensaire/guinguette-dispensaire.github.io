@@ -25,7 +25,7 @@ Ce fichier est la **mémoire du suivi**. Relancer le même prompt périodiquemen
 | 2026-06-15 · contenu + réservation | 96 | 88 | 96 | 98 | 88 | 92 | 88 | 82* | 94 | **93** |
 | 2026-07-06 · audit mensuel | 96 | 88 | 96 | 98 | 88 | 93 | 88 | 82* | 95 | **93** |
 | 2026-07-15 · analyse complète | 95 | 88 | 95 | 98 | 88 | 92 | 88 | 82* | 95 | **93** |
-| 2026-08-02 · reprise (phases 0→4) | 97 | 89 | 98 | 98 | **96** | 97 | 90 | **97** | 96 | **96** |
+| 2026-08-02 · reprise (phases 0→6) | 97 | 89 | 98 | 98 | 96 | 97 | 90 | **78** | 96 | **94** |
 
 > `*` Critère 8 : note **estimée en lab** à partir des preuves techniques (poids des images, image LCP, polices). L'API PageSpeed Insights n'est pas joignable depuis l'environnement d'exécution sandbox. Le workflow **Lighthouse CI** est maintenant actif (`.github/workflows/lighthouse-ci.yml`, déclenché à chaque push et le 1er de chaque mois) — les scores réels seront disponibles dans les artefacts GitHub Actions.
 
@@ -220,9 +220,9 @@ Global on-page stable à **93/100**. Vérification : le site ressort **1ᵉʳ su
 | 5 · Images | 88 | 96 | ↑ +8 |
 | 6 · Technique | 92 | 97 | ↑ +5 |
 | 7 · Maillage | 88 | 90 | ↑ +2 |
-| 8 · Perf/CWV | 82* | **97** | ↑ +15 — **enfin mesurée** |
+| 8 · Perf/CWV | 82* | **78** | ↓ −4 — **enfin mesurée pour de vrai, et plus basse que l'estimation** |
 | 9 · SEO local | 95 | 96 | ↑ +1 |
-| **Global** | **93** | **96** | **↑ +3** |
+| **Global** | **93** | **94** | **↑ +1** |
 
 Aucune régression. ✅
 
@@ -332,3 +332,37 @@ Note : le dossier `originals/` annoncé dans ce fichier depuis juin n'a jamais e
 **Méthode de test** : Chromium piloté par Playwright, `window.umami.track` remplacé par un espion, Firebase et Web3Forms simulés pour parcourir la vraie branche de succès du formulaire. Les 9 événements se déclenchent avec le bon nom et le bon contexte de page. Le formulaire renvoie bien « ✓ Merci ! Votre demande est bien reçue » et émet `reservation-envoyee {personnes:"6"}`.
 
 **Reste à faire** : vérifier la remontée réelle dans le tableau de bord Umami — cela suppose que la branche soit mergée (les événements ne peuvent pas remonter depuis une branche non déployée) et un accès au tableau de bord.
+
+
+---
+
+## ⚠️ Correction importante — la vraie mesure de performance (2026-08-02, run Lighthouse CI #64)
+
+Le Lighthouse CI réparé a tourné pour la première fois. **Les chiffres réels du site en ligne sont nettement plus bas que toutes les estimations précédentes**, y compris les miennes mesurées en local. Voici la vraie ligne de départ, mesurée sur `laguinguettedudispensaire.fr` (état de `main`, avant les optimisations de la Phase 4), médiane sur 3 exécutions :
+
+| Page | Perf **mobile** | Perf desktop | LCP mobile | TBT mobile | Access. | SEO |
+|---|:--:|:--:|:--:|:--:|:--:|:--:|
+| / | **76** | 98 | 3,9 s | 500 ms | 96 | 100 |
+| /menu.html | **90** | 99 | 2,9 s | 0 ms | 95 | 100 |
+| /blog.html | **74** | 91 | 5,5 s | 0 ms | 92 | 100 |
+| /guinguette-…-bord-de-seine.html | **81** | 97 | 4,2 s | 0 ms | 86 | 100 |
+
+**Pourquoi mes mesures locales disaient 90–97 alors que la réalité est 74–90 :** mon environnement d'exécution n'a pas accès à `fonts.googleapis.com` ni à `cloud.umami.is`. Ces deux requêtes échouent instantanément en local alors qu'elles coûtent du temps réel en ligne. Mes chiffres locaux étaient donc **optimistes de 10 à 20 points**. Ce sont les chiffres du tableau ci-dessus qui font foi, et c'est désormais le Lighthouse CI qui les produira automatiquement à chaque push et le 1er de chaque mois.
+
+**Ce que ça change** : les optimisations de la Phase 4 visent précisément ce qui plombe ces scores — l'image d'en-tête pleine taille en fond CSS (LCP mobile de 4 à 5,5 s sur le journal et les articles) et les polices bloquantes. Leur effet réel sera mesuré au prochain run après merge, sur les mêmes pages et avec le même outil. C'est la comparaison qui comptera.
+
+La note du critère 8 est ramenée à **78** (moyenne mobile réelle) au lieu des 97 que j'avais estimés en local. Note globale **94** au lieu de 96.
+
+---
+
+### Phase 6 — Conformité légale
+
+Deux pages créées : `mentions-legales.html` et `confidentialite.html`, dans la charte du site, avec Umami et le suivi des conversions comme les autres pages.
+
+- **Mentions légales** : éditeur (SAS, SIRET 104 994 215 00010, siège 14 rue de Péronne), directeur de publication, hébergeur GitHub Inc., registrar du domaine, propriété intellectuelle, droit à l'image (les photos montrent des clients — une procédure de retrait sur simple demande est prévue), liens sortants, contact.
+- **Politique de confidentialité** : résumé en 4 points en tête, responsable du traitement, données du formulaire de réservation et leur finalité, base légale (mesures précontractuelles, art. 6.1.b RGPD), durée de conservation, **les 3 sous-traitants réellement utilisés** (Firebase Firestore pour le stockage, Web3Forms pour la notification, EmailJS pour la confirmation — aucun n'était mentionné nulle part jusqu'ici), Umami et sa nature sans cookie, contenus tiers (Google Fonts et Google Maps chargent l'IP du visiteur), réseaux sociaux, droits RGPD, CNIL, sécurité.
+- **Liens en pied de page sur les 12 pages** du site.
+- **Mention de consentement sous le formulaire de réservation** : « vos coordonnées sont utilisées uniquement pour traiter votre réservation, elles ne sont ni revendues ni utilisées pour vous démarcher ».
+- Les deux pages sont en `index, follow` et ajoutées au sitemap avec une priorité basse : des mentions légales complètes sont un signal de confiance pour Google, autant qu'elles soient indexées.
+
+**Zones surlignées en jaune dans les deux pages** = informations qu'il me manque et que je ne peux pas inventer : raison sociale exacte, RCS, capital social, n° de TVA, nom du directeur de la publication, durée de conservation retenue.
