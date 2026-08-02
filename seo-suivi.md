@@ -30,6 +30,7 @@ Ce fichier est la **mémoire du suivi**. Relancer le même prompt périodiquemen
 | 2026-08-02 · correctif CLS, mise en ligne | 97 | 90 | 99 | 98 | 96 | 98 | 96 | **93** | 97 | **96** |
 | 2026-08-02 · audit re-mesuré | 88 | 92 | 96 | 98 | 90 | 97 | 86 | 93 | 97 | **93,5** |
 | 2026-08-02 · lot technique | **96** | 92 | **97** | **99** | **96** | **98** | 90 | **96** | **98** | **95,8** |
+| 2026-08-02 · FAQ visibles | 96 | **95** | **99** | 99 | 96 | 98 | 90 | 96 | 98 | **96,3** |
 
 > `*` Critère 8 : note **estimée en lab** à partir des preuves techniques (poids des images, image LCP, polices). L'API PageSpeed Insights n'est pas joignable depuis l'environnement d'exécution sandbox. Le workflow **Lighthouse CI** est maintenant actif (`.github/workflows/lighthouse-ci.yml`, déclenché à chaque push et le 1er de chaque mois) — les scores réels seront disponibles dans les artefacts GitHub Actions.
 
@@ -155,6 +156,35 @@ L'accueil recule de 4 points, sur deux runs consécutifs — c'est probablement 
 - **Accessibilité** : 92 à 96 selon les pages, jamais 100.
 - **CLS résiduel** de 0,067 sur la page d'article — sous le seuil, mais pas à zéro.
 - Le reste inchangé, voir la section suivante.
+
+### FAQ — le chantier a changé de nature en cours de route
+
+Le plan disait « ajouter un balisage `FAQPage` aux 8 pages qui n'en ont pas ». Vérification faite auprès de la documentation Google avant d'écrire une ligne : **les résultats enrichis FAQ ont été supprimés de Google le 7 mai 2026**, le rapport et le test associés disparaissent en juin, et l'API Search Console en août. Le balisage n'affiche plus rien. **Le chantier prévu ne rapportait rien.**
+
+C'est aussi ce qui explique que le test des résultats enrichis ne liste plus la `FAQPage` de l'accueil : la fonctionnalité est morte, ce n'est pas une régression du site.
+
+**Le vrai problème était ailleurs, et il était plus grave.** Sur 8 pages, **24 questions-réponses existaient en JSON-LD sans être affichées nulle part**. Invisibles pour les lecteurs, invisibles pour les moteurs de réponse qui lisent la page rendue, et contraires à la règle de Google qui veut que le contenu balisé soit visible.
+
+**Ce qui a été fait :**
+
+| | |
+|---|:--:|
+| Réponses déjà écrites rendues visibles (8 pages) | **24** |
+| Questions ajoutées sur les 4 pages qui n'en avaient aucune | **18** |
+| dont réponses copiées **mot pour mot** du corps de la page | **17 / 18** |
+| Total de questions visibles sur les articles | **42** |
+| Plus la FAQ de l'accueil | 6 |
+
+La seule réponse non strictement verbatim recompose trois puces existantes de la page « événement » en une phrase. Aucune information nouvelle n'a été introduite sur le site.
+
+Le balisage `FAQPage` est conservé : inerte chez Google, mais toujours lu par Bing et par les moteurs de réponse — et c'est désormais du balisage honnête, puisque le contenu est visible.
+
+Contrôles : 11 pages en Chromium headless, les 42 blocs se déplient et affichent leur texte, 0 erreur JS, 0 formulation interdite, tous les JSON-LD parsent, et comparaison automatique de chaque réponse au corps de sa page. Vérifié en ligne après déploiement : 42 questions servies. 11 pages resoumises à IndexNow (HTTP 200).
+
+### Deux signaux relevés dans les résultats Google
+
+1. **Un lien de site intitulé « Terrasse au bord de la Seine »** apparaît sous le résultat principal. Cette formulation n'existe nulle part dans le texte du site — Google la fabrique à partir du **slug de l'URL** `guinguette-sartrouville-terrasse-bord-de-seine.html`. C'est une formulation interdite, affichée dans les résultats de recherche. Décision à prendre : renommer le slug (avec redirection) et perdre l'antériorité de la seule page d'article qui se positionne, ou l'accepter.
+2. **La fiche Google affiche encore « Réservations : guinguette-dispensaire.github.io »**, alors que la ligne « Menu » affiche bien le domaine en `.fr`. Les deux venant du même écran, l'hypothèse du cache est plus faible cette fois.
 
 ### Problèmes restants à traiter (prochaines itérations)
 
