@@ -25,7 +25,8 @@ Ce fichier est la **mémoire du suivi**. Relancer le même prompt périodiquemen
 | 2026-06-15 · contenu + réservation | 96 | 88 | 96 | 98 | 88 | 92 | 88 | 82* | 94 | **93** |
 | 2026-07-06 · audit mensuel | 96 | 88 | 96 | 98 | 88 | 93 | 88 | 82* | 95 | **93** |
 | 2026-07-15 · analyse complète | 95 | 88 | 95 | 98 | 88 | 92 | 88 | 82* | 95 | **93** |
-| 2026-08-02 · reprise (phases 0→6) | 97 | 89 | 98 | 98 | 96 | 97 | 90 | **78** | 96 | **94** |
+| 2026-08-02 · reprise (phases 0→6) | 97 | 89 | 98 | 98 | 96 | 97 | 90 | 78 | 96 | **94** |
+| 2026-08-02 · clôture (phases 7→12) | 97 | 90 | **99** | 98 | 96 | **98** | **96** | 78* | **97** | **95** |
 
 > `*` Critère 8 : note **estimée en lab** à partir des preuves techniques (poids des images, image LCP, polices). L'API PageSpeed Insights n'est pas joignable depuis l'environnement d'exécution sandbox. Le workflow **Lighthouse CI** est maintenant actif (`.github/workflows/lighthouse-ci.yml`, déclenché à chaque push et le 1er de chaque mois) — les scores réels seront disponibles dans les artefacts GitHub Actions.
 
@@ -406,3 +407,77 @@ Page `agenda.html` créée. C'était le plus gros trou du site : **aucune date n
 **Deux constats issus de la recherche :**
 1. Le concert **Yipikiyay du 10/09** n'est annoncé nulle part publiquement — ni sur Facebook, ni sur Instagram, ni dans l'agenda de la Ville. Il figure dans le JSON-LD du site depuis juillet. À confirmer.
 2. **sartrouville.fr publie des horaires faux** pour la guinguette (« tous les jours 10h-21h30 »), et la Ville supprime ses fiches événement une fois passées (la page « Concert à la Guinguette du Dispensaire » renvoie une 404 alors qu'elle est encore dans l'index Google). À signaler à la Ville en Phase 10.
+
+
+---
+
+## Détail de l'audit — 2026-08-02 (clôture, phases 7 à 12)
+
+### Deltas vs la même journée, phases 0→6
+
+| Critère | phases 0→6 | phases 7→12 | Delta |
+|---|:---:|:---:|:---:|
+| 3 · JSON-LD | 98 | **99** | ↑ +1 — 7 blocs `Event` validés par Google |
+| 6 · Technique | 97 | **98** | ↑ +1 — sitemap 10 → 17 URL |
+| 7 · Maillage | 90 | **96** | ↑ +6 — agenda dans la nav, 4 pages reliées, `section.related` enrichie sur 6 pages |
+| 9 · SEO local | 96 | **97** | ↑ +1 — 4 pages ciblant des requêtes locales à zéro impression |
+| **Global** | **94** | **95** | **↑ +1** |
+
+`*` Critère 8 gelé à 78 : les optimisations de la Phase 4 ne seront mesurables qu'au prochain run Lighthouse CI, après merge.
+
+### Phase 8 — Indexation
+
+- **Sitemap resoumis** (13 URL au moment de la soumission, 17 après le merge de la PR #2). Google indique encore « dernière lecture 31 juil. » : la relecture se fait à son rythme, sous quelques jours.
+- **Google a déjà crawlé et validé le nouveau balisage** : le rapport *Améliorations → Événements* affiche **1 élément valide, 0 non valide** et « aucun problème détecté ». Le rapport *Fils d'Ariane* est également actif. Les 7 `Event` de la page agenda entreront au prochain passage.
+- **Test des résultats enrichis, sur les URL en ligne** : `/agenda.html` → **8 éléments valides** (7 Événements + 1 fil d'Ariane) ; `/` → **3 éléments valides** (Événement, Commerce local, Organisation). Aucune erreur.
+- ⚠️ **La demande d'indexation manuelle n'a pas pu être déclenchée** : l'outil d'inspection d'URL de Search Console rend son résultat dans un cadre que l'automatisation ne peut pas lire. À faire à la main (Search Console → Inspection de l'URL → coller l'URL → *Demander une indexation*) pour : `agenda.html`, `evenement-anniversaire-guinguette-sartrouville.html`, `mentions-legales.html`, `confidentialite.html`, et les 4 pages de la Phase 11 après merge.
+- **Migration d'adresse** : toujours « en cours » côté Google. Le `github.io` encore affiché dans les résultats vient de l'index, pas d'un réglage — les champs de la fiche ont été vérifiés, seul le **lien du menu** reste sur l'ancien domaine.
+
+### Phase 9 — Fiche Google
+
+- **12 photos chargées** (1066×1600), préparées en juillet et jamais mises en ligne jusqu'ici. Débloqué en passant par **Google Maps** au lieu de l'éditeur de fiche.
+- **Catégorie constatée : Bar (principale) + Restaurant** — l'ancienne note « Brasserie » était périmée. Bon couple, rien à changer. Aucune catégorie « guinguette » n'existe chez Google : le mot doit être porté par la description, les posts, les avis et le site.
+- **Kit livré** : 8 posts hebdomadaires jusqu'à mi-octobre, 6 questions/réponses, 4 modèles de réponse aux avis, plan 54 → 150 avis, et le chemin de clics exact pour chaque réglage.
+- **Corrections identifiées** : le lien du menu pointe encore sur `github.io` ; l'attribut « Aucun plat à emporter » est à arbitrer par Thomas.
+- **Rectification** : j'avais annoncé à tort que la fiche déclarait faire de la livraison. Elle ne le fait pas. J'avais lu la liste des options sur Google Maps sans les coches et les croix, qui disparaissent à l'extraction du texte.
+
+### Phase 10 — Notoriété et liens locaux
+
+Fichier `phase10-notoriete-locale.md` : 9 mails prêts à envoyer, la fiche NAP à coller, les 7 annuaires avec leurs URL d'inscription, et un tableau de suivi.
+
+**Contacts réels vérifiés** : `tourisme@yvelines.fr` · `info@seine-saintgermain.fr` · `mairie@ville-sartrouville.fr` · `courrier.yvelines@actu.fr` · `publicite@sortiraparis.com`.
+**Non trouvés, signalés comme tels** : Infos Yvelines et mesinfos.fr (adresses masquées, formulaires indiqués), Le Parisien 78.
+
+**Trois découvertes :**
+1. La page « Esprit guinguettes en Yvelines » de destination-yvelines.fr liste **12 guinguettes** (Carrières-sur-Seine, Poissy, Bougival…) et **aucune à Sartrouville**. C'est le trou le plus rentable à combler.
+2. **Sortiraparis nous a déjà intégrés à son guide 2026**, mais avec une **adresse fausse** (« 22 Quai de Seine ») et une fin de saison au 30/09. La demande devient une correction.
+3. L'article d'Infos Yvelines ne comporte **aucun lien** vers le site.
+
+### Phase 11 — Nouvelles pages
+
+Quatre pages créées, toutes ciblant des requêtes à **zéro impression** aujourd'hui, plus la refonte de la page événement :
+
+| Page | Mots | Cible |
+|---|:--:|---|
+| `guinguette-pres-de-paris-rer-a.html` | 885 | guinguette près de Paris, guinguette RER A, guinguette Île-de-France |
+| `ou-boire-un-verre-terrasse-sartrouville.html` | 882 | où boire un verre Sartrouville, terrasse ombragée |
+| `afterwork-boucle-de-seine.html` | 829 | afterwork Yvelines, élargi à Houilles / Montesson / Maisons-Laffitte / Le Mesnil-le-Roi |
+| `saison-2027-guinguette-sartrouville.html` | 789 | maintenir le site vivant d'octobre à juin |
+| `evenement-anniversaire-…` (refonte) | 1030 | capacités, formules, exemples, délais, et le rappel que le lieu reste ouvert au public |
+
+Tests : 0 formulation interdite · tous les JSON-LD parsent · toutes les images existent · 65 liens internes testés, 0 lien mort · sitemap 13 → 17 URL, XML valide.
+
+### Phase 12 — Industrialisation
+
+- **Skill `seo-guinguette`** livré : il lit `seo-suivi.md` au démarrage pour repartir de l'état réel, porte les règles de fond, les faits de référence, les contraintes techniques découvertes (upload photo par Maps, iframe de l'éditeur, mesures sandbox trompeuses), le déroulé en 7 phases et les 9 critères de notation.
+- **PR #2** ouverte pour la Phase 11.
+
+### Problèmes restants
+
+- **Demandes d'indexation manuelles** à déclencher (voir Phase 8).
+- **Lien du menu de la fiche Google** encore sur `github.io`.
+- **6 avis sans réponse**, 0 post publié, 0 question/réponse en ligne.
+- **0 mail envoyé, 0 annuaire créé** — tout est prêt, rien n'est parti.
+- **Photos de l'agenda** : les visuels des groupes manquent ; les publications de la guinguette ne mentionnent aucun compte, donc les groupes ne sont pas identifiables sans Thomas.
+- **Concert Yipikiyay du 10/09** toujours non confirmé publiquement.
+- **sartrouville.fr publie de faux horaires** et laisse des 404 indexées.
