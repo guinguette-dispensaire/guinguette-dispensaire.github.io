@@ -33,6 +33,7 @@ Ce fichier est la **mémoire du suivi**. Relancer le même prompt périodiquemen
 | 2026-08-02 · FAQ visibles | 96 | **95** | **99** | 99 | 96 | 98 | 90 | 96 | 98 | **96,3** |
 | 2026-08-02 · angle famille | 96 | 95 | 99 | 99 | 96 | 98 | 90 | 96 | **99** | **96,4** |
 | 2026-08-02 · vin et bière | 96 | 95 | **100** | 99 | 96 | 98 | 90 | 96 | 99 | **96,6** |
+| 2026-08-03 · agenda complété | 96 | 95 | 100 | 99 | 96 | 98 | **91** | 96 | 99 | **96,7** |
 
 > `*` Critère 8 : note **estimée en lab** à partir des preuves techniques (poids des images, image LCP, polices). L'API PageSpeed Insights n'est pas joignable depuis l'environnement d'exécution sandbox. Le workflow **Lighthouse CI** est maintenant actif (`.github/workflows/lighthouse-ci.yml`, déclenché à chaque push et le 1er de chaque mois) — les scores réels seront disponibles dans les artefacts GitHub Actions.
 
@@ -278,6 +279,23 @@ Google a déployé la **programmation native des posts en novembre 2025** (bouto
 3. **Après chaque publication, Google propose de copier le post sur les autres fiches gérées, dont Pépites de Vin.** Refusé à chaque fois. Rien n'est parti sur l'autre établissement.
 
 **Et une correction de plus au kit** : il annonçait « 0 post publié ». **Faux** — la fiche en avait déjà deux, vieux de deux mois (concert Burning Legs, ouverture de la saison), tous deux avec photo. Le chiffre venait de l'analyse du 26 juillet et avait été repris sans vérification. C'est le quatrième constat de cette fiche repris d'une source antérieure sans contrôle direct, après la livraison, le lien de réservation et les questions/réponses. **Aucun chiffre concernant cette fiche ne doit plus être réutilisé sans avoir été revu à l'écran.**
+
+### Agenda — deux concerts manquants, et une correction (3 août)
+
+Le programme des concerts fourni par Thomas révèle **deux dates absentes du site** : Supernova player le 27 août et Grégoire Delahaye le 3 septembre. Deux soirées annoncées nulle part — ni sur le site, ni sur la fiche Google, ni dans les données structurées. Sur les huit semaines restantes de saison, c'est deux week-ends de trafic potentiel perdus.
+
+| Date | Artiste | Type | Horaire |
+|---|---|---|:--:|
+| 27 août 2026 | Supernova player | DJ set | 19h–21h30 |
+| 3 septembre 2026 | Grégoire Delahaye | DJ set | 19h–21h30 |
+
+**Horaire** : 19h de début, confirmé par Thomas. La fin à 21h30 reprend celle des autres soirées de la saison, déjà en ligne.
+
+**Correction au passage** : la soirée du 20 juin s'intitulait « DJ set — première soirée musicale de la saison ». Le programme donne le nom de l'artiste, **DJ David**. Un titre nommé vaut mieux qu'un titre générique : c'est une requête de plus sur laquelle la page peut sortir.
+
+`agenda.html` passe donc à **9 événements balisés en `Event`** (contre 7), tous avec `startDate`, `endDate` et une offre à 0 € — le balisage qui permet à Google d'afficher les dates directement dans les résultats et dans le volet de la fiche.
+
+Tests : les 4 cartes à venir sont dans le bon ordre chronologique · 9 blocs `Event` valides sur 3 JSON-LD qui parsent tous · 10 images chargées, **0 doublon de photo** (le premier jet réutilisait `photo22` sur deux cartes — corrigé, `photo13` sur la carte du 3 septembre) · 1 `h1` · 0 erreur JS · 0 réponse 4xx · **0 formulation interdite**.
 
 ### Problèmes restants à traiter (prochaines itérations)
 
