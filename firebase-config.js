@@ -1,17 +1,22 @@
 // ═══════════════════════════════════════════════════════════════
 //  CONFIGURATION FIREBASE — La Guinguette du Dispensaire
-//  À remplir avec les valeurs de ton projet Firebase :
-//  Console Firebase → Paramètres du projet → Général → Vos applications
-//  (voir GUIDE_INSTALLATION_RESERVATIONS.md, étape A)
+//
+//  Projet : guinguette-stocks  (Firestore, région europe-west9 / Paris)
+//  Migration du 03/08/2026 : l'ancien projet « guinguette-dispensaire »
+//  a été abandonné, son compte Google propriétaire étant introuvable.
+//  Les 38 réservations ont été réimportées avec leurs identifiants
+//  d'origine, pour que les liens d'annulation déjà envoyés aux clients
+//  continuent de fonctionner.
+//
 //  Note : ces clés ne sont pas secrètes — la sécurité est assurée
 //  par les règles Firestore et l'authentification.
 // ═══════════════════════════════════════════════════════════════
 
 export const firebaseConfig = {
-  apiKey: "AIzaSyAUbFx873GyoOt9cxvhS3rp_myRl0Cag-Q",
-  authDomain: "guinguette-dispensaire.firebaseapp.com",
-  projectId: "guinguette-dispensaire",
-  storageBucket: "guinguette-dispensaire.firebasestorage.app",
-  messagingSenderId: "1016818763966",
-  appId: "1:1016818763966:web:35793009f87061b7e536ef"
+  apiKey: "AIzaSyCpm3tlXr3TX3jF7s0F2WR1t67KIVJCg98",
+  authDomain: "guinguette-stocks.firebaseapp.com",
+  projectId: "guinguette-stocks",
+  storageBucket: "guinguette-stocks.firebasestorage.app",
+  messagingSenderId: "765011657714",
+  appId: "1:765011657714:web:f87e8de1ebd55e7461216b"
 };
