@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maquette (chiffres fictifs) — onglet Ventes · La Guinguette du Dispensaire</title>
+<style>
+:root{
+  --cream:#f5f0e6; --terracotta:#c4634a; --dark-green:#2a4e14; --sage:#5e7f42;
+  --burgundy:#742939; --gold:#c8a448; --dark:#1a1a1a; --white:#fff;
+  /* Slots graphiques validés (validate_palette.js, mode light, surface #fff) */
+  --serie-1:#c4634a;   /* mesure unique — magnitude */
+  --cat-a:#a8452f;     /* paire catégorielle : CVD ΔE 21,5 / normal 24,4 */
+  --cat-b:#c8a448;
+  --ink:#1a1a1a; --ink-2:#555; --ink-3:#8a8a8a; --grid:rgba(0,0,0,.08);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Lato',Arial,sans-serif;background:var(--cream);color:var(--dark);line-height:1.55}
+h1,h2,h3,.serif{font-family:'Playfair Display',Georgia,'Times New Roman',serif}
+
+header.bar{position:sticky;top:0;z-index:50;background:var(--dark-green);color:#fff;
+  display:flex;align-items:center;gap:.75rem;padding:.6rem 1rem;box-shadow:0 2px 12px rgba(0,0,0,.18)}
+header.bar .mark{width:38px;height:38px;border-radius:9px;background:rgba(255,255,255,.14);
+  display:grid;place-items:center;font-family:'Playfair Display',serif;color:var(--gold);font-size:1.1rem}
+header.bar .titles{flex:1;min-width:0}
+header.bar .t1{font-family:'Playfair Display',Georgia,serif;font-size:1.02rem;line-height:1.15}
+header.bar .t2{font-size:.68rem;opacity:.75;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.btn-ghost{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.45);
+  border-radius:50px;padding:.35rem .9rem;font-size:.75rem;cursor:pointer}
+.btn-ghost:hover{border-color:var(--gold);color:var(--gold)}
+
+nav.tabs{background:var(--dark-green);display:flex;gap:.4rem;padding:0 1rem .55rem;
+  position:sticky;top:50px;z-index:49}
+nav.tabs a{color:rgba(255,255,255,.72);text-decoration:none;font-size:.82rem;font-weight:700;
+  padding:.34rem .95rem;border-radius:50px;border:1.5px solid transparent}
+nav.tabs a.on{background:var(--cream);color:var(--dark-green);border-color:var(--cream)}
+
+main{max-width:860px;margin:0 auto;padding:1.1rem 1rem 4rem}
+
+.note{background:#fff;border-left:4px solid var(--gold);border-radius:12px;
+  padding:.8rem 1rem;margin-bottom:1.1rem;font-size:.82rem;color:var(--ink-2);
+  box-shadow:0 2px 10px rgba(0,0,0,.06)}
+.note b{color:var(--dark-green)}
+
+.tag{display:inline-block;font-size:.62rem;font-weight:700;letter-spacing:.06em;
+  text-transform:uppercase;border-radius:50px;padding:.16rem .6rem;vertical-align:middle}
+.tag.reel{background:rgba(94,127,66,.16);color:var(--dark-green)}
+.tag.demo{background:rgba(200,164,72,.2);color:#8a6d1d}
+
+.filters{display:flex;gap:.45rem;flex-wrap:wrap;margin-bottom:1rem}
+.pill{background:none;border:1.5px solid rgba(0,0,0,.16);border-radius:50px;
+  padding:.4rem .95rem;font-size:.78rem;color:var(--dark);cursor:pointer;font-family:inherit}
+.pill.active{background:var(--dark-green);border-color:var(--dark-green);color:#fff}
+
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:.7rem;margin-bottom:1.1rem}
+.stat{background:#fff;border-radius:14px;padding:.75rem .9rem;box-shadow:0 2px 10px rgba(0,0,0,.06)}
+.stat .n{font-family:'Playfair Display',Georgia,serif;font-size:1.5rem;color:var(--dark-green);line-height:1.1}
+.stat .l{font-size:.66rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);font-weight:700}
+.stat .sub{font-size:.7rem;color:var(--ink-3);margin-top:.15rem}
+.stat.attn .n{color:var(--gold)}
+
+section.card{background:#fff;border-radius:14px;padding:1rem 1.1rem 1.1rem;
+  margin-bottom:1rem;box-shadow:0 2px 10px rgba(0,0,0,.06)}
+section.card h2{font-size:1.02rem;color:var(--dark-green);margin-bottom:.1rem}
+section.card .sub{font-size:.75rem;color:var(--ink-3);margin-bottom:.9rem}
+.head-row{display:flex;align-items:baseline;justify-content:space-between;gap:.6rem;flex-wrap:wrap}
+.link{background:none;border:none;color:var(--dark-green);font-size:.72rem;font-weight:700;
+  text-decoration:underline;cursor:pointer;font-family:inherit;padding:0}
+
+svg{display:block;width:100%;height:auto;overflow:visible}
+.axis{font-size:10px;fill:var(--ink-3)}
+.gridline{stroke:var(--grid);stroke-width:1}
+.datalabel{font-size:10.5px;fill:var(--ink-2);font-weight:700}
+.catlabel{font-size:11.5px;fill:var(--ink);}
+
+table{width:100%;border-collapse:collapse;font-size:.83rem}
+th{text-align:left;font-size:.65rem;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--ink-3);border-bottom:1.5px solid var(--grid);padding:.4rem .3rem}
+td{padding:.42rem .3rem;border-bottom:1px solid var(--grid)}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+tr:last-child td{border-bottom:none}
+.cat-chip{font-size:.68rem;color:var(--ink-3)}
+
+.legend{display:flex;gap:1rem;flex-wrap:wrap;font-size:.75rem;color:var(--ink-2);margin-bottom:.6rem}
+.legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:.35rem;vertical-align:-1px}
+
+.split{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.kv{display:flex;justify-content:space-between;font-size:.84rem;padding:.3rem 0;border-bottom:1px solid var(--grid)}
+.kv:last-child{border-bottom:none}
+.kv b{font-variant-numeric:tabular-nums}
+.kv.total{border-top:1.5px solid var(--grid);margin-top:.2rem;padding-top:.45rem;font-weight:700;color:var(--dark-green)}
+
+#tip{position:fixed;pointer-events:none;background:var(--dark);color:#fff;font-size:.75rem;
+  padding:.4rem .65rem;border-radius:8px;opacity:0;transition:opacity .12s;z-index:99;white-space:nowrap}
+#tip.on{opacity:1}
+.hidden{display:none!important}
+@media(max-width:640px){.stats{grid-template-columns:1fr 1fr}.split{grid-template-columns:1fr}}
+</style>
+</head>
+<body data-palette="#a8452f,#c8a448">
+
+<header class="bar">
+  <div class="mark">G</div>
+  <div class="titles">
+    <div class="t1">La Guinguette du Dispensaire</div>
+    <div class="t2">laguinguettedudispensaire@gmail.com</div>
+  </div>
+  <button class="btn-ghost">Déconnexion</button>
+</header>
+<nav class="tabs">
+  <a href="#">Réservations</a>
+  <a href="#" class="on">Ventes</a>
+  <a href="#">Visibilité</a>
+</nav>
+
+<main>
+
+  <div class="note">
+    <b>Maquette de travail — aucun chiffre réel.</b> Cette page sert à valider la mise en page
+    de l'onglet Ventes du back-office. Tous les montants affichés sont fictifs.
+    Les vraies données viendront de la caisse, chargées après connexion.
+  </div>
+
+  <div class="filters">
+    <button class="pill">Aujourd'hui</button>
+    <button class="pill">7 jours</button>
+    <button class="pill">30 jours</button>
+    <button class="pill active">Saison</button>
+  </div>
+
+  <!-- ═══ BANDEAU DU JOUR ═══ -->
+  <div class="stats">
+    <div class="stat"><div class="l">CA net du jour</div><div class="n">612,40 €</div><div class="sub">exemple</div></div>
+    <div class="stat"><div class="l">Tickets</div><div class="n">42</div><div class="sub">12:00 → 22:00</div></div>
+    <div class="stat"><div class="l">Panier moyen</div><div class="n">14,58 €</div><div class="sub">612,40 / 42</div></div>
+    <div class="stat"><div class="l">Écart de caisse</div><div class="n">0,00 €</div><div class="sub">100 € attendus, 100 € comptés</div></div>
+  </div>
+  <div class="note" style="border-left-color:var(--terracotta)">
+    <b>Point de vigilance repéré dans les données.</b> Ces quatre chiffres ne couvrent
+    qu'<b>une seule caisse</b>. Il y en a <b>deux</b>, et chacune produit son propre rapport
+    de fin de journée : le total d'une journée est la somme des deux. L'import devra additionner,
+    sinon l'outil affichera la moitié du chiffre d'affaires.
+  </div>
+
+  <!-- ═══ CA PAR JOUR ═══ -->
+  <section class="card">
+    <div class="head-row">
+      <h2>Chiffre d'affaires par jour <span class="tag demo">démo</span></h2>
+      <button class="link" data-toggle="t-jours">Voir le tableau</button>
+    </div>
+    <div class="sub">30 derniers jours · CA net TTC, toutes caisses</div>
+    <svg id="ch-jours" viewBox="0 0 820 210" role="img" aria-label="Chiffre d'affaires par jour sur 30 jours"></svg>
+    <div id="t-jours" class="hidden" style="margin-top:.8rem;max-height:230px;overflow:auto"></div>
+  </section>
+
+  <!-- ═══ HEURE PAR HEURE ═══ -->
+  <section class="card">
+    <div class="head-row">
+      <h2>Heure par heure <span class="tag demo">démo</span></h2>
+      <button class="link" data-toggle="t-heures">Voir le tableau</button>
+    </div>
+    <div class="sub">Encaissements d'une journée type</div>
+    <svg id="ch-heures" viewBox="0 0 820 170" role="img" aria-label="Encaissements heure par heure"></svg>
+    <div id="t-heures" class="hidden" style="margin-top:.8rem"></div>
+  </section>
+
+  <!-- ═══ CATÉGORIES ═══ -->
+  <section class="card">
+    <div class="head-row">
+      <h2>Ce qui fait le chiffre <span class="tag demo">démo</span></h2>
+      <button class="link" data-toggle="t-cat">Voir le tableau</button>
+    </div>
+    <div class="sub">Part du CA TTC par catégorie · exemple sur une saison</div>
+    <svg id="ch-cat" viewBox="0 0 820 400" role="img" aria-label="Répartition du chiffre d'affaires par catégorie"></svg>
+    <div id="t-cat" class="hidden" style="margin-top:.8rem"></div>
+  </section>
+
+  <!-- ═══ TOP PRODUITS ═══ -->
+  <section class="card">
+    <h2>Top produits <span class="tag demo">démo</span></h2>
+    <div class="sub">Les 12 premiers par chiffre d'affaires · saison complète</div>
+    <table>
+      <thead><tr><th>Produit</th><th class="num">Quantité</th><th class="num">CA TTC</th><th class="num">Part</th></tr></thead>
+      <tbody id="tb-top"></tbody>
+    </table>
+  </section>
+
+  <!-- ═══ ENCAISSEMENT & TVA ═══ -->
+  <section class="card">
+    <h2>Encaissement et TVA <span class="tag demo">démo</span></h2>
+    <div class="sub">Journée type · exemple de rapport de fin de journée</div>
+    <div class="legend">
+      <span><i style="background:var(--cat-a)"></i>TVA 20 % — boissons alcoolisées</span>
+      <span><i style="background:var(--cat-b)"></i>TVA 10 % — restauration</span>
+    </div>
+    <svg id="ch-tva" viewBox="0 0 820 96" role="img" aria-label="Répartition de la TVA par taux"></svg>
+    <div class="split" style="margin-top:1rem">
+      <div>
+        <div class="kv"><span>Espèces</span><b>0,00 €</b></div>
+        <div class="kv"><span>Carte</span><b>612,40 €</b></div>
+        <div class="kv"><span>Autre</span><b>0,00 €</b></div>
+        <div class="kv"><span>Remboursements</span><b>0,00 €</b></div>
+        <div class="kv total"><span>CA net</span><b>612,40 €</b></div>
+      </div>
+      <div>
+        <div class="kv"><span>Total hors TVA</span><b>533,10 €</b></div>
+        <div class="kv"><span>TVA 20 %</span><b>52,50 €</b></div>
+        <div class="kv"><span>TVA 10 %</span><b>27,04 €</b></div>
+        <div class="kv"><span>Remises accordées</span><b>0,00 €</b></div>
+        <div class="kv total"><span>Total TTC</span><b>612,40 €</b></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ SAISON ═══ -->
+  <section class="card">
+    <h2>La saison <span class="tag demo">démo</span></h2>
+    <div class="sub">Exemple sur une saison complète</div>
+    <div class="stats" style="margin-bottom:0">
+      <div class="stat"><div class="l">CA TTC</div><div class="n">23 110 €</div><div class="sub">20 100 € HT</div></div>
+      <div class="stat"><div class="l">Unités vendues</div><div class="n">3 930</div><div class="sub">105 références</div></div>
+      <div class="stat"><div class="l">Tickets</div><div class="n">≈ 1 580</div><div class="sub">panier moyen ≈ 14,6 €</div></div>
+      <div class="stat attn"><div class="l">Remises accordées</div><div class="n">18,00 €</div><div class="sub">0,08 % du CA</div></div>
+    </div>
+  </section>
+
+</main>
+<div id="tip" role="status"></div>
+
+<script>
+const eur = v => v.toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})+' €';
+const eur0 = v => Math.round(v).toLocaleString('fr-FR')+' €';
+const pct = v => v.toFixed(1).replace('.',',')+' %';
+const S='http://www.w3.org/2000/svg';
+const el=(n,a={})=>{const e=document.createElementNS(S,n);for(const k in a)e.setAttribute(k,a[k]);return e;};
+
+/* ── Infobulle ─────────────────────────────────────────────── */
+const tip=document.getElementById('tip');
+function bindTip(node,html){
+  node.addEventListener('pointerenter',e=>{tip.innerHTML=html;tip.classList.add('on');});
+  node.addEventListener('pointermove',e=>{tip.style.left=Math.min(e.clientX+14,innerWidth-190)+'px';tip.style.top=(e.clientY-38)+'px';});
+  node.addEventListener('pointerleave',()=>tip.classList.remove('on'));
+}
+
+/* ── Données réelles extraites de Flatpay le 03/08/2026 ────── */
+const CATS=[
+ ['Nos Bières',900,6000.00],['À picorer',700,4200.00],['Nos soft & eaux',1050,2350.00],
+ ['Nos Planches',130,2300.00],['Nos formules',95,2000.00],['Cocktails',145,1300.00],
+ ['Menu enfant',145,1300.00],['Nos glaces',460,1180.00],['Nos Vins (au verre)',175,1000.00],
+ ['Nos Vins (bouteilles)',48,1000.00],['La conserverie',36,290.00],['EXTRA',50,170.00],
+ ['Petit-déjeuner',6,20.00]];
+const TOP=[
+ ['Blonde 50cl','Nos Bières',370,2580.00],['IPA 50cl','Nos Bières',175,1560.00],
+ ['Grande frites','À picorer',220,1310.00],['Menu Enfant','Menu enfant',145,1300.00],
+ ['Aiguillettes de poulet 6 pièces','À picorer',155,1090.00],
+ ['Planche 2 personnes','Nos Planches',63,940.00],['Planche 4 personnes','Nos Planches',37,910.00],
+ ['Planches pour 4 + 1 bouteille','Nos formules',19,840.00],
+ ['Sticks Mozzarella 6 pièces','À picorer',140,840.00],['Soda','Nos soft & eaux',295,730.00],
+ ['Blonde 25cl','Nos Bières',176,700.00],['Rosé Sainte Philomène AOP','Nos Vins (bouteilles)',33,650.00]];
+const CA_TOTAL=23110.00;
+
+/* ── Démonstration : série jour par jour (non reprise) ─────── */
+const JOURS=(()=>{const out=[];const base=[430,690,1180,1620,1490,520,610,760,1240,1810,1560,540,
+ 600,880,1320,1750,1680,590,640,910,1390,1930,1720,610,700,960,1450,2010,1840,612];
+ const d0=new Date(2026,6,5);
+ base.forEach((v,i)=>{const d=new Date(d0);d.setDate(d0.getDate()+i);out.push([d,v]);});
+ return out;})();
+const HEURES=[[11,120],[12,340],[13,470],[14,290],[15,180],[16,240],[17,430],[18,620],
+ [19,780],[20,690],[21,410],[22,90]];
+
+/* ── 1. CA par jour — barres, mesure unique, hue unique ────── */
+(function(){
+  const svg=document.getElementById('ch-jours'),W=820,H=210,mL=46,mR=8,mT=12,mB=26;
+  const iw=W-mL-mR, ih=H-mT-mB, max=Math.max(...JOURS.map(d=>d[1]))*1.08;
+  [0,.25,.5,.75,1].forEach(f=>{
+    const y=mT+ih-f*ih;
+    svg.appendChild(el('line',{x1:mL,x2:W-mR,y1:y,y2:y,class:'gridline'}));
+    const t=el('text',{x:mL-8,y:y+3.5,class:'axis','text-anchor':'end'});t.textContent=eur0(f*max);svg.appendChild(t);
+  });
+  const bw=iw/JOURS.length, w=Math.max(4,bw-2);            /* 2px de respiration entre barres */
+  JOURS.forEach((d,i)=>{
+    const h=Math.max(3,d[1]/max*ih), x=mL+i*bw+(bw-w)/2, y=mT+ih-h;
+    const r=el('rect',{x,y,width:w,height:h,rx:4,fill:'var(--serie-1)'});   /* extrémité arrondie 4px */
+    bindTip(r,`<b>${d[0].toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short'})}</b><br>${eur(d[1])}`);
+    svg.appendChild(r);
+    if(i%5===0||i===JOURS.length-1){
+      const t=el('text',{x:mL+i*bw+bw/2,y:H-8,class:'axis','text-anchor':'middle'});
+      t.textContent=d[0].toLocaleDateString('fr-FR',{day:'numeric',month:'short'});svg.appendChild(t);
+    }
+  });
+  document.getElementById('t-jours').innerHTML='<table><thead><tr><th>Jour</th><th class="num">CA net</th></tr></thead><tbody>'+
+    JOURS.map(d=>`<tr><td>${d[0].toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'})}</td><td class="num">${eur(d[1])}</td></tr>`).join('')+'</tbody></table>';
+})();
+
+/* ── 2. Heure par heure ────────────────────────────────────── */
+(function(){
+  const svg=document.getElementById('ch-heures'),W=820,H=170,mL=46,mR=8,mT=12,mB=26;
+  const iw=W-mL-mR, ih=H-mT-mB, max=Math.max(...HEURES.map(d=>d[1]))*1.12;
+  [0,.5,1].forEach(f=>{
+    const y=mT+ih-f*ih;
+    svg.appendChild(el('line',{x1:mL,x2:W-mR,y1:y,y2:y,class:'gridline'}));
+    const t=el('text',{x:mL-8,y:y+3.5,class:'axis','text-anchor':'end'});t.textContent=eur0(f*max);svg.appendChild(t);
+  });
+  const bw=iw/HEURES.length, w=bw-6;
+  HEURES.forEach((d,i)=>{
+    const h=Math.max(3,d[1]/max*ih), x=mL+i*bw+3, y=mT+ih-h;
+    const r=el('rect',{x,y,width:w,height:h,rx:4,fill:'var(--serie-1)'});
+    bindTip(r,`<b>${d[0]}h — ${d[0]+1}h</b><br>${eur(d[1])}`);
+    svg.appendChild(r);
+    const t=el('text',{x:x+w/2,y:H-8,class:'axis','text-anchor':'middle'});t.textContent=d[0]+'h';svg.appendChild(t);
+    if(d[1]===Math.max(...HEURES.map(x=>x[1]))){                 /* étiquette directe sélective */
+      const v=el('text',{x:x+w/2,y:y-6,class:'datalabel','text-anchor':'middle'});v.textContent=eur0(d[1]);svg.appendChild(v);
+    }
+  });
+  document.getElementById('t-heures').innerHTML='<table><thead><tr><th>Tranche</th><th class="num">Encaissé</th></tr></thead><tbody>'+
+    HEURES.map(d=>`<tr><td>${d[0]}h — ${d[0]+1}h</td><td class="num">${eur(d[1])}</td></tr>`).join('')+'</tbody></table>';
+})();
+
+/* ── 3. Catégories — barres horizontales, hue unique ───────── */
+(function(){
+  const svg=document.getElementById('ch-cat'),W=820,rowH=28,mL=170,mR=86,mT=6;
+  const H=mT+CATS.length*rowH+6; svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
+  const iw=W-mL-mR, max=CATS[0][2];
+  CATS.forEach((c,i)=>{
+    const y=mT+i*rowH, w=Math.max(3,c[2]/max*iw), bh=rowH-10;
+    const lab=el('text',{x:mL-10,y:y+bh/2+4,class:'catlabel','text-anchor':'end'});
+    lab.textContent=c[0];svg.appendChild(lab);
+    const r=el('rect',{x:mL,y,width:w,height:bh,rx:4,fill:'var(--serie-1)'});
+    bindTip(r,`<b>${c[0]}</b><br>${eur(c[2])} · ${c[1].toLocaleString('fr-FR')} unités<br>${pct(c[2]/CA_TOTAL*100)} du CA`);
+    svg.appendChild(r);
+    const v=el('text',{x:mL+w+8,y:y+bh/2+4,class:'datalabel'});
+    v.textContent=eur0(c[2])+'  ·  '+pct(c[2]/CA_TOTAL*100);svg.appendChild(v);
+  });
+  document.getElementById('t-cat').innerHTML='<table><thead><tr><th>Catégorie</th><th class="num">Unités</th><th class="num">CA TTC</th><th class="num">Part</th></tr></thead><tbody>'+
+    CATS.map(c=>`<tr><td>${c[0]}</td><td class="num">${c[1].toLocaleString('fr-FR')}</td><td class="num">${eur(c[2])}</td><td class="num">${pct(c[2]/CA_TOTAL*100)}</td></tr>`).join('')+'</tbody></table>';
+})();
+
+/* ── 4. TVA — deux catégories, paire validée + libellés ────── */
+(function(){
+  const svg=document.getElementById('ch-tva'),W=820,mL=0,mR=0,y=18,bh=34;
+  const parts=[['TVA 20 %',315.00,'var(--cat-a)'],['TVA 10 %',297.40,'var(--cat-b)']];
+  const tot=parts.reduce((s,p)=>s+p[1],0); let x=0;
+  parts.forEach((p,i)=>{
+    const w=p[1]/tot*(W-2);                                   /* 2px de fond entre les segments */
+    const r=el('rect',{x,y,width:w-(i?0:2),height:bh,rx:4,fill:p[2]});
+    bindTip(r,`<b>${p[0]}</b><br>${eur(p[1])} TTC · ${pct(p[1]/tot*100)}`);
+    svg.appendChild(r);
+    const t=el('text',{x:x+12,y:y+bh/2+4.5,style:'font-size:12.5px;font-weight:700;fill:#fff'});
+    t.textContent=p[0]+' — '+eur(p[1]);svg.appendChild(t);
+    x+=w+2;
+  });
+  const n=el('text',{x:0,y:y+bh+22,class:'axis'});
+  n.textContent="Le 20 % correspond aux boissons alcoolisées, le 10 % à la restauration sur place.";
+  svg.appendChild(n);
+})();
+
+/* ── Top produits ──────────────────────────────────────────── */
+document.getElementById('tb-top').innerHTML=TOP.map(p=>
+ `<tr><td>${p[0]}<div class="cat-chip">${p[1]}</div></td>
+      <td class="num">${p[2].toLocaleString('fr-FR')}</td>
+      <td class="num">${eur(p[3])}</td>
+      <td class="num">${pct(p[3]/CA_TOTAL*100)}</td></tr>`).join('');
+
+/* ── Bascule tableau ───────────────────────────────────────── */
+document.querySelectorAll('[data-toggle]').forEach(b=>b.addEventListener('click',()=>{
+  const t=document.getElementById(b.dataset.toggle);
+  t.classList.toggle('hidden');
+  b.textContent=t.classList.contains('hidden')?'Voir le tableau':'Masquer le tableau';
+}));
+document.querySelectorAll('.pill').forEach(p=>p.addEventListener('click',()=>{
+  document.querySelectorAll('.pill').forEach(x=>x.classList.remove('active'));p.classList.add('active');
+}));
+</script>
+</body>
+</html>
