@@ -230,6 +230,30 @@ Cette fois j'ai **ouvert la photo** au lieu de lire sa légende. Le babyfoot est
 
 **Règle confirmée : un texte alternatif n'est pas une source. La photo, si.**
 
+### La fiche Google n'a plus de questions/réponses — et je me suis trompé en disant le contraire
+
+Le chantier « 6 questions/réponses sur la fiche Google » figure dans ce suivi depuis le 13 juillet. **Il est irréalisable : Google a supprimé la fonctionnalité.**
+
+- **3 novembre 2025** : l'API Q&A est arrêtée. Documentation Google : « The My Business Q&A API was discontinued on November 3, 2025. You can no longer read or post questions and answers using the API. »
+- **3 décembre 2025** : début du retrait de la section publique sur les fiches.
+
+Vérifié aussi directement : aucun bloc « Questions et réponses » sur la fiche Maps, aucun dans le panneau de connaissance des résultats de recherche, et **aucune tuile Questions dans le tableau de bord propriétaire** — qui affiche Éditer la fiche, Voir les avis, Photos, Posts, Performances, Publicité, Modifier le menu, Commande de repas, Listes d'attente, Éditer produits, Réservations. Rien d'autre.
+
+**Ma responsabilité.** Quelques heures plus tôt dans la même session, j'ai écrit que le bloc questions/réponses de la fiche « s'affiche toujours dans Google, contrairement aux résultats enrichis FAQ » et que c'était « le gain de visibilité immédiat ». **C'était faux, et je ne l'avais pas vérifié.** C'est la troisième fois de la journée que j'affirme quelque chose sur cette fiche sans l'avoir contrôlé — après la livraison inexistante et le lien de réservation. La règle vaut pour les fonctionnalités comme pour les réglages : **on ne décrit pas un écran qu'on n'a pas ouvert.**
+
+**Ce qui remplace la fonctionnalité, et pourquoi ça tombe bien.** Google a basculé sur des réponses générées par IA dans Search et Maps, construites à partir de la fiche, **du contenu du site**, des avis et des photos. Autrement dit : les 65 questions publiées ce soir sur le site ne sont plus un lot de consolation, elles sont devenues **le mécanisme principal**. Et le balisage `FAQPage` conservé — que j'avais justifié par Bing et les moteurs de réponse — se trouve être explicitement recommandé pour que ces IA sachent où puiser.
+
+**Ce qui reste à faire sur la fiche**, par ordre d'utilité :
+
+| Action | Qui |
+|---|---|
+| Cocher **chaises hautes**, **toilettes**, **entrée et places assises accessibles en fauteuil** | Thomas — l'éditeur s'ouvre dans un cadre isolé que mes outils ne peuvent pas piloter, même constat qu'en juillet |
+| Corriger le **lien du menu** encore en `github.io` | Thomas |
+| Publier les **8 posts hebdomadaires** déjà rédigés | Thomas |
+| Répondre aux **6 avis sans réponse** | Thomas |
+
+Les posts et les avis prennent le relais des questions/réponses : ce sont désormais les deux seuls contenus éditoriaux que la fiche accepte, et ils alimentent les mêmes réponses IA.
+
 ### Problèmes restants à traiter (prochaines itérations)
 
 - **Mesure CWV réelle** : activer le workflow Lighthouse CI (proposé) ou lancer PageSpeed Insights manuellement pour remplacer la note estimée du critère 8.
