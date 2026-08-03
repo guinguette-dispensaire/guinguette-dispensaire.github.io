@@ -1095,7 +1095,18 @@
     @media (max-width: 400px) {
       header { padding: 1.5rem 1rem 1.25rem; }
     }
-  </style>
+  
+/* Questions frequentes */
+.faq-bloc{margin:2.6rem 0 0}
+.faq-bloc h2{margin-bottom:1rem}
+.faq-bloc details{background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:12px;margin-bottom:.6rem;overflow:hidden}
+.faq-bloc summary{cursor:pointer;padding:.95rem 1.15rem;font-weight:700;color:var(--dark-green);list-style:none;position:relative;padding-right:2.6rem}
+.faq-bloc summary::-webkit-details-marker{display:none}
+.faq-bloc summary::after{content:'+';position:absolute;right:1.1rem;top:50%;transform:translateY(-50%);font-size:1.3rem;line-height:1;color:var(--gold);font-weight:400}
+.faq-bloc details[open] summary::after{content:'\2013'}
+.faq-bloc summary:hover{background:rgba(0,0,0,.02)}
+.faq-bloc details p{padding:0 1.15rem 1.05rem;margin:0;color:#3a3a3a;font-size:.96rem;line-height:1.65}
+</style>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -1107,6 +1118,38 @@
   }
   </script>
 <script defer src="https://cloud.umami.is/script.js" data-website-id="e2122b5d-7b90-4b67-b0ce-9c8d22844d19"></script>
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "FAQPage",
+ "mainEntity": [
+  {
+   "@type": "Question",
+   "name": "Sert-on du vin et de la bière ?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Oui, c'est même le cœur de la carte : six vins servis au verre (12,5 cl) ou à la bouteille, et dix bières dont quatre à la pression — blonde, IPA, et les deux versions Picon. Il y a aussi des cocktails, un prosecco bio et des softs pour ceux qui ne boivent pas d'alcool."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "D'où viennent les vins ?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "La sélection est signée Pépites de Vin : un rosé des Coteaux d'Aix-en-Provence, un blanc des Côtes de Gascogne et un Mâcon-Villages de Bourgogne, un rouge de la Vallée du Rhône et un Languedoc bio, plus un prosecco bio italien. Verre à partir de 5 €, bouteille à partir de 20 €."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Quelles bières servez-vous ?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Quatre pressions : La Buchette blonde, une IPA, et les deux au Picon (blonde et IPA). Demi à partir de 4 €, pinte à partir de 7 €. En bouteille, des artisanales — La Mordue, Otcho — ainsi que Corona et sa version sans alcool."
+   }
+  }
+ ]
+}
+</script>
 </head>
 <body>
 
@@ -1554,6 +1597,13 @@
 </main>
 
 <!-- ═══ FOOTER ═══ -->
+
+<section class="faq-bloc container" style="max-width:820px;margin:0 auto;padding:0 1.4rem 3rem">
+  <h2>Questions fréquentes</h2>
+  <details><summary>Sert-on du vin et de la bière ?</summary><p>Oui, c'est même le cœur de la carte : six vins servis au verre (12,5 cl) ou à la bouteille, et dix bières dont quatre à la pression — blonde, IPA, et les deux versions Picon. Il y a aussi des cocktails, un prosecco bio et des softs pour ceux qui ne boivent pas d'alcool.</p></details>
+  <details><summary>D'où viennent les vins ?</summary><p>La sélection est signée Pépites de Vin : un rosé des Coteaux d'Aix-en-Provence, un blanc des Côtes de Gascogne et un Mâcon-Villages de Bourgogne, un rouge de la Vallée du Rhône et un Languedoc bio, plus un prosecco bio italien. Verre à partir de 5 €, bouteille à partir de 20 €.</p></details>
+  <details><summary>Quelles bières servez-vous ?</summary><p>Quatre pressions : La Buchette blonde, une IPA, et les deux au Picon (blonde et IPA). Demi à partir de 4 €, pinte à partir de 7 €. En bouteille, des artisanales — La Mordue, Otcho — ainsi que Corona et sa version sans alcool.</p></details>
+</section>
 <footer>
   <p>
     <a href="https://laguinguettedudispensaire.fr">laguinguettedudispensaire.fr</a>

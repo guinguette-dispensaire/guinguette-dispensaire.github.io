@@ -31,6 +31,8 @@ Ce fichier est la **mémoire du suivi**. Relancer le même prompt périodiquemen
 | 2026-08-02 · audit re-mesuré | 88 | 92 | 96 | 98 | 90 | 97 | 86 | 93 | 97 | **93,5** |
 | 2026-08-02 · lot technique | **96** | 92 | **97** | **99** | **96** | **98** | 90 | **96** | **98** | **95,8** |
 | 2026-08-02 · FAQ visibles | 96 | **95** | **99** | 99 | 96 | 98 | 90 | 96 | 98 | **96,3** |
+| 2026-08-02 · angle famille | 96 | 95 | 99 | 99 | 96 | 98 | 90 | 96 | **99** | **96,4** |
+| 2026-08-02 · vin et bière | 96 | 95 | **100** | 99 | 96 | 98 | 90 | 96 | 99 | **96,6** |
 
 > `*` Critère 8 : note **estimée en lab** à partir des preuves techniques (poids des images, image LCP, polices). L'API PageSpeed Insights n'est pas joignable depuis l'environnement d'exécution sandbox. Le workflow **Lighthouse CI** est maintenant actif (`.github/workflows/lighthouse-ci.yml`, déclenché à chaque push et le 1er de chaque mois) — les scores réels seront disponibles dans les artefacts GitHub Actions.
 
@@ -185,6 +187,48 @@ Contrôles : 11 pages en Chromium headless, les 42 blocs se déplient et affiche
 
 1. **Un lien de site intitulé « Terrasse au bord de la Seine »** apparaît sous le résultat principal. Cette formulation n'existe nulle part dans le texte du site — Google la fabrique à partir du **slug de l'URL** `guinguette-sartrouville-terrasse-bord-de-seine.html`. C'est une formulation interdite, affichée dans les résultats de recherche. Décision à prendre : renommer le slug (avec redirection) et perdre l'antériorité de la seule page d'article qui se positionne, ou l'accepter.
 2. **La fiche Google affiche encore « Réservations : guinguette-dispensaire.github.io »**, alors que la ligne « Menu » affiche bien le domaine en `.fr`. Les deux venant du même écran, l'hypothèse du cache est plus faible cette fois.
+
+### Les vraies questions des clients — l'angle famille
+
+Thomas a donné les questions qu'on lui pose réellement au comptoir : **horaires, tables à l'ombre, chaises enfants, prendre un verre pendant que les enfants jouent à côté, jeux disponibles, menu enfant.** Elles sont toutes des questions de famille. C'est le signal le plus net de tout ce chantier, et le site ne le reflétait pas : l'accueil se présentait comme « bar restaurant terrasse » et l'angle famille était enterré dans un article que Google n'a pas indexé.
+
+Cinq de ces six questions trouvaient déjà leur réponse dans des faits publiés. Une seule n'existait nulle part — les chaises hautes — et trois attributs bloquaient depuis juillet faute d'information. **Faits confirmés par Thomas le 2 août : chaises hautes disponibles, toilettes accessibles sur place, accès de plain-pied (poussette et fauteuil). Pas de wifi client.**
+
+**Ce qui a changé sur le site :**
+
+- **FAQ de l'accueil réordonnée et étoffée : 6 → 11 questions**, les cinq questions de famille en tête. Les réponses existantes sont conservées mot pour mot.
+- **Méta-description de l'accueil réécrite** : « menu enfant et aire de jeux à deux pas » entrent dans la phrase, sans perdre « bar, restaurant » qui porte les 672 impressions de « restaurant sartrouville ». 146 caractères.
+- **`amenityFeature` enrichi** de 4 entrées : chaises hautes, toilettes, accès de plain-pied, aire de jeux du parc à deux pas.
+- **Page famille** : 5 → 8 questions, et la liste « infos pratiques » complétée.
+- **Total sur le site : 53 questions visibles** (11 sur l'accueil, 42 sur les articles).
+
+Choix assumé : on remonte la famille sans changer l'identité. Le titre reste celui d'une guinguette, pas d'un parc de jeux.
+
+**Ce que ça débloque ailleurs** : les trois attributs manquants de la fiche Google (chaises hautes, toilettes, accessibilité) peuvent enfin être renseignés. C'est là que le gain de visibilité est immédiat, puisque le bloc « Questions et réponses » de la fiche s'affiche toujours dans Google — contrairement aux résultats enrichis FAQ.
+
+### Vin et bière — la carte devient une réponse, pas une liste
+
+Thomas voulait que « on sert du vin et de la bière » et « d'où viennent les vins » soient dits explicitement. C'est un angle mort classique : les prix sont sur la carte, mais personne ne répond à la question telle qu'on la pose.
+
+Trois questions ajoutées, toutes construites sur les données de la carte :
+
+| Question | Où elle est publiée |
+|---|---|
+| Sert-on du vin et de la bière ? | accueil, carte |
+| D'où viennent les vins ? | accueil, carte, « où boire un verre », page phare |
+| Quelles bières servez-vous ? | accueil, carte, « où boire un verre » |
+
+`menu.html` reçoit son premier bloc de questions — la page la plus consultée après l'accueil (760 impressions) n'en avait aucun.
+
+**Total : 65 questions visibles sur le site**, contre 6 ce matin.
+
+### Un réflexe qui a payé — le babyfoot
+
+Les données structurées annonçaient « Jeux de plein air (babyfoot, jeux en bois) ». En remontant la source, cette mention ne venait d'aucun texte du site : elle sortait du **texte alternatif d'une photo**, recopié en phase 3 sans vérification. Exactement le schéma qui m'a fait annoncer à tort une livraison sur la fiche Google.
+
+Cette fois j'ai **ouvert la photo** au lieu de lire sa légende. Le babyfoot est bien là, sur la pelouse devant les écuries. L'information est donc juste — mais elle ne l'était que par chance, et elle est maintenant vérifiée. Le babyfoot a été ajouté aux réponses sur les jeux, qui ne citaient que le Mölkky, la pétanque et le palet breton.
+
+**Règle confirmée : un texte alternatif n'est pas une source. La photo, si.**
 
 ### Problèmes restants à traiter (prochaines itérations)
 
