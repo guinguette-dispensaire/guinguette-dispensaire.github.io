@@ -145,12 +145,19 @@ label.chk input { width: auto; margin: 0; }
 #toast.err { background: var(--burgundy); }
 
 
-/* ═══ ONGLETS ═══ */
-.tabs { display: flex; gap: 1.4rem; background: var(--dark-green); padding: 0 1.1rem; position: sticky; top: 54px; z-index: 49; box-shadow: 0 2px 12px rgba(0,0,0,0.18); }
-.tabs button { background: none; border: none; border-bottom: 3px solid transparent; color: rgba(255,255,255,0.66); font-size: 0.84rem; font-weight: 700; letter-spacing: 0.01em; padding: 0.5rem 0 0.6rem; transition: color 0.15s, border-color 0.15s; }
-.tabs button:hover { color: rgba(255,255,255,0.9); }
-.tabs button.on { color: var(--white); border-bottom-color: var(--gold); }
-.tabs button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+/* ═══ MENU DES MODULES (clic sur le logo) ═══ */
+.mod-btn { display: flex; align-items: center; gap: 0.3rem; background: none; border: none; padding: 0.15rem 0.3rem 0.15rem 0; border-radius: 10px; }
+.mod-btn:hover, .mod-btn[aria-expanded="true"] { background: rgba(255,255,255,0.12); }
+.mod-btn img { width: 38px; height: 38px; display: block; }
+.mod-btn .chev { color: var(--gold); font-size: 0.7rem; line-height: 1; transition: transform 0.18s; }
+.mod-btn[aria-expanded="true"] .chev { transform: rotate(180deg); }
+.mod-menu { position: absolute; top: calc(100% + 6px); left: 0.7rem; z-index: 60; background: var(--white); border-radius: 14px; box-shadow: 0 10px 34px rgba(0,0,0,0.22); padding: 0.4rem; min-width: 268px; max-width: calc(100vw - 1.4rem); }
+.mod-menu button { display: block; width: 100%; text-align: left; background: none; border: none; border-radius: 10px; padding: 0.6rem 0.75rem; }
+.mod-menu button:hover, .mod-menu button:focus-visible { background: var(--cream); outline: none; }
+.mod-menu button.on { background: var(--cream); box-shadow: inset 3px 0 0 var(--gold); }
+.mod-menu b { display: block; font-family: 'Playfair Display','Playfair repli',serif; font-size: 1rem; font-weight: 700; color: var(--dark-green); line-height: 1.25; }
+.mod-menu i { display: block; font-style: normal; font-size: 0.74rem; color: #9a9a9a; margin-top: 0.1rem; }
+.v-maj { font-size: 0.72rem; color: #9a9a9a; margin: -0.35rem 0 0.9rem; }
 
 /* ═══ VENTES ═══ */
 .v-card { background: var(--white); border-radius: 14px; padding: 0.95rem 1.05rem 1.05rem; margin-bottom: 0.8rem; box-shadow: 0 2px 10px rgba(0,0,0,0.06); }
@@ -205,19 +212,26 @@ label.chk input { width: auto; margin: 0; }
 
 <!-- ═══ TABLEAU DE BORD ═══ -->
 <div id="view-dash" class="hidden">
-  <header class="bar">
-    <img src="logo.png" alt="" width="256" height="256">
+  <header class="bar" style="position:sticky;top:0">
+    <button class="mod-btn" id="mod-btn" aria-haspopup="true" aria-expanded="false" aria-controls="mod-menu" aria-label="Changer de module" title="Changer de module">
+      <img src="logo.png" alt="" width="256" height="256">
+      <span class="chev" aria-hidden="true">▼</span>
+    </button>
     <div class="titles">
-      <div class="t1">La Guinguette du Dispensaire</div>
+      <div class="t1" id="mod-titre">Réservations</div>
       <div class="t2" id="user-email"></div>
     </div>
     <button class="btn-ghost" id="btn-logout">Déconnexion</button>
-  </header>
 
-  <nav class="tabs">
-    <button id="tab-btn-resa" class="on">Réservations</button>
-    <button id="tab-btn-ventes">Ventes</button>
-  </nav>
+    <div class="mod-menu hidden" id="mod-menu" role="menu">
+      <button role="menuitem" data-mod="resa" class="on">
+        <b>Réservations</b><i>Demandes en attente, à venir, archives</i></button>
+      <button role="menuitem" data-mod="ventes">
+        <b>Ventes</b><i>Caisse, produits, TVA — remontée Flatpay</i></button>
+      <button role="menuitem" data-mod="visi">
+        <b>Visibilité</b><i>Google, fiche, avis — relevé quotidien</i></button>
+    </div>
+  </header>
 
   <main id="tab-resa">
     <div class="stats">
@@ -247,6 +261,7 @@ label.chk input { width: auto; margin: 0; }
     </div>
 
     <div id="v-contenu" class="hidden">
+      <div class="v-maj" id="v-maj"></div>
       <div class="stats">
         <div class="stat"><div class="n" id="v-ca">–</div><div class="l">CA net du jour</div></div>
         <div class="stat"><div class="n" id="v-tickets">–</div><div class="l">Tickets</div></div>
@@ -290,6 +305,48 @@ label.chk input { width: auto; margin: 0; }
           <div class="stat"><div class="n" id="v-s-tickets">–</div><div class="l">Tickets</div></div>
           <div class="stat attn"><div class="n" id="v-s-remises">–</div><div class="l">Remises</div></div>
         </div>
+      </div>
+    </div>
+  </main>
+
+  <main id="tab-visibilite" class="hidden">
+    <div id="s-vide" class="empty hidden">
+      <div class="big">Aucun relevé de visibilité</div>
+      Les chiffres Google et Umami n'ont pas encore été remontés dans la base.
+    </div>
+    <div id="s-contenu" class="hidden">
+      <div class="v-maj" id="s-maj"></div>
+      <div class="stats">
+        <div class="stat"><div class="n" id="s-clics">–</div><div class="l">Clics Google (28 j)</div></div>
+        <div class="stat"><div class="n" id="s-impr">–</div><div class="l">Impressions (28 j)</div></div>
+        <div class="stat"><div class="n" id="s-ctr">–</div><div class="l">CTR</div></div>
+        <div class="stat"><div class="n" id="s-pos">–</div><div class="l">Position moyenne</div></div>
+      </div>
+      <div class="stats">
+        <div class="stat"><div class="n" id="s-vues">–</div><div class="l">Vues de la fiche</div></div>
+        <div class="stat"><div class="n" id="s-inter">–</div><div class="l">Interactions fiche</div></div>
+        <div class="stat"><div class="n" id="s-avis">–</div><div class="l">Avis Google</div></div>
+        <div class="stat attn"><div class="n" id="s-note">–</div><div class="l">Note moyenne</div></div>
+      </div>
+      <div class="v-card" id="s-card-clics">
+        <h2>Clics depuis Google</h2>
+        <div class="sub">Search Console, fenêtre de 28 jours glissants</div>
+        <svg id="s-ch-clics" viewBox="0 0 820 190" role="img" aria-label="Clics Google par relevé"></svg>
+      </div>
+      <div class="v-card" id="s-card-pos">
+        <h2>Position moyenne</h2>
+        <div class="sub">Plus la courbe descend, mieux c'est</div>
+        <svg id="s-ch-pos" viewBox="0 0 820 170" role="img" aria-label="Position moyenne par relevé"></svg>
+      </div>
+      <div class="v-card" id="s-card-umami">
+        <h2>Visiteurs du site</h2>
+        <div class="sub">Umami, 7 derniers jours à chaque relevé</div>
+        <svg id="s-ch-umami" viewBox="0 0 820 170" role="img" aria-label="Visiteurs sur 7 jours"></svg>
+      </div>
+      <div class="v-card hidden" id="s-card-note">
+        <h2>Dernier commentaire</h2>
+        <div class="sub" id="s-note-date"></div>
+        <div id="s-commentaire" style="font-size:.88rem;color:#555"></div>
       </div>
     </div>
   </main>
@@ -417,6 +474,18 @@ onAuthStateChanged(auth, user => {
     viewDash.classList.remove('hidden');
     $('user-email').textContent = user.email;
     ecouter();
+
+    const proprietaire = (user.email || '').toLowerCase() === COMPTE_PROPRIETAIRE;
+    MODULES_RESERVES.forEach(m => {
+      const item = modMenu.querySelector(`button[data-mod="${m}"]`);
+      if (item) item.classList.toggle('hidden', !proprietaire);
+    });
+    modBtn.classList.toggle('hidden', !proprietaire);
+    if (!proprietaire) { basculer('resa'); return; }
+
+    let dernierModule = 'resa';
+    try { dernierModule = localStorage.getItem('guinguette.module') || 'resa'; } catch {}
+    basculer(MODULES[dernierModule] ? dernierModule : 'resa');
   } else {
     viewDash.classList.add('hidden');
     viewLogin.classList.remove('hidden');
@@ -691,16 +760,62 @@ const pct  = v => (Number(v)||0).toFixed(1).replace('.', ',') + ' %';
 
 let ventesChargees = false;
 
-$('tab-btn-resa').addEventListener('click', () => basculer('resa'));
-$('tab-btn-ventes').addEventListener('click', () => basculer('ventes'));
+let visiChargee = false;
+
+/* Seul le compte propriétaire voit les modules de pilotage.
+   Ce filtrage n'est que du confort : la vraie protection est dans
+   les règles Firestore, qui refusent la lecture aux autres comptes. */
+const COMPTE_PROPRIETAIRE = 'laguinguettedudispensaire@gmail.com';
+const MODULES_RESERVES = ['ventes', 'visi'];
+
+const MODULES = {
+  resa:   { section: 'tab-resa',        titre: 'Réservations' },
+  ventes: { section: 'tab-ventes',      titre: 'Ventes' },
+  visi:   { section: 'tab-visibilite',  titre: 'Visibilité' }
+};
+
+const modBtn = $('mod-btn'), modMenu = $('mod-menu');
+
+function ouvrirMenu(ouvert) {
+  modMenu.classList.toggle('hidden', !ouvert);
+  modBtn.setAttribute('aria-expanded', ouvert ? 'true' : 'false');
+}
+modBtn.addEventListener('click', e => {
+  e.stopPropagation();
+  ouvrirMenu(modMenu.classList.contains('hidden'));
+});
+document.addEventListener('click', e => {
+  if (!modMenu.contains(e.target) && e.target !== modBtn) ouvrirMenu(false);
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') ouvrirMenu(false); });
+
+modMenu.querySelectorAll('button[data-mod]').forEach(b =>
+  b.addEventListener('click', () => { basculer(b.dataset.mod); ouvrirMenu(false); }));
 
 function basculer(onglet) {
-  const v = onglet === 'ventes';
-  $('tab-resa').classList.toggle('hidden', v);
-  $('tab-ventes').classList.toggle('hidden', !v);
-  $('tab-btn-resa').classList.toggle('on', !v);
-  $('tab-btn-ventes').classList.toggle('on', v);
-  if (v && !ventesChargees) { ventesChargees = true; chargerVentes(); }
+  if (!MODULES[onglet]) onglet = 'resa';
+  Object.entries(MODULES).forEach(([nom, m]) => {
+    $(m.section).classList.toggle('hidden', nom !== onglet);
+  });
+  modMenu.querySelectorAll('button[data-mod]').forEach(b =>
+    b.classList.toggle('on', b.dataset.mod === onglet));
+  $('mod-titre').textContent = MODULES[onglet].titre;
+  try { localStorage.setItem('guinguette.module', onglet); } catch {}
+  if (onglet === 'ventes' && !ventesChargees) { ventesChargees = true; chargerVentes(); }
+  if (onglet === 'visi'   && !visiChargee)    { visiChargee   = true; chargerVisibilite(); }
+}
+
+/* Formate « mis à jour le … » à partir d'un horodatage d'écriture. */
+function texteMaj(dateReleve, ts) {
+  let t = 'Dernier relevé : ' + dateFR(dateReleve);
+  if (ts) {
+    const d = new Date(Number(ts));
+    if (!Number.isNaN(d.getTime())) {
+      t += ' · remonté le ' + d.toLocaleDateString('fr-FR', { day:'numeric', month:'long' }) +
+           ' à ' + d.toLocaleTimeString('fr-FR', { hour:'2-digit', minute:'2-digit' });
+    }
+  }
+  return t;
 }
 
 async function chargerVentes() {
@@ -716,7 +831,10 @@ async function chargerVentes() {
     $('v-vide').classList.add('hidden');
     $('v-contenu').classList.remove('hidden');
 
-    if (jours.length) { tuilesDuJour(jours[jours.length - 1]); graphJours(jours); blocJour(jours[jours.length - 1]); }
+    const dernier = jours.length ? jours[jours.length - 1] : null;
+    $('v-maj').textContent = dernier ? texteMaj(dernier.date, dernier.maj)
+                                     : (saison && saison.maj ? texteMaj(saison.fin, saison.maj) : '');
+    if (jours.length) { tuilesDuJour(dernier); graphJours(jours); blocJour(dernier); }
     else { ['v-card-jours','v-card-jour'].forEach(i => $(i).classList.add('hidden')); }
 
     if (saison) { graphCategories(saison); tableauTop(saison); blocSaison(saison); }
@@ -832,6 +950,116 @@ function blocSaison(s) {
   $('v-s-unites').textContent    = (Number(s.unites)||0).toLocaleString('fr-FR');
   $('v-s-tickets').textContent   = s.tickets ? (Number(s.tickets)).toLocaleString('fr-FR') : '–';
   $('v-s-remises').textContent   = eur(s.remises);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ONGLET VISIBILITÉ — seo/{AAAA-MM-JJ}
+   { date, sc_clics_28j, sc_impressions_28j, sc_ctr_pct, sc_position_moy,
+     gbp_vues_mois, gbp_interactions, gbp_avis, gbp_note,
+     umami_visiteurs_7j, commentaire }
+═══════════════════════════════════════════════════════════════ */
+const ent = v => v == null ? '–' : Math.round(Number(v)).toLocaleString('fr-FR');
+const dec = (v, n) => v == null ? '–' : Number(v).toFixed(n).replace('.', ',');
+
+async function chargerVisibilite() {
+  try {
+    const snap = await getDocs(query(collection(db, 'seo'), orderBy('date', 'desc'), limit(60)));
+    const r = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+                       .sort((a, b) => String(a.date).localeCompare(String(b.date)));
+    if (!r.length) { $('s-vide').classList.remove('hidden'); return; }
+    $('s-vide').classList.add('hidden');
+    $('s-contenu').classList.remove('hidden');
+
+    const d = r[r.length - 1];
+    $('s-maj').textContent = texteMaj(d.date, d.maj);
+    $('s-clics').textContent = ent(d.sc_clics_28j);
+    $('s-impr').textContent  = ent(d.sc_impressions_28j);
+    $('s-ctr').textContent   = d.sc_ctr_pct == null ? '–' : dec(d.sc_ctr_pct, 1) + ' %';
+    $('s-pos').textContent   = dec(d.sc_position_moy, 1);
+    $('s-vues').textContent  = ent(d.gbp_vues_mois);
+    $('s-inter').textContent = ent(d.gbp_interactions);
+    $('s-avis').textContent  = ent(d.gbp_avis);
+    $('s-note').textContent  = d.gbp_note == null ? '–' : dec(d.gbp_note, 1) + ' ★';
+
+    barres('s-ch-clics', r, 'sc_clics_28j', v => ent(v) + ' clics');
+    courbe('s-ch-pos',   r, 'sc_position_moy', v => 'position ' + dec(v, 1), true);
+    barres('s-ch-umami', r, 'umami_visiteurs_7j', v => ent(v) + ' visiteurs');
+
+    if (d.commentaire) {
+      $('s-card-note').classList.remove('hidden');
+      $('s-note-date').textContent = dateFR(d.date);
+      $('s-commentaire').textContent = d.commentaire;
+    }
+  } catch (ex) {
+    console.error(ex);
+    $('s-vide').classList.remove('hidden');
+    $('s-vide').innerHTML = '<div class="big">Lecture impossible</div>' + esc(ex.message || String(ex));
+  }
+}
+
+function pointsUtiles(r, cle) {
+  return r.filter(x => x[cle] != null && !Number.isNaN(Number(x[cle])));
+}
+
+function barres(svgId, r, cle, libelle) {
+  const svg = $(svgId); svg.innerHTML = '';
+  const pts = pointsUtiles(r, cle);
+  if (!pts.length) { svg.closest('.v-card').classList.add('hidden'); return; }
+  const W = 820, H = 190, mL = 52, mR = 8, mT = 12, mB = 26;
+  const iw = W - mL - mR, ih = H - mT - mB;
+  const max = Math.max(...pts.map(x => Number(x[cle]))) * 1.1 || 1;
+  [0, .5, 1].forEach(f => {
+    const y = mT + ih - f * ih;
+    svg.appendChild(mk('line', { x1:mL, x2:W-mR, y1:y, y2:y, class:'v-grid' }));
+    const t = mk('text', { x:mL-8, y:y+3.5, class:'v-axis', 'text-anchor':'end' });
+    t.textContent = ent(f * max); svg.appendChild(t);
+  });
+  const bw = iw / pts.length, w = Math.max(5, bw - 3);
+  pts.forEach((x, i) => {
+    const h = Math.max(2, Number(x[cle]) / max * ih);
+    const px = mL + i * bw + (bw - w) / 2, py = mT + ih - h;
+    const b = mk('rect', { x:px, y:py, width:w, height:h, rx:4, fill:'#c4634a' });
+    const ti = mk('title'); ti.textContent = dateFR(x.date) + ' — ' + libelle(x[cle]); b.appendChild(ti);
+    svg.appendChild(b);
+    if (i === 0 || i === pts.length - 1 || i % Math.ceil(pts.length / 5) === 0) {
+      const l = mk('text', { x:px + w/2, y:H-8, class:'v-axis', 'text-anchor':'middle' });
+      l.textContent = dateFR(x.date, { day:'numeric', month:'short' }); svg.appendChild(l);
+    }
+  });
+}
+
+function courbe(svgId, r, cle, libelle, inverse) {
+  const svg = $(svgId); svg.innerHTML = '';
+  const pts = pointsUtiles(r, cle);
+  if (!pts.length) { svg.closest('.v-card').classList.add('hidden'); return; }
+  const W = 820, H = 170, mL = 52, mR = 10, mT = 14, mB = 26;
+  const iw = W - mL - mR, ih = H - mT - mB;
+  const vals = pts.map(x => Number(x[cle]));
+  let lo = Math.min(...vals), hi = Math.max(...vals);
+  if (lo === hi) { lo -= 1; hi += 1; }
+  const marge = (hi - lo) * 0.15; lo -= marge; hi += marge;
+  const py = v => { const f = (v - lo) / (hi - lo); return mT + (inverse ? f * ih : (1 - f) * ih); };
+  [lo, (lo + hi) / 2, hi].forEach(v => {
+    const y = py(v);
+    svg.appendChild(mk('line', { x1:mL, x2:W-mR, y1:y, y2:y, class:'v-grid' }));
+    const t = mk('text', { x:mL-8, y:y+3.5, class:'v-axis', 'text-anchor':'end' });
+    t.textContent = dec(v, 1); svg.appendChild(t);
+  });
+  const px = i => pts.length === 1 ? mL + iw / 2 : mL + i * (iw / (pts.length - 1));
+  const d = pts.map((x, i) => (i ? 'L' : 'M') + px(i).toFixed(1) + ' ' + py(Number(x[cle])).toFixed(1)).join(' ');
+  svg.appendChild(mk('path', { d, fill:'none', stroke:'#c4634a', 'stroke-width':2,
+                               'stroke-linejoin':'round', 'stroke-linecap':'round' }));
+  pts.forEach((x, i) => {
+    const c = mk('circle', { cx:px(i), cy:py(Number(x[cle])), r:4.5, fill:'#c4634a',
+                             stroke:'#fff', 'stroke-width':2 });
+    const ti = mk('title'); ti.textContent = dateFR(x.date) + ' — ' + libelle(x[cle]); c.appendChild(ti);
+    svg.appendChild(c);
+    if (i === 0 || i === pts.length - 1) {
+      const l = mk('text', { x:px(i), y:H-8, class:'v-axis',
+                             'text-anchor': i ? 'end' : 'start' });
+      l.textContent = dateFR(x.date, { day:'numeric', month:'short' }); svg.appendChild(l);
+    }
+  });
 }
 
 </script>
