@@ -254,6 +254,31 @@ Vérifié aussi directement : aucun bloc « Questions et réponses » sur la fic
 
 Les posts et les avis prennent le relais des questions/réponses : ce sont désormais les deux seuls contenus éditoriaux que la fiche accepte, et ils alimentent les mêmes réponses IA.
 
+### Posts Google — 6 programmés sur 8
+
+Google a déployé la **programmation native des posts en novembre 2025** (bouton « Programmer ce post », jusqu'à un an à l'avance). Le composeur s'affiche dans le cadre isolé de Google, illisible pour le code, mais pilotable à la souris et au clavier — comme le chargement des photos en juillet.
+
+| Date | Sujet | État |
+|---|---|:--:|
+| 4 août | L'ombre des grands arbres quand il fait 30° | ✅ programmé |
+| 11 août | Le week-end du 15 août | ✅ programmé |
+| 18 août | Les familles : menu enfant, chaises hautes, babyfoot, aire de jeux | ✅ programmé |
+| 25 août | La rentrée en douceur, l'afterwork près du RER A | ✅ programmé |
+| 1er sept. | Annonce du concert Yipikiyay | ⛔ **retenu** |
+| 8 sept. | Rappel du concert Yipikiyay | ⛔ **retenu** |
+| 15 sept. | Anniversaires et grandes tablées | ✅ programmé |
+| 22 sept. | Les dernières belles soirées | ✅ programmé |
+
+**Pourquoi deux posts sont retenus.** Ils annoncent le concert de Yipikiyay du 10 septembre, dont aucune trace publique n'a été trouvée depuis le 2 août. Programmer l'annonce publique d'un concert non confirmé ferait déplacer des clients pour rien. En attente de confirmation de Thomas.
+
+**Trois constats de terrain :**
+
+1. **Les posts partent sans photo.** Le sélecteur d'images du composeur est dans le cadre isolé — même mur que l'éditeur d'attributs. Ajouter une image à un post programmé prend deux clics côté Thomas, et améliore nettement la performance du post.
+2. **Erreur du kit corrigée** : il annonçait « vendredi 15 août ». Le 15 août 2026 tombe un **samedi**, jour d'ouverture normal — le post ne promet donc rien qui demande confirmation.
+3. **Après chaque publication, Google propose de copier le post sur les autres fiches gérées, dont Pépites de Vin.** Refusé à chaque fois. Rien n'est parti sur l'autre établissement.
+
+**Et une correction de plus au kit** : il annonçait « 0 post publié ». **Faux** — la fiche en avait déjà deux, vieux de deux mois (concert Burning Legs, ouverture de la saison), tous deux avec photo. Le chiffre venait de l'analyse du 26 juillet et avait été repris sans vérification. C'est le quatrième constat de cette fiche repris d'une source antérieure sans contrôle direct, après la livraison, le lien de réservation et les questions/réponses. **Aucun chiffre concernant cette fiche ne doit plus être réutilisé sans avoir été revu à l'écran.**
+
 ### Problèmes restants à traiter (prochaines itérations)
 
 - **Mesure CWV réelle** : activer le workflow Lighthouse CI (proposé) ou lancer PageSpeed Insights manuellement pour remplacer la note estimée du critère 8.
