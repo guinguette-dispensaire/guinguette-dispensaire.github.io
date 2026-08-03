@@ -255,7 +255,7 @@ Vérifié aussi directement : aucun bloc « Questions et réponses » sur la fic
 
 Les posts et les avis prennent le relais des questions/réponses : ce sont désormais les deux seuls contenus éditoriaux que la fiche accepte, et ils alimentent les mêmes réponses IA.
 
-### Posts Google — 6 programmés sur 8
+### Posts Google — 8 programmés sur 8
 
 Google a déployé la **programmation native des posts en novembre 2025** (bouton « Programmer ce post », jusqu'à un an à l'avance). Le composeur s'affiche dans le cadre isolé de Google, illisible pour le code, mais pilotable à la souris et au clavier — comme le chargement des photos en juillet.
 
@@ -265,12 +265,12 @@ Google a déployé la **programmation native des posts en novembre 2025** (bouto
 | 11 août | Le week-end du 15 août | ✅ programmé |
 | 18 août | Les familles : menu enfant, chaises hautes, babyfoot, aire de jeux | ✅ programmé |
 | 25 août | La rentrée en douceur, l'afterwork près du RER A | ✅ programmé |
-| 1er sept. | Annonce du concert Yipikiyay | ⛔ **retenu** |
-| 8 sept. | Rappel du concert Yipikiyay | ⛔ **retenu** |
+| 1er sept. | Annonce du concert Yipikiyay | ✅ programmé |
+| 8 sept. | Rappel du concert Yipikiyay | ✅ programmé |
 | 15 sept. | Anniversaires et grandes tablées | ✅ programmé |
 | 22 sept. | Les dernières belles soirées | ✅ programmé |
 
-**Pourquoi deux posts sont retenus.** Ils annoncent le concert de Yipikiyay du 10 septembre, dont aucune trace publique n'a été trouvée depuis le 2 août. Programmer l'annonce publique d'un concert non confirmé ferait déplacer des clients pour rien. En attente de confirmation de Thomas.
+**Les deux posts Yipikiyay ont d'abord été retenus** faute de confirmation publique du concert du 10 septembre, puis programmés après confirmation. **Vérifié à l'écran le 3 août** dans « Vos posts » : les huit dates sont bien en file (4, 11, 18, 25 août · 1, 8, 15, 22 septembre), plus le post refusé du 1er septembre laissé en place.
 
 **Trois constats de terrain :**
 
@@ -296,6 +296,10 @@ Le programme des concerts fourni par Thomas révèle **deux dates absentes du si
 `agenda.html` passe donc à **9 événements balisés en `Event`** (contre 7), tous avec `startDate`, `endDate` et une offre à 0 € — le balisage qui permet à Google d'afficher les dates directement dans les résultats et dans le volet de la fiche.
 
 Tests : les 4 cartes à venir sont dans le bon ordre chronologique · 9 blocs `Event` valides sur 3 JSON-LD qui parsent tous · 10 images chargées, **0 doublon de photo** (le premier jet réutilisait `photo22` sur deux cartes — corrigé, `photo13` sur la carte du 3 septembre) · 1 `h1` · 0 erreur JS · 0 réponse 4xx · **0 formulation interdite**.
+
+**Mise en ligne** : commits `b7bac60` et `7c56a46`. Le nom **DJ David** a été corrigé partout — titre visible, `name` du JSON-LD et texte alternatif de l'image — et non au seul endroit visible : un balisage qui contredit la page est un signal de qualité perdu. `lastmod` de l'agenda passé au 3 août dans le sitemap, et l'URL **resoumise à IndexNow (HTTP 200)** pour que Bing et Yandex reprennent les deux dates en heures plutôt qu'en semaines.
+
+**Deux posts d'annonce restent à écrire** pour ces concerts (24 août et 31 août) — rédigés, en attente de validation, comme tout ce qui sort du site.
 
 ### Problèmes restants à traiter (prochaines itérations)
 
