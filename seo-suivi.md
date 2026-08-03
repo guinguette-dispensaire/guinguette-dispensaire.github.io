@@ -299,7 +299,16 @@ Tests : les 4 cartes à venir sont dans le bon ordre chronologique · 9 blocs `E
 
 **Mise en ligne** : commits `b7bac60` et `7c56a46`. Le nom **DJ David** a été corrigé partout — titre visible, `name` du JSON-LD et texte alternatif de l'image — et non au seul endroit visible : un balisage qui contredit la page est un signal de qualité perdu. `lastmod` de l'agenda passé au 3 août dans le sitemap, et l'URL **resoumise à IndexNow (HTTP 200)** pour que Bing et Yandex reprennent les deux dates en heures plutôt qu'en semaines.
 
-**Deux posts d'annonce restent à écrire** pour ces concerts (24 août et 31 août) — rédigés, en attente de validation, comme tout ce qui sort du site.
+**Deux posts d'annonce programmés** après validation de Thomas, et **vérifiés à l'écran dans « Vos posts »** :
+
+| Publication | Contenu | Concert annoncé |
+|---|---|---|
+| lundi 24 août, 10h | Supernova player en DJ set, 19h-21h30 | jeudi 27 août |
+| lundi 31 août, 10h | Grégoire Delahaye en DJ set, 19h-21h30 | jeudi 3 septembre |
+
+La file de la fiche passe à **10 posts programmés**. Aucun numéro de téléphone dans le corps des deux textes — c'est l'hypothèse retenue pour le refus du 1er septembre, et tant qu'elle n'est pas infirmée on s'en tient à l'écart. Les deux fois, Google a proposé de recopier le post sur la fiche Pépites de Vin : refusé, rien n'est parti sur l'autre établissement.
+
+**Les posts partent toujours sans photo** — le sélecteur d'images reste dans le cadre isolé. Deux clics côté Thomas sur chacun, et leur performance monte nettement.
 
 ### Problèmes restants à traiter (prochaines itérations)
 
