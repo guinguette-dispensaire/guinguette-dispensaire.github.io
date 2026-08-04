@@ -157,6 +157,14 @@ label.chk input { width: auto; margin: 0; }
 .mod-menu button.on { background: var(--cream); box-shadow: inset 3px 0 0 var(--gold); }
 .mod-menu b { display: block; font-family: 'Playfair Display','Playfair repli',serif; font-size: 1rem; font-weight: 700; color: var(--dark-green); line-height: 1.25; }
 .mod-menu i { display: block; font-style: normal; font-size: 0.74rem; color: #9a9a9a; margin-top: 0.1rem; }
+.v-hero { background: var(--dark-green); color: var(--white); border-radius: 16px; padding: 1.15rem 1.3rem 1.25rem; margin-bottom: 0.9rem; }
+.v-hero .lab { font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); font-weight: 700; }
+.v-hero .n { font-family: 'Playfair Display','Playfair repli',serif; font-size: 2.35rem; line-height: 1.05; margin: 0.15rem 0 0.3rem; font-variant-numeric: tabular-nums; }
+.v-hero .sub { font-size: 0.78rem; color: rgba(255,255,255,0.72); }
+.v-titre-rang { font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: #9a9a9a; font-weight: 700; margin: 0 0 0.4rem 0.15rem; }
+.v-bascule { display: flex; gap: 0.3rem; margin-bottom: 0.6rem; }
+.v-bascule button { background: none; border: 1.5px solid rgba(0,0,0,0.16); color: var(--dark); font-size: 0.74rem; font-weight: 700; padding: 0.28rem 0.8rem; border-radius: 50px; }
+.v-bascule button.on { background: var(--dark-green); border-color: var(--dark-green); color: var(--white); }
 .v-maj { font-size: 0.72rem; color: #9a9a9a; margin: -0.35rem 0 0.9rem; }
 
 /* ═══ VENTES ═══ */
@@ -262,6 +270,14 @@ label.chk input { width: auto; margin: 0; }
 
     <div id="v-contenu" class="hidden">
       <div class="v-maj" id="v-maj"></div>
+
+      <div class="v-hero">
+        <div class="lab">Chiffre d'affaires de la saison</div>
+        <div class="n" id="v-s-ca">–</div>
+        <div class="sub" id="v-saison-sub"></div>
+      </div>
+
+      <div class="v-titre-rang">Dernier jour relevé</div>
       <div class="stats">
         <div class="stat"><div class="n" id="v-ca">–</div><div class="l">CA net du jour</div></div>
         <div class="stat"><div class="n" id="v-tickets">–</div><div class="l">Tickets</div></div>
@@ -269,9 +285,13 @@ label.chk input { width: auto; margin: 0; }
         <div class="stat attn"><div class="n" id="v-ecart">–</div><div class="l">Écart de caisse</div></div>
       </div>
       <div class="v-card" id="v-card-jours">
-        <h2>Chiffre d'affaires par jour</h2>
+        <h2 id="v-jours-titre">Chiffre d'affaires par jour</h2>
         <div class="sub" id="v-jours-sub">CA net TTC, toutes caisses</div>
-        <svg id="v-ch-jours" viewBox="0 0 820 210" role="img" aria-label="Chiffre d'affaires par jour"></svg>
+        <div class="v-bascule" id="v-bascule">
+          <button data-pas="jour" class="on">Par jour</button>
+          <button data-pas="semaine">Par semaine</button>
+        </div>
+        <svg id="v-ch-jours" viewBox="0 0 820 210" role="img" aria-label="Chiffre d'affaires"></svg>
       </div>
       <div class="v-card" id="v-card-cat">
         <h2>Ce qui fait le chiffre</h2>
@@ -297,12 +317,12 @@ label.chk input { width: auto; margin: 0; }
         </div>
       </div>
       <div class="v-card" id="v-card-saison">
-        <h2>La saison</h2>
-        <div class="sub" id="v-saison-sub"></div>
+        <h2>Détail de la saison</h2>
+        <div class="sub">Ce que le chiffre d'affaires recouvre</div>
         <div class="stats" style="margin-bottom:0">
-          <div class="stat"><div class="n" id="v-s-ca">–</div><div class="l">CA TTC</div></div>
           <div class="stat"><div class="n" id="v-s-unites">–</div><div class="l">Unités vendues</div></div>
           <div class="stat"><div class="n" id="v-s-tickets">–</div><div class="l">Tickets</div></div>
+          <div class="stat"><div class="n" id="v-s-ht">–</div><div class="l">Total hors TVA</div></div>
           <div class="stat attn"><div class="n" id="v-s-remises">–</div><div class="l">Remises</div></div>
         </div>
       </div>
@@ -828,6 +848,44 @@ function texteMaj(dateReleve, ts) {
   return t;
 }
 
+let joursVentes = [];
+let pasVentes = 'jour';
+
+/* Lundi de la semaine contenant la date donnée. */
+function lundiDe(iso) {
+  const [y, m, d] = iso.split('-').map(Number);
+  const dt = new Date(y, m - 1, d);
+  dt.setDate(dt.getDate() - ((dt.getDay() + 6) % 7));
+  return dt.getFullYear() + '-' +
+         String(dt.getMonth() + 1).padStart(2, '0') + '-' +
+         String(dt.getDate()).padStart(2, '0');
+}
+
+/* Regroupe par semaine. Une semaine incomplète — celle en cours, ou la
+   première de la saison — reste affichée, mais l'infobulle dit combien de
+   jours d'ouverture elle contient : sans quoi on la comparerait à une
+   semaine pleine sans le savoir. */
+function parSemaine(jours) {
+  const paquets = new Map();
+  jours.forEach(j => {
+    const l = lundiDe(j.date);
+    if (!paquets.has(l)) paquets.set(l, { date: l, ca_net: 0, tickets: 0, joursOuverts: 0 });
+    const p = paquets.get(l);
+    p.ca_net  += Number(j.ca_net)  || 0;
+    p.tickets += Number(j.tickets) || 0;
+    p.joursOuverts++;
+  });
+  return [...paquets.values()].sort((a, b) => a.date.localeCompare(b.date));
+}
+
+function dessinerVentes() {
+  const semaine = pasVentes === 'semaine';
+  $('v-jours-titre').textContent = semaine
+    ? "Chiffre d'affaires par semaine"
+    : "Chiffre d'affaires par jour";
+  graphJours(semaine ? parSemaine(joursVentes) : joursVentes, semaine);
+}
+
 async function chargerVentes() {
   try {
     const [snapJours, docSaison] = await Promise.all([
@@ -844,7 +902,12 @@ async function chargerVentes() {
     const dernier = jours.length ? jours[jours.length - 1] : null;
     $('v-maj').textContent = dernier ? texteMaj(dernier.date, dernier.maj)
                                      : (saison && saison.maj ? texteMaj(saison.fin, saison.maj) : '');
-    if (jours.length) { tuilesDuJour(dernier); graphJours(jours); blocJour(dernier); }
+    if (jours.length) {
+      joursVentes = jours;
+      tuilesDuJour(dernier);
+      dessinerVentes();
+      blocJour(dernier);
+    }
     else { ['v-card-jours','v-card-jour'].forEach(i => $(i).classList.add('hidden')); }
 
     if (saison) { graphCategories(saison); tableauTop(saison); blocSaison(saison); }
@@ -865,7 +928,7 @@ function tuilesDuJour(j) {
   $('v-jours-sub').textContent = 'CA net TTC, toutes caisses · dernier relevé le ' + dateFR(j.date);
 }
 
-function graphJours(jours) {
+function graphJours(jours, semaine) {
   const svg = $('v-ch-jours'); svg.innerHTML = '';
   const W = 820, H = 210, mL = 52, mR = 8, mT = 12, mB = 26;
   const iw = W - mL - mR, ih = H - mT - mB;
@@ -881,11 +944,17 @@ function graphJours(jours) {
     const h = Math.max(2, (Number(j.ca_net)||0) / max * ih);
     const x = mL + i * bw + (bw - w) / 2, y = mT + ih - h;
     const r = mk('rect', { x, y, width:w, height:h, rx:4, fill:'#c4634a' });
-    const ti = mk('title'); ti.textContent = dateFR(j.date) + ' — ' + eur(j.ca_net); r.appendChild(ti);
+    const ti = mk('title');
+    ti.textContent = semaine
+      ? 'Semaine du ' + dateFR(j.date, { day:'numeric', month:'long' }) + ' — ' + eur(j.ca_net) +
+        ' · ' + j.joursOuverts + ' jour' + (j.joursOuverts > 1 ? 's' : '') + " d'ouverture"
+      : dateFR(j.date) + ' — ' + eur(j.ca_net);
+    r.appendChild(ti);
     svg.appendChild(r);
     if (i % Math.ceil(jours.length / 6) === 0 || i === jours.length - 1) {
       const lb = mk('text', { x:mL + i*bw + bw/2, y:H-8, class:'v-axis', 'text-anchor':'middle' });
-      lb.textContent = dateFR(j.date, { day:'numeric', month:'short' }); svg.appendChild(lb);
+      lb.textContent = (semaine ? 'sem. ' : '') + dateFR(j.date, { day:'numeric', month:'short' });
+      svg.appendChild(lb);
     }
   });
 }
@@ -955,12 +1024,25 @@ function periode(s) {
 }
 
 function blocSaison(s) {
-  $('v-saison-sub').textContent  = periode(s);
-  $('v-s-ca').textContent        = eur0(s.ca_ttc);
-  $('v-s-unites').textContent    = (Number(s.unites)||0).toLocaleString('fr-FR');
-  $('v-s-tickets').textContent   = s.tickets ? (Number(s.tickets)).toLocaleString('fr-FR') : '–';
-  $('v-s-remises').textContent   = eur(s.remises);
+  $('v-s-ca').textContent      = eur0(s.ca_ttc);
+  $('v-s-unites').textContent  = (Number(s.unites)||0).toLocaleString('fr-FR');
+  $('v-s-tickets').textContent = s.tickets ? Number(s.tickets).toLocaleString('fr-FR') : '–';
+  $('v-s-ht').textContent      = s.ca_ht ? eur0(s.ca_ht) : '–';
+  $('v-s-remises').textContent = eur(s.remises);
+
+  const t = Number(s.tickets) || 0;
+  const bouts = [periode(s)];
+  if (t) bouts.push(t.toLocaleString('fr-FR') + ' tickets');
+  if (t && s.ca_ttc) bouts.push('panier moyen ' + eur(Number(s.ca_ttc) / t));
+  $('v-saison-sub').textContent = bouts.filter(Boolean).join(' · ');
 }
+
+document.querySelectorAll('#v-bascule button').forEach(b =>
+  b.addEventListener('click', () => {
+    pasVentes = b.dataset.pas;
+    document.querySelectorAll('#v-bascule button').forEach(x => x.classList.toggle('on', x === b));
+    dessinerVentes();
+  }));
 
 /* ═══════════════════════════════════════════════════════════════
    ONGLET VISIBILITÉ — seo/{AAAA-MM-JJ}
