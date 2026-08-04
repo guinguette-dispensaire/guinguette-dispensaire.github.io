@@ -333,6 +333,16 @@ label.chk input { width: auto; margin: 0; }
         <div class="sub">Search Console, fenêtre de 28 jours glissants</div>
         <svg id="s-ch-clics" viewBox="0 0 820 190" role="img" aria-label="Clics Google par relevé"></svg>
       </div>
+      <div class="v-card" id="s-card-vues">
+        <h2>Vues de la fiche Google</h2>
+        <div class="sub" id="s-vues-sub">Cumul du mois affiché par Google</div>
+        <svg id="s-ch-vues" viewBox="0 0 820 170" role="img" aria-label="Vues de la fiche par relevé"></svg>
+      </div>
+      <div class="v-card" id="s-card-inter">
+        <h2>Interactions avec la fiche</h2>
+        <div class="sub">Appels, itinéraires, clics vers le site</div>
+        <svg id="s-ch-inter" viewBox="0 0 820 170" role="img" aria-label="Interactions par relevé"></svg>
+      </div>
       <div class="v-card" id="s-card-pos">
         <h2>Position moyenne</h2>
         <div class="sub">Plus la courbe descend, mieux c'est</div>
@@ -982,6 +992,9 @@ async function chargerVisibilite() {
     $('s-note').textContent  = d.gbp_note == null ? '–' : dec(d.gbp_note, 1) + ' ★';
 
     barres('s-ch-clics', r, 'sc_clics_28j', v => ent(v) + ' clics');
+    courbe('s-ch-vues',  r, 'gbp_vues_mois',   v => ent(v) + ' vues', false, true);
+    courbe('s-ch-inter', r, 'gbp_interactions', v => ent(v) + ' interactions');
+    noterRupture(r, 'gbp_vues_mois', 's-vues-sub', 'Cumul du mois affiché par Google');
     courbe('s-ch-pos',   r, 'sc_position_moy', v => 'position ' + dec(v, 1), true);
     barres('s-ch-umami', r, 'umami_visiteurs_7j', v => ent(v) + ' visiteurs');
 
@@ -1028,7 +1041,30 @@ function barres(svgId, r, cle, libelle) {
   });
 }
 
-function courbe(svgId, r, cle, libelle, inverse) {
+/* Repère les sauts qui trahissent un changement de mesure plutôt qu'une
+   vraie progression : un cumul mensuel qui bondit de plus de 60 % entre deux
+   relevés a presque toujours changé de fenêtre, pas de fréquentation. */
+function ruptures(pts, cle) {
+  const out = [];
+  for (let i = 1; i < pts.length; i++) {
+    const a = Number(pts[i-1][cle]), b = Number(pts[i][cle]);
+    if (a > 0 && b / a > 1.6) out.push(i);
+  }
+  return out;
+}
+
+function noterRupture(r, cle, sousTitreId, base) {
+  const pts = pointsUtiles(r, cle);
+  const rup = ruptures(pts, cle);
+  const el = $(sousTitreId);
+  if (!el) return;
+  el.textContent = rup.length
+    ? base + ' · le saut du ' + dateFR(pts[rup[0]].date, { day:'numeric', month:'long' }) +
+      " vient d'un changement de fenêtre de mesure, pas d'une hausse de fréquentation"
+    : base;
+}
+
+function courbe(svgId, r, cle, libelle, inverse, marquerRuptures) {
   const svg = $(svgId); svg.innerHTML = '';
   const pts = pointsUtiles(r, cle);
   if (!pts.length) { svg.closest('.v-card').classList.add('hidden'); return; }
@@ -1039,13 +1075,31 @@ function courbe(svgId, r, cle, libelle, inverse) {
   if (lo === hi) { lo -= 1; hi += 1; }
   const marge = (hi - lo) * 0.15; lo -= marge; hi += marge;
   const py = v => { const f = (v - lo) / (hi - lo); return mT + (inverse ? f * ih : (1 - f) * ih); };
+  /* Des décimales n'ont de sens que sur les petites échelles (une position
+     moyenne, une note). Sur un compteur de vues, elles font du bruit. */
+  const axe = hi >= 100 ? (v => ent(v)) : (v => dec(v, 1));
   [lo, (lo + hi) / 2, hi].forEach(v => {
     const y = py(v);
     svg.appendChild(mk('line', { x1:mL, x2:W-mR, y1:y, y2:y, class:'v-grid' }));
     const t = mk('text', { x:mL-8, y:y+3.5, class:'v-axis', 'text-anchor':'end' });
-    t.textContent = dec(v, 1); svg.appendChild(t);
+    t.textContent = axe(v); svg.appendChild(t);
   });
   const px = i => pts.length === 1 ? mL + iw / 2 : mL + i * (iw / (pts.length - 1));
+
+  if (marquerRuptures) {
+    ruptures(pts, cle).forEach(i => {
+      const x = (px(i - 1) + px(i)) / 2;
+      svg.appendChild(mk('line', { x1:x, x2:x, y1:mT, y2:mT + ih,
+        stroke:'#9a9a9a', 'stroke-width':1.5, 'stroke-dasharray':'4 4' }));
+      const t = mk('text', { x:x + 5, y:mT + 11, class:'v-axis' });
+      t.textContent = 'changement de mesure';
+      const ti = mk('title');
+      ti.textContent = "Avant ce point, Google affichait une fenêtre plus courte : les deux séries ne sont pas comparables.";
+      t.appendChild(ti);
+      svg.appendChild(t);
+    });
+  }
+
   const d = pts.map((x, i) => (i ? 'L' : 'M') + px(i).toFixed(1) + ' ' + py(Number(x[cle])).toFixed(1)).join(' ');
   svg.appendChild(mk('path', { d, fill:'none', stroke:'#c4634a', 'stroke-width':2,
                                'stroke-linejoin':'round', 'stroke-linecap':'round' }));
