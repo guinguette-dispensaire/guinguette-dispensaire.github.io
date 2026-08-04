@@ -34,6 +34,7 @@ Ce fichier est la **mémoire du suivi**. Relancer le même prompt périodiquemen
 | 2026-08-02 · angle famille | 96 | 95 | 99 | 99 | 96 | 98 | 90 | 96 | **99** | **96,4** |
 | 2026-08-02 · vin et bière | 96 | 95 | **100** | 99 | 96 | 98 | 90 | 96 | 99 | **96,6** |
 | 2026-08-03 · agenda complété | 96 | 95 | 100 | 99 | 96 | 98 | **91** | 96 | 99 | **96,7** |
+| 2026-08-03 · fiche Google (avis, attributs) | 96 | 95 | 100 | 99 | 96 | 98 | 91 | 96 | **100** | **96,8** |
 
 > `*` Critère 8 : note **estimée en lab** à partir des preuves techniques (poids des images, image LCP, polices). L'API PageSpeed Insights n'est pas joignable depuis l'environnement d'exécution sandbox. Le workflow **Lighthouse CI** est maintenant actif (`.github/workflows/lighthouse-ci.yml`, déclenché à chaque push et le 1er de chaque mois) — les scores réels seront disponibles dans les artefacts GitHub Actions.
 
@@ -279,6 +280,31 @@ Google a déployé la **programmation native des posts en novembre 2025** (bouto
 3. **Après chaque publication, Google propose de copier le post sur les autres fiches gérées, dont Pépites de Vin.** Refusé à chaque fois. Rien n'est parti sur l'autre établissement.
 
 **Et une correction de plus au kit** : il annonçait « 0 post publié ». **Faux** — la fiche en avait déjà deux, vieux de deux mois (concert Burning Legs, ouverture de la saison), tous deux avec photo. Le chiffre venait de l'analyse du 26 juillet et avait été repris sans vérification. C'est le quatrième constat de cette fiche repris d'une source antérieure sans contrôle direct, après la livraison, le lien de réservation et les questions/réponses. **Aucun chiffre concernant cette fiche ne doit plus être réutilisé sans avoir été revu à l'écran.**
+
+### Fiche Google — les 7 avis répondus, et deux chiffres du suivi corrigés (3 août)
+
+**Les avis sans réponse étaient 7, pas 6.** Relevé à l'écran dans *Voir les avis → onglet « Sans réponse »*. Tous à 5 étoiles, aucun avis négatif en attente. **Les 7 réponses ont été publiées** après validation de Thomas ; l'onglet affiche désormais « Vous avez répondu aux nouveaux avis ».
+
+| Client | Ce que dit l'avis | Ce que la réponse ajoute pour Google |
+|---|---|---|
+| Mikha Floc'h | 5★, aucun texte | le nom du parc |
+| Alice et Hugo | « Super sympa ! Et très accueillant » | l'accueil, les arbres du parc |
+| Aurélien Gauducheau | « en famille ou entre amis… des pépites de vin » | les enfants et le parc à côté, l'origine des vins |
+| Sébastien Laurent | 5/5 partout, groupes jusqu'à 9+ | les grandes tablées, à réserver quelques jours avant |
+| Carlos Cattelain-Lopez | « la musique est excellente et le vin c'est de la pépite » | **les dates des deux DJ sets**, accès libre |
+| Thibaut | « les enfants peuvent gambader dans le parc » | parc public et gratuit, menu enfant, chaises hautes, jeux en bois |
+| Lucie Vasset | anniversaire à dix personnes avec enfants | « on vous réserve une grande table » |
+
+**Pourquoi ce chantier compte maintenant.** Depuis la suppression des questions/réponses des fiches, les **avis et les posts sont les deux seules sources éditoriales** que Google lit encore pour composer ses réponses IA. Chaque réponse est unique, reprend un mot de l'avis, et glisse un fait réutilisable. Aucun copier-coller : Google dévalue les réponses identiques, et un lecteur les repère tout de suite.
+
+**Attributs — ce qui a été coché, et ce qui n'existe pas.** L'éditeur d'attributs, inaccessible en juillet, s'est laissé piloter cette fois.
+
+- ✅ **Entrée accessible en fauteuil roulant** et **places assises accessibles en fauteuil roulant** → enregistrés, en attente de validation Google.
+- ✅ **Toilettes** : déjà présent, Google l'avait ajouté lui-même. Rien à faire.
+- ⛔ **Chaises hautes : l'attribut n'existe pas** pour cette fiche. Les six groupes d'attributs ont été ouverts un par un (Accessibilité, Enfants, Offre, Services, Services de restauration, Services disponibles) : la rubrique *Enfants* ne propose que « Convient aux enfants », déjà coché. Google réserve « chaises hautes » à d'autres catégories que Bar. **L'information passe donc par le site, le post du 18 août et la réponse à Thibaut, pas par un attribut.**
+- ❓ **Toilettes accessibles en fauteuil roulant** : laissé vide. Thomas a confirmé « toilettes sur place » et « accès de plain-pied », ce qui ne dit pas que les toilettes elles-mêmes sont aux normes. Question posée plutôt que case cochée.
+
+**Deuxième chiffre corrigé : le lien du menu de la fiche n'est plus sur `github.io`.** Vérifié à l'écran dans *Contact → Lien du menu ou des services* : il pointe sur `https://laguinguettedudispensaire.fr/menu.html`. Le suivi le listait encore comme un problème ouvert. **C'est le sixième constat de cette fiche repris d'une source antérieure et démenti par l'écran** — la règle du 3 août tient : aucun chiffre concernant cette fiche n'est réutilisé sans avoir été revu.
 
 ### Agenda — deux concerts manquants, et une correction (3 août)
 
@@ -733,8 +759,8 @@ Commit `e5f0226` sur la branche `PDV86-patch-2` (PR #2).
 ### Problèmes restants
 
 - **Demandes d'indexation manuelles** à déclencher (voir Phase 8).
-- **Lien du menu de la fiche Google** encore sur `github.io`.
-- **6 avis sans réponse**, 0 post publié, 0 question/réponse en ligne.
+- ~~**Lien du menu de la fiche Google** encore sur `github.io`~~ — **faux, vérifié le 3 août** : il pointe déjà sur `laguinguettedudispensaire.fr/menu.html`.
+- ~~**6 avis sans réponse**~~ — c'était **7**, et **les 7 ont reçu une réponse le 3 août**.
 - **0 mail envoyé, 0 annuaire créé** — tout est prêt, rien n'est parti.
 - **Photos de l'agenda** : les visuels des groupes manquent ; les publications de la guinguette ne mentionnent aucun compte, donc les groupes ne sont pas identifiables sans Thomas.
 - **Concert Yipikiyay du 10/09** toujours non confirmé publiquement.
