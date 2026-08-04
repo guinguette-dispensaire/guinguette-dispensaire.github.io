@@ -12,5 +12,6 @@ Disallow: /lighthouse-ci.proposed.yml
 Disallow: /firebase-config.js
 Disallow: /admin.html
 Disallow: /annulation.html
+Disallow: /ingest.html
 
 Sitemap: https://laguinguettedudispensaire.fr/sitemap.xml
