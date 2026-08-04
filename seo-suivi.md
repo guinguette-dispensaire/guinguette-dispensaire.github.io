@@ -35,6 +35,7 @@ Ce fichier est la **mémoire du suivi**. Relancer le même prompt périodiquemen
 | 2026-08-02 · vin et bière | 96 | 95 | **100** | 99 | 96 | 98 | 90 | 96 | 99 | **96,6** |
 | 2026-08-03 · agenda complété | 96 | 95 | 100 | 99 | 96 | 98 | **91** | 96 | 99 | **96,7** |
 | 2026-08-03 · fiche Google (avis, attributs) | 96 | 95 | 100 | 99 | 96 | 98 | 91 | 96 | **100** | **96,8** |
+| 2026-08-04 · audit complet | **97** | 95 | 100 | 99 | 96 | 98 | **92** | 96 | 99 | **96,9** |
 
 > `*` Critère 8 : note **estimée en lab** à partir des preuves techniques (poids des images, image LCP, polices). L'API PageSpeed Insights n'est pas joignable depuis l'environnement d'exécution sandbox. Le workflow **Lighthouse CI** est maintenant actif (`.github/workflows/lighthouse-ci.yml`, déclenché à chaque push et le 1er de chaque mois) — les scores réels seront disponibles dans les artefacts GitHub Actions.
 
@@ -280,6 +281,18 @@ Google a déployé la **programmation native des posts en novembre 2025** (bouto
 3. **Après chaque publication, Google propose de copier le post sur les autres fiches gérées, dont Pépites de Vin.** Refusé à chaque fois. Rien n'est parti sur l'autre établissement.
 
 **Et une correction de plus au kit** : il annonçait « 0 post publié ». **Faux** — la fiche en avait déjà deux, vieux de deux mois (concert Burning Legs, ouverture de la saison), tous deux avec photo. Le chiffre venait de l'analyse du 26 juillet et avait été repris sans vérification. C'est le quatrième constat de cette fiche repris d'une source antérieure sans contrôle direct, après la livraison, le lien de réservation et les questions/réponses. **Aucun chiffre concernant cette fiche ne doit plus être réutilisé sans avoir été revu à l'écran.**
+
+### Audit complet du 4 août — 96,9/100, et une règle de fond qui change
+
+**Positions mesurées** (session connectée, personnalisation possible) : **1ʳᵉ** sur « guinguette sartrouville », « bar terrasse sartrouville » et « afterwork sartrouville », 2ᵉ sur « où boire un verre sartrouville » derrière PagesJaunes, 3ᵉ sur « guinguette près de paris rer ». **Indexation** : `site:` renvoie 8 URL (6 le 2 août) — `guinguette-pres-de-paris-rer-a` et `que-faire-boucle-de-seine` sont entrées dans l'index. **Le sitelink « Terrasse au bord de la Seine » a disparu** du résultat de marque ; le renommage d'URL envisagé perd son urgence. **Performance, run CI n° 88** : mobile 96/100/91/99, desktop 98–100, SEO et bonnes pratiques 100 sur les 8 mesures, CLS ≤ 0,066.
+
+**La règle de fond s'est durcie le 4 août.** Le commit `954984c` de Thomas retire « à deux pas de la Seine » de l'accueil et de la page famille en la qualifiant de trompeuse. Conséquence tirée le jour même : `llms.txt` — qui présentait encore cette formulation comme recommandée aux moteurs de réponse — est aligné : **l'argument, c'est le parc**, la boucle de Seine reste un repère géographique.
+
+**Trouvé et corrigé** : `ingest.html` manquait au `robots.txt` (commit `82dd3ef`) · `llms.txt` réaligné · le dossier `_a_supprimer/` (verrous Git commités par erreur, servis publiquement) supprimé du dépôt.
+
+**Deux formulations en attente d'arbitrage de Thomas** : le post Google du 15 juin dit « en plein air au bord de la Seine » et c'est lui que Google affiche comme dernier post sur la requête de marque ; et la « balade au bord de l'eau » de la page que-faire (proposition : « balade le long de la Seine »).
+
+Le détail complet est dans `AUDIT-complet-2026-08-04.md`, livré à Thomas.
 
 ### Fiche Google — les 7 avis répondus, et deux chiffres du suivi corrigés (3 août)
 
