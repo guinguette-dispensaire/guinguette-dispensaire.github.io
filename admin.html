@@ -351,7 +351,7 @@ label.chk input { width: auto; margin: 0; }
       </div>
       <div class="v-card" id="v-card-saison">
         <h2>Détail de la saison</h2>
-        <div class="sub">Ce que le chiffre d'affaires recouvre</div>
+        <div class="sub" id="v-s-sub">Ce que le chiffre d'affaires recouvre</div>
         <div class="stats" style="margin-bottom:0">
           <div class="stat"><div class="n" id="v-s-unites">–</div><div class="l">Unités vendues</div></div>
           <div class="stat"><div class="n" id="v-s-tickets">–</div><div class="l">Tickets</div></div>
@@ -1292,32 +1292,54 @@ function periode(s) {
    passage. Le mix ne garde que ce que lui seul sait : les unités vendues,
    les catégories et le palmarès des produits. */
 function cumulJours(jours) {
-  const c = { ca_ttc:0, ca_ht:0, tva:0, tickets:0, remises:0,
-              debut: jours.length ? jours[0].date : null,
-              fin:   jours.length ? jours[jours.length - 1].date : null };
+  return { ca_ttc: somme(jours, 'ca_net').total,
+           tickets: somme(jours, 'tickets').total,
+           debut: jours.length ? jours[0].date : null,
+           fin:   jours.length ? jours[jours.length - 1].date : null };
+}
+
+/* Somme un champ SANS combler les trous. Les journées reprises au démarrage
+   viennent du détail des tickets, qui ne donne ni le hors-TVA ni les remises :
+   additionner ce qui existe donnerait un « total de saison » calculé sur une
+   seule journée — faux, et parfaitement crédible à l'écran. D'où « complet » :
+   on ne présente une somme comme un total que si toutes les journées portent
+   le champ. */
+function somme(jours, cle) {
+  let total = 0, n = 0;
   jours.forEach(j => {
-    c.ca_ttc  += Number(j.ca_net)  || 0;
-    c.ca_ht   += Number(j.ca_ht)   || 0;
-    c.tva     += Number(j.tva)     || 0;
-    c.tickets += Number(j.tickets) || 0;
-    c.remises += Number(j.remises) || 0;
+    if (j[cle] !== undefined && j[cle] !== null && j[cle] !== '') { total += Number(j[cle]) || 0; n++; }
   });
-  return c;
+  return { total, n, complet: n > 0 && n === jours.length };
 }
 
 function blocSaison(s, jours) {
-  const c = cumulJours(jours || []);
-  const ouvert = !!(jours && jours.length);
+  jours = jours || [];
+  const ouvert = jours.length > 0;
+  const c = cumulJours(jours);
+  const ht = somme(jours, 'ca_ht'), rem = somme(jours, 'remises');
+  const reprises = [];   // ce qui vient du mix produit, arrêté plus tôt
 
-  $('v-s-ca').textContent      = eur0(ouvert ? c.ca_ttc : s && s.ca_ttc);
+  $('v-s-ca').textContent      = eur0(ouvert ? c.ca_ttc : (s && s.ca_ttc));
   $('v-s-tickets').textContent = c.tickets ? c.tickets.toLocaleString('fr-FR')
                                : (s && s.tickets ? Number(s.tickets).toLocaleString('fr-FR') : '–');
-  $('v-s-ht').textContent      = ouvert && c.ca_ht ? eur0(c.ca_ht)
-                               : (s && s.ca_ht ? eur0(s.ca_ht) : '–');
-  $('v-s-remises').textContent = eur(ouvert ? c.remises : (s ? s.remises : 0));
-  /* Les unités ne se déduisent pas des rapports de caisse : elles ne viennent
+
+  if (ht.complet)          $('v-s-ht').textContent = eur0(ht.total);
+  else if (s && s.ca_ht) { $('v-s-ht').textContent = eur0(s.ca_ht); reprises.push('le total hors TVA'); }
+  else                     $('v-s-ht').textContent = '–';
+
+  if (rem.complet)           $('v-s-remises').textContent = eur(rem.total);
+  else if (s && s.remises) { $('v-s-remises').textContent = eur(s.remises); reprises.push('les remises'); }
+  else                       $('v-s-remises').textContent = '–';
+
+  /* Les unités ne se déduisent d'aucun rapport de caisse : elles ne viennent
      que du mix produit. Sans lui, on n'invente pas un chiffre. */
-  $('v-s-unites').textContent  = s && s.unites ? Number(s.unites).toLocaleString('fr-FR') : '–';
+  if (s && s.unites) { $('v-s-unites').textContent = Number(s.unites).toLocaleString('fr-FR'); reprises.push('les unités vendues'); }
+  else                 $('v-s-unites').textContent = '–';
+
+  $('v-s-sub').textContent = (reprises.length && s && s.fin)
+    ? "Chiffre d'affaires et tickets arrêtés au " + dateFR(c.fin || s.fin, { day:'numeric', month:'long' }) +
+      ' · ' + reprises.join(', ') + ' : relevé du mix produit, arrêté au ' + dateFR(s.fin, { day:'numeric', month:'long' })
+    : "Ce que le chiffre d'affaires recouvre";
 
   const ca = ouvert ? c.ca_ttc : Number(s && s.ca_ttc) || 0;
   const t  = c.tickets || Number(s && s.tickets) || 0;
