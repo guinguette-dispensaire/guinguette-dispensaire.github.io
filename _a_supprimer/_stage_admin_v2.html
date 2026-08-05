@@ -1,0 +1,1203 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Réservations — La Guinguette du Dispensaire</title>
+<link rel="icon" href="logo.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="apple-touch-icon-precomposed" href="/apple-touch-icon-precomposed.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#742939">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Guinguette Admin">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+/* --- Polices de repli calees sur les metriques de Playfair Display et Lato ---
+   Les polices web sont chargees en asynchrone (gain de vitesse). Sans ces regles,
+   le texte s'affiche d'abord dans Times/Arial, plus etroit, puis se recompose quand
+   la vraie police arrive : c'est ce saut qui faisait grimper le CLS a 0,133.
+   size-adjust / ascent-override ont ete mesures dans le navigateur (ecart residuel < 0,05 %). */
+@font-face{font-family:'Playfair repli';src:local('Times New Roman'),local('Liberation Serif'),local('Tinos');font-weight:400;font-style:normal;size-adjust:107.3%;ascent-override:100.7%;descent-override:23.3%;line-gap-override:0%}
+@font-face{font-family:'Playfair repli';src:local('Times New Roman Bold'),local('TimesNewRomanPS-BoldMT'),local('Liberation Serif Bold'),local('Tinos Bold');font-weight:700;font-style:normal;size-adjust:104.6%;ascent-override:103.2%;descent-override:23.9%;line-gap-override:0%}
+@font-face{font-family:'Playfair repli';src:local('Times New Roman Italic'),local('TimesNewRomanPS-ItalicMT'),local('Liberation Serif Italic'),local('Tinos Italic');font-weight:400;font-style:italic;size-adjust:104.4%;ascent-override:103.4%;descent-override:23.9%;line-gap-override:0%}
+@font-face{font-family:'Lato repli';src:local('Arial'),local('Liberation Sans'),local('Helvetica Neue'),local('Arimo');font-weight:400;font-style:normal;size-adjust:97.3%;ascent-override:101.7%;descent-override:21.6%;line-gap-override:0%}
+@font-face{font-family:'Lato repli';src:local('Arial Bold'),local('Arial-BoldMT'),local('Liberation Sans Bold'),local('Arimo Bold');font-weight:700;font-style:normal;size-adjust:93.7%;ascent-override:105.6%;descent-override:22.4%;line-gap-override:0%}
+
+:root {
+  --cream: #f5f0e6;
+  --terracotta: #c4634a;
+  --dark-green: #2a4e14;
+  --sage: #5e7f42;
+  --burgundy: #742939;
+  --gold: #c8a448;
+  --dark: #1a1a1a;
+  --white: #fff;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { font-family: 'Lato','Lato repli',sans-serif; background: var(--cream); color: var(--dark); line-height: 1.55; min-height: 100vh; }
+button { font-family: 'Lato','Lato repli',sans-serif; cursor: pointer; }
+a { color: var(--dark-green); }
+
+/* ═══ ÉCRAN DE CONNEXION ═══ */
+.login-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1.5rem; }
+.login-card { background: var(--white); border-radius: 18px; box-shadow: 0 6px 32px rgba(0,0,0,0.10); padding: 2.5rem 2.25rem; width: 100%; max-width: 400px; text-align: center; }
+.login-card img { width: 84px; height: 84px; margin-bottom: 0.75rem; }
+.login-card .eyebrow { font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); font-weight: 700; margin-bottom: 0.35rem; }
+.login-card h1 { font-family: 'Playfair Display','Playfair repli',serif; font-size: 1.6rem; color: var(--dark-green); margin-bottom: 1.5rem; line-height: 1.2; }
+.login-card label { display: block; text-align: left; font-size: 0.8rem; font-weight: 700; color: var(--dark-green); margin-bottom: 1rem; }
+.login-card input { width: 100%; margin-top: 0.35rem; font-size: 1rem; padding: 0.7rem 0.85rem; border: 1.5px solid rgba(0,0,0,0.15); border-radius: 10px; background: var(--cream); font-family: 'Lato','Lato repli',sans-serif; }
+.login-card input:focus { outline: none; border-color: var(--gold); }
+.btn-main { display: inline-block; background: var(--dark-green); color: var(--white); border: none; border-radius: 50px; padding: 0.75rem 2.2rem; font-size: 0.95rem; font-weight: 700; letter-spacing: 0.03em; transition: background 0.2s; }
+.btn-main:hover { background: var(--sage); }
+.btn-main:disabled { opacity: 0.6; cursor: wait; }
+.login-err { color: var(--burgundy); font-size: 0.85rem; font-weight: 700; margin-top: 1rem; min-height: 1.2em; }
+.login-note { font-size: 0.75rem; color: #999; margin-top: 1.25rem; }
+
+/* ═══ TABLEAU DE BORD ═══ */
+header.bar { position: sticky; top: 0; z-index: 50; background: var(--dark-green); color: var(--white); display: flex; align-items: center; gap: 0.75rem; padding: 0.6rem 1rem; box-shadow: 0 2px 12px rgba(0,0,0,0.18); }
+header.bar img { width: 38px; height: 38px; }
+header.bar .titles { flex: 1; min-width: 0; }
+header.bar .t1 { font-family: 'Playfair Display','Playfair repli',serif; font-size: 1.02rem; line-height: 1.15; }
+header.bar .t2 { font-size: 0.68rem; opacity: 0.75; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.btn-ghost { background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.45); border-radius: 50px; padding: 0.35rem 0.9rem; font-size: 0.75rem; }
+.btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
+
+main { max-width: 760px; margin: 0 auto; padding: 1.1rem 1rem 4rem; }
+
+/* Bandeau chiffres du jour */
+.stats { display: flex; gap: 0.7rem; margin-bottom: 1rem; }
+.stat { flex: 1; background: var(--white); border-radius: 14px; padding: 0.75rem 0.9rem; box-shadow: 0 2px 10px rgba(0,0,0,0.06); }
+.stat .n { font-family: 'Playfair Display','Playfair repli',serif; font-size: 1.55rem; color: var(--dark-green); line-height: 1.1; }
+.stat.attn .n { color: var(--gold); }
+.stat .l { font-size: 0.68rem; letter-spacing: 0.06em; text-transform: uppercase; color: #888; font-weight: 700; }
+
+/* Filtres + recherche */
+.filters { display: flex; gap: 0.45rem; flex-wrap: wrap; margin-bottom: 0.8rem; }
+.pill { background: none; border: 1.5px solid rgba(0,0,0,0.16); border-radius: 50px; padding: 0.4rem 0.95rem; font-size: 0.78rem; color: var(--dark); transition: all 0.15s; }
+.pill .c { font-weight: 700; color: var(--gold); }
+.pill.active { background: var(--dark-green); border-color: var(--dark-green); color: var(--white); }
+.pill.active .c { color: var(--gold); }
+.search { width: 100%; font-size: 0.92rem; padding: 0.62rem 0.9rem; border: 1.5px solid rgba(0,0,0,0.13); border-radius: 10px; background: var(--white); margin-bottom: 1.2rem; font-family: 'Lato','Lato repli',sans-serif; }
+.search:focus { outline: none; border-color: var(--gold); }
+
+/* Rail de journée — l'ardoise de service */
+.day-rail { display: flex; align-items: baseline; justify-content: space-between; gap: 0.8rem; background: var(--dark-green); color: var(--white); border-radius: 12px; padding: 0.55rem 1rem; margin: 1.4rem 0 0.65rem; }
+.day-rail .d { font-family: 'Playfair Display','Playfair repli',serif; font-style: italic; font-size: 1.05rem; text-transform: capitalize; }
+.day-rail .cv { font-size: 0.78rem; color: var(--gold); font-weight: 700; white-space: nowrap; }
+
+/* Carte réservation */
+.card { background: var(--white); border-radius: 14px; padding: 0.95rem 1.05rem; margin-bottom: 0.65rem; box-shadow: 0 2px 10px rgba(0,0,0,0.06); border-left: 4px solid var(--gold); }
+.card.st-validee { border-left-color: var(--sage); }
+.card.st-refusee, .card.st-annulee { border-left-color: #bbb; opacity: 0.82; }
+.card .top { display: flex; align-items: baseline; gap: 0.6rem; flex-wrap: wrap; }
+.card .heure { font-family: 'Playfair Display','Playfair repli',serif; font-weight: 700; font-size: 1.12rem; color: var(--dark-green); }
+.card .nom { font-weight: 700; font-size: 1rem; flex: 1; min-width: 120px; }
+.badge { font-size: 0.66rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; border-radius: 50px; padding: 0.22rem 0.7rem; white-space: nowrap; }
+.badge.en_attente { background: rgba(200,164,72,0.16); color: #8a6d1d; }
+.badge.validee { background: rgba(94,127,66,0.16); color: var(--dark-green); }
+.badge.refusee { background: rgba(116,41,57,0.12); color: var(--burgundy); }
+.badge.annulee { background: rgba(0,0,0,0.08); color: #666; }
+.card .pers { font-size: 0.82rem; color: #555; }
+.card .pers b { color: var(--dark); }
+.card .contact { font-size: 0.85rem; margin-top: 0.35rem; display: flex; gap: 1rem; flex-wrap: wrap; }
+.card .msg { font-size: 0.85rem; font-style: italic; color: #666; margin-top: 0.4rem; background: var(--cream); border-radius: 8px; padding: 0.45rem 0.7rem; }
+.card .meta { font-size: 0.7rem; color: #9a9a9a; margin-top: 0.45rem; }
+.card .actions { display: flex; gap: 0.5rem; margin-top: 0.7rem; flex-wrap: wrap; }
+.btn-ok { background: var(--dark-green); color: var(--white); border: none; border-radius: 50px; padding: 0.5rem 1.2rem; font-size: 0.82rem; font-weight: 700; }
+.btn-ok:hover { background: var(--sage); }
+.btn-no { background: none; color: var(--burgundy); border: 1.5px solid var(--burgundy); border-radius: 50px; padding: 0.5rem 1.2rem; font-size: 0.82rem; font-weight: 700; }
+.btn-no:hover { background: rgba(116,41,57,0.07); }
+.btn-min { background: none; color: #777; border: 1.5px solid rgba(0,0,0,0.2); border-radius: 50px; padding: 0.5rem 1.1rem; font-size: 0.78rem; }
+.btn-min:hover { border-color: #999; }
+.btn-del { color: var(--burgundy); border-color: rgba(116,41,57,0.35); }
+.btn-del:hover { border-color: var(--burgundy); background: rgba(116,41,57,0.07); }
+button:disabled { opacity: 0.55; cursor: wait; }
+
+.empty { text-align: center; color: #999; padding: 2.5rem 1rem; font-size: 0.92rem; }
+.empty .big { font-family: 'Playfair Display','Playfair repli',serif; font-size: 1.3rem; color: var(--dark-green); margin-bottom: 0.3rem; }
+
+.btn-add { display: block; width: 100%; background: var(--dark-green); color: var(--white); border: none; border-radius: 12px; padding: 0.72rem; font-size: 0.9rem; font-weight: 700; margin-bottom: 1rem; }
+.btn-add:hover { background: var(--sage); }
+
+/* Fenêtre d'ajout manuel */
+.modal-bg { position: fixed; inset: 0; background: rgba(26,26,26,0.45); z-index: 60; display: flex; align-items: center; justify-content: center; padding: 1rem; }
+.modal { background: var(--white); border-radius: 18px; padding: 1.6rem 1.5rem; width: 100%; max-width: 440px; max-height: 92vh; overflow: auto; }
+.modal h2 { font-family: 'Playfair Display','Playfair repli',serif; color: var(--dark-green); font-size: 1.25rem; margin-bottom: 1rem; }
+.modal label { display: block; font-size: 0.78rem; font-weight: 700; color: var(--dark-green); margin-bottom: 0.8rem; }
+.modal input, .modal select { width: 100%; margin-top: 0.3rem; font-size: 0.95rem; padding: 0.6rem 0.75rem; border: 1.5px solid rgba(0,0,0,0.15); border-radius: 10px; background: var(--cream); font-family: 'Lato','Lato repli',sans-serif; }
+.modal input:focus, .modal select:focus { outline: none; border-color: var(--gold); }
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; }
+label.chk { display: flex; align-items: center; gap: 0.5rem; font-weight: 400; color: var(--dark); font-size: 0.85rem; }
+label.chk input { width: auto; margin: 0; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 0.6rem; margin-top: 0.4rem; }
+
+/* Toast */
+#toast { position: fixed; left: 50%; bottom: 1.4rem; transform: translateX(-50%) translateY(20px); background: var(--dark); color: var(--white); padding: 0.7rem 1.3rem; border-radius: 50px; font-size: 0.85rem; opacity: 0; pointer-events: none; transition: opacity 0.25s, transform 0.25s; max-width: 92vw; text-align: center; z-index: 99; }
+#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+#toast.err { background: var(--burgundy); }
+
+
+/* ═══ MENU DES MODULES (clic sur le logo) ═══ */
+.mod-btn { display: flex; align-items: center; gap: 0.3rem; background: none; border: none; padding: 0.15rem 0.3rem 0.15rem 0; border-radius: 10px; }
+.mod-btn:hover, .mod-btn[aria-expanded="true"] { background: rgba(255,255,255,0.12); }
+.mod-btn img { width: 38px; height: 38px; display: block; }
+.mod-btn .chev { color: var(--gold); font-size: 0.7rem; line-height: 1; transition: transform 0.18s; }
+.mod-btn[aria-expanded="true"] .chev { transform: rotate(180deg); }
+.mod-menu { position: absolute; top: calc(100% + 6px); left: 0.7rem; z-index: 60; background: var(--white); border-radius: 14px; box-shadow: 0 10px 34px rgba(0,0,0,0.22); padding: 0.4rem; min-width: 268px; max-width: calc(100vw - 1.4rem); }
+.mod-menu button { display: block; width: 100%; text-align: left; background: none; border: none; border-radius: 10px; padding: 0.6rem 0.75rem; }
+.mod-menu button:hover, .mod-menu button:focus-visible { background: var(--cream); outline: none; }
+.mod-menu button.on { background: var(--cream); box-shadow: inset 3px 0 0 var(--gold); }
+.mod-menu b { display: block; font-family: 'Playfair Display','Playfair repli',serif; font-size: 1rem; font-weight: 700; color: var(--dark-green); line-height: 1.25; }
+.mod-menu i { display: block; font-style: normal; font-size: 0.74rem; color: #9a9a9a; margin-top: 0.1rem; }
+.v-hero { background: var(--dark-green); color: var(--white); border-radius: 16px; padding: 1.15rem 1.3rem 1.25rem; margin-bottom: 0.9rem; }
+.v-hero .lab { font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); font-weight: 700; }
+.v-hero .n { font-family: 'Playfair Display','Playfair repli',serif; font-size: 2.35rem; line-height: 1.05; margin: 0.15rem 0 0.3rem; font-variant-numeric: tabular-nums; }
+.v-hero .sub { font-size: 0.78rem; color: rgba(255,255,255,0.72); }
+.v-titre-rang { font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: #9a9a9a; font-weight: 700; margin: 0 0 0.4rem 0.15rem; }
+.v-bascule { display: flex; gap: 0.3rem; margin-bottom: 0.6rem; }
+.v-bascule button { background: none; border: 1.5px solid rgba(0,0,0,0.16); color: var(--dark); font-size: 0.74rem; font-weight: 700; padding: 0.28rem 0.8rem; border-radius: 50px; }
+.v-bascule button.on { background: var(--dark-green); border-color: var(--dark-green); color: var(--white); }
+.v-maj { font-size: 0.72rem; color: #9a9a9a; margin: -0.35rem 0 0.9rem; }
+
+/* ═══ VENTES ═══ */
+.v-card { background: var(--white); border-radius: 14px; padding: 0.95rem 1.05rem 1.05rem; margin-bottom: 0.8rem; box-shadow: 0 2px 10px rgba(0,0,0,0.06); }
+.v-card h2 { font-family: 'Playfair Display','Playfair repli',serif; font-size: 1.02rem; color: var(--dark-green); margin-bottom: 0.1rem; }
+.v-card .sub { font-size: 0.72rem; color: #9a9a9a; margin-bottom: 0.8rem; }
+.v-card svg { display: block; width: 100%; height: auto; overflow: visible; }
+.v-axis { font-size: 10px; fill: #9a9a9a; }
+.v-grid { stroke: rgba(0,0,0,0.08); stroke-width: 1; }
+.v-lab { font-size: 10.5px; fill: #555; font-weight: 700; }
+.v-cat { font-size: 11.5px; fill: var(--dark); }
+.v-tab { width: 100%; border-collapse: collapse; font-size: 0.83rem; }
+.v-tab th { text-align: left; font-size: 0.63rem; letter-spacing: 0.06em; text-transform: uppercase; color: #9a9a9a; border-bottom: 1.5px solid rgba(0,0,0,0.08); padding: 0.4rem 0.3rem; }
+.v-tab td { padding: 0.42rem 0.3rem; border-bottom: 1px solid rgba(0,0,0,0.06); }
+.v-tab td.n, .v-tab th.n { text-align: right; font-variant-numeric: tabular-nums; }
+.v-tab tr:last-child td { border-bottom: none; }
+.v-chip { font-size: 0.68rem; color: #9a9a9a; }
+.v-kv { display: flex; justify-content: space-between; font-size: 0.84rem; padding: 0.3rem 0; border-bottom: 1px solid rgba(0,0,0,0.06); }
+.v-kv:last-child { border-bottom: none; }
+.v-kv b { font-variant-numeric: tabular-nums; }
+.v-kv.tot { border-top: 1.5px solid rgba(0,0,0,0.08); margin-top: 0.2rem; padding-top: 0.45rem; font-weight: 700; color: var(--dark-green); }
+.v-legend { display: flex; gap: 1rem; flex-wrap: wrap; font-size: 0.74rem; color: #555; margin-bottom: 0.55rem; }
+.v-legend i { display: inline-block; width: 11px; height: 11px; border-radius: 3px; margin-right: 0.35rem; vertical-align: -1px; }
+.v-two { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+@media (max-width: 560px) { .v-two { grid-template-columns: 1fr; } }
+.hidden { display: none !important; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+@media (max-width: 480px) {
+  .stats { flex-wrap: wrap; }
+  .stat { min-width: calc(50% - 0.35rem); }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ CONNEXION ═══ -->
+<div id="view-login" class="login-wrap">
+  <form class="login-card" id="login-form">
+    <img src="logo.png" alt="La Guinguette du Dispensaire" width="256" height="256">
+    <p class="eyebrow">Espace équipe</p>
+    <h1>Réservations<br>de la Guinguette</h1>
+    <label>Email
+      <input type="email" id="login-email" required autocomplete="username" inputmode="email">
+    </label>
+    <label>Mot de passe
+      <input type="password" id="login-pass" required autocomplete="current-password">
+    </label>
+    <button type="submit" class="btn-main" id="login-btn">Se connecter</button>
+    <p class="login-err" id="login-err"></p>
+    <p class="login-note">Accès réservé à l'équipe de La Guinguette du Dispensaire.</p>
+  </form>
+</div>
+
+<!-- ═══ TABLEAU DE BORD ═══ -->
+<div id="view-dash" class="hidden">
+  <header class="bar" style="position:sticky;top:0">
+    <button class="mod-btn" id="mod-btn" aria-haspopup="true" aria-expanded="false" aria-controls="mod-menu" aria-label="Changer de module" title="Changer de module">
+      <img src="logo.png" alt="" width="256" height="256">
+      <span class="chev" aria-hidden="true">▼</span>
+    </button>
+    <div class="titles">
+      <div class="t1" id="mod-titre">Réservations</div>
+      <div class="t2" id="user-email"></div>
+    </div>
+    <button class="btn-ghost" id="btn-logout">Déconnexion</button>
+
+    <div class="mod-menu hidden" id="mod-menu" role="menu">
+      <button role="menuitem" data-mod="resa" class="on">
+        <b>Réservations</b><i>Demandes en attente, à venir, archives</i></button>
+      <button role="menuitem" data-mod="ventes">
+        <b>Ventes</b><i>Caisse, produits, TVA — remontée Flatpay</i></button>
+      <button role="menuitem" data-mod="visi">
+        <b>Visibilité</b><i>Google, fiche, avis — relevé quotidien</i></button>
+    </div>
+  </header>
+
+  <main id="tab-resa">
+    <div class="stats">
+      <div class="stat attn"><div class="n" id="st-attente">–</div><div class="l">En attente</div></div>
+      <div class="stat"><div class="n" id="st-resa-jour">–</div><div class="l">Résas aujourd'hui</div></div>
+      <div class="stat"><div class="n" id="st-couverts-jour">–</div><div class="l">Couverts ce soir</div></div>
+    </div>
+
+    <button class="btn-add" id="btn-add">+ Ajouter une réservation</button>
+
+    <div class="filters" id="filters">
+      <button class="pill active" data-f="attente">En attente <span class="c" id="c-attente"></span></button>
+      <button class="pill" data-f="avenir">À venir</button>
+      <button class="pill" data-f="jour">Aujourd'hui</button>
+      <button class="pill" data-f="toutes">Toutes</button>
+      <button class="pill" data-f="archives">Archives</button>
+    </div>
+    <input type="search" class="search" id="search" placeholder="Rechercher un nom ou un téléphone…">
+
+    <div id="list"></div>
+  </main>
+
+  <main id="tab-ventes" class="hidden">
+    <div id="v-vide" class="empty hidden">
+      <div class="big">Aucune donnée de vente</div>
+      Les chiffres de la caisse n'ont pas encore été remontés dans la base.
+    </div>
+
+    <div id="v-contenu" class="hidden">
+      <div class="v-maj" id="v-maj"></div>
+
+      <div class="v-hero">
+        <div class="lab">Chiffre d'affaires de la saison</div>
+        <div class="n" id="v-s-ca">–</div>
+        <div class="sub" id="v-saison-sub"></div>
+      </div>
+
+      <div class="v-titre-rang">Dernier jour relevé</div>
+      <div class="stats">
+        <div class="stat"><div class="n" id="v-ca">–</div><div class="l">CA net du jour</div></div>
+        <div class="stat"><div class="n" id="v-tickets">–</div><div class="l">Tickets</div></div>
+        <div class="stat"><div class="n" id="v-panier">–</div><div class="l">Panier moyen</div></div>
+        <div class="stat attn"><div class="n" id="v-ecart">–</div><div class="l">Écart de caisse</div></div>
+      </div>
+      <div class="v-card" id="v-card-jours">
+        <h2 id="v-jours-titre">Chiffre d'affaires par jour</h2>
+        <div class="sub" id="v-jours-sub">CA net TTC, toutes caisses</div>
+        <div class="v-bascule" id="v-bascule">
+          <button data-pas="jour" class="on">Par jour</button>
+          <button data-pas="semaine">Par semaine</button>
+        </div>
+        <svg id="v-ch-jours" viewBox="0 0 820 210" role="img" aria-label="Chiffre d'affaires"></svg>
+      </div>
+      <div class="v-card" id="v-card-cat">
+        <h2>Ce qui fait le chiffre</h2>
+        <div class="sub" id="v-cat-sub">Part du CA TTC par catégorie</div>
+        <svg id="v-ch-cat" viewBox="0 0 820 400" role="img" aria-label="Répartition par catégorie"></svg>
+      </div>
+      <div class="v-card" id="v-card-top">
+        <h2>Top produits</h2>
+        <div class="sub">Par chiffre d'affaires</div>
+        <table class="v-tab"><thead><tr><th>Produit</th><th class="n">Quantité</th><th class="n">CA TTC</th><th class="n">Part</th></tr></thead><tbody id="v-top"></tbody></table>
+      </div>
+      <div class="v-card" id="v-card-jour">
+        <h2>Encaissement et TVA</h2>
+        <div class="sub" id="v-jour-sub"></div>
+        <div class="v-legend">
+          <span><i style="background:#a8452f"></i>TVA 20 % — boissons alcoolisées</span>
+          <span><i style="background:#c8a448"></i>TVA 10 % — restauration</span>
+        </div>
+        <svg id="v-ch-tva" viewBox="0 0 820 60" role="img" aria-label="Répartition de la TVA"></svg>
+        <div class="v-two" style="margin-top:0.9rem">
+          <div id="v-paiements"></div>
+          <div id="v-tva"></div>
+        </div>
+      </div>
+      <div class="v-card" id="v-card-saison">
+        <h2>Détail de la saison</h2>
+        <div class="sub">Ce que le chiffre d'affaires recouvre</div>
+        <div class="stats" style="margin-bottom:0">
+          <div class="stat"><div class="n" id="v-s-unites">–</div><div class="l">Unités vendues</div></div>
+          <div class="stat"><div class="n" id="v-s-tickets">–</div><div class="l">Tickets</div></div>
+          <div class="stat"><div class="n" id="v-s-ht">–</div><div class="l">Total hors TVA</div></div>
+          <div class="stat attn"><div class="n" id="v-s-remises">–</div><div class="l">Remises</div></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <main id="tab-visibilite" class="hidden">
+    <div id="s-vide" class="empty hidden">
+      <div class="big">Aucun relevé de visibilité</div>
+      Les chiffres Google et Umami n'ont pas encore été remontés dans la base.
+    </div>
+    <div id="s-contenu" class="hidden">
+      <div class="v-maj" id="s-maj"></div>
+      <div class="stats">
+        <div class="stat"><div class="n" id="s-clics">–</div><div class="l">Clics Google (28 j)</div></div>
+        <div class="stat"><div class="n" id="s-impr">–</div><div class="l">Impressions (28 j)</div></div>
+        <div class="stat"><div class="n" id="s-ctr">–</div><div class="l">CTR</div></div>
+        <div class="stat"><div class="n" id="s-pos">–</div><div class="l">Position moyenne</div></div>
+      </div>
+      <div class="stats">
+        <div class="stat"><div class="n" id="s-vues">–</div><div class="l">Vues de la fiche</div></div>
+        <div class="stat"><div class="n" id="s-inter">–</div><div class="l">Interactions fiche</div></div>
+        <div class="stat"><div class="n" id="s-avis">–</div><div class="l">Avis Google</div></div>
+        <div class="stat attn"><div class="n" id="s-note">–</div><div class="l">Note moyenne</div></div>
+      </div>
+      <div class="v-card" id="s-card-clics">
+        <h2>Clics depuis Google</h2>
+        <div class="sub">Search Console, fenêtre de 28 jours glissants</div>
+        <svg id="s-ch-clics" viewBox="0 0 820 190" role="img" aria-label="Clics Google par relevé"></svg>
+      </div>
+      <div class="v-card" id="s-card-vues">
+        <h2>Vues de la fiche Google</h2>
+        <div class="sub" id="s-vues-sub">Cumul du mois affiché par Google</div>
+        <svg id="s-ch-vues" viewBox="0 0 820 170" role="img" aria-label="Vues de la fiche par relevé"></svg>
+      </div>
+      <div class="v-card" id="s-card-inter">
+        <h2>Interactions avec la fiche</h2>
+        <div class="sub">Appels, itinéraires, clics vers le site</div>
+        <svg id="s-ch-inter" viewBox="0 0 820 170" role="img" aria-label="Interactions par relevé"></svg>
+      </div>
+      <div class="v-card" id="s-card-pos">
+        <h2>Position moyenne</h2>
+        <div class="sub">Plus la courbe descend, mieux c'est</div>
+        <svg id="s-ch-pos" viewBox="0 0 820 170" role="img" aria-label="Position moyenne par relevé"></svg>
+      </div>
+      <div class="v-card" id="s-card-umami">
+        <h2>Visiteurs du site</h2>
+        <div class="sub">Umami, 7 derniers jours à chaque relevé</div>
+        <svg id="s-ch-umami" viewBox="0 0 820 170" role="img" aria-label="Visiteurs sur 7 jours"></svg>
+      </div>
+      <div class="v-card hidden" id="s-card-note">
+        <h2>Dernier commentaire</h2>
+        <div class="sub" id="s-note-date"></div>
+        <div id="s-commentaire" style="font-size:.88rem;color:#555"></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ═══ AJOUT MANUEL ═══ -->
+<div id="modal-bg" class="modal-bg hidden">
+  <form class="modal" id="add-form">
+    <h2>Nouvelle réservation</h2>
+    <label>Nom et prénom *
+      <input type="text" id="a-nom" required minlength="2" maxlength="119">
+    </label>
+    <label>Téléphone *
+      <input type="tel" id="a-tel" required minlength="6" maxlength="29" inputmode="tel">
+    </label>
+    <div class="row2">
+      <label>Date *
+        <input type="date" id="a-date" required>
+      </label>
+      <label>Heure *
+        <input type="time" id="a-heure" required>
+      </label>
+    </div>
+    <div class="row2">
+      <label>Personnes *
+        <input type="number" id="a-pers" min="1" max="50" value="2" required inputmode="numeric">
+      </label>
+      <label>Statut
+        <select id="a-statut">
+          <option value="validee">Validée</option>
+          <option value="en_attente">En attente</option>
+        </select>
+      </label>
+    </div>
+    <label>Email du client (facultatif)
+      <input type="email" id="a-email" maxlength="119" inputmode="email">
+    </label>
+    <label>Note (facultatif)
+      <input type="text" id="a-msg" maxlength="500" placeholder="Ex. : table à l'ombre, anniversaire…">
+    </label>
+    <label class="chk" id="a-chk-wrap">
+      <input type="checkbox" id="a-envoyer" checked> Envoyer l'email de confirmation au client
+    </label>
+    <div class="modal-actions">
+      <button type="button" class="btn-min" id="a-fermer">Fermer</button>
+      <button type="submit" class="btn-ok" id="a-save">Enregistrer</button>
+    </div>
+  </form>
+</div>
+
+<div id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, doc, updateDoc, deleteDoc, serverTimestamp, getDoc, getDocs, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { firebaseConfig } from "./firebase-config.js";
+
+/* ═══════════════════════════════════════════════════════
+   CONFIG EMAILJS — email automatique de confirmation client
+   (voir GUIDE_INSTALLATION_RESERVATIONS.md, étape B)
+   Laisser tel quel pour désactiver l'envoi d'emails.
+═══════════════════════════════════════════════════════ */
+const EMAILJS = {
+  publicKey:  "X1x_w95I8Es-BchF_",
+  serviceId:  "service_47qxczb",
+  templateId: "template_3sc7g0q"
+};
+const emailsActifs = !EMAILJS.publicKey.startsWith("COLLER_ICI");
+if (emailsActifs && window.emailjs) emailjs.init({ publicKey: EMAILJS.publicKey });
+
+/* ─── Init Firebase ─── */
+const app  = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db   = getFirestore(app);
+
+/* ─── Éléments ─── */
+const $ = id => document.getElementById(id);
+const viewLogin = $('view-login'), viewDash = $('view-dash');
+
+/* ─── État ─── */
+let resas = [];          // toutes les réservations (temps réel)
+let filtre = 'attente';
+let recherche = '';
+let unsub = null;
+
+/* ─── Utilitaires ─── */
+const todayStr = () => {
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+};
+function dateFR(iso, style) {
+  if (!iso) return '(date manquante)';
+  const [y,m,d] = iso.split('-').map(Number);
+  const dt = new Date(y, m-1, d);
+  return dt.toLocaleDateString('fr-FR', style || { weekday:'long', day:'numeric', month:'long' });
+}
+const esc = s => String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function toast(msg, err) {
+  const t = $('toast');
+  t.textContent = msg;
+  t.className = err ? 'show err' : 'show';
+  clearTimeout(t._h);
+  t._h = setTimeout(() => t.className = '', 3800);
+}
+
+/* ─── Connexion ─── */
+$('login-form').addEventListener('submit', async e => {
+  e.preventDefault();
+  const btn = $('login-btn'), err = $('login-err');
+  btn.disabled = true; err.textContent = '';
+  try {
+    await signInWithEmailAndPassword(auth, $('login-email').value.trim(), $('login-pass').value);
+  } catch (ex) {
+    err.textContent = "Email ou mot de passe incorrect.";
+  }
+  btn.disabled = false;
+});
+$('btn-logout').addEventListener('click', () => signOut(auth));
+
+onAuthStateChanged(auth, user => {
+  if (user) {
+    viewLogin.classList.add('hidden');
+    viewDash.classList.remove('hidden');
+    $('user-email').textContent = user.email;
+    ecouter();
+
+    const proprietaire = (user.email || '').toLowerCase() === COMPTE_PROPRIETAIRE;
+    MODULES_RESERVES.forEach(m => {
+      const item = modMenu.querySelector(`button[data-mod="${m}"]`);
+      if (item) item.classList.toggle('hidden', !proprietaire);
+    });
+    modBtn.classList.toggle('hidden', !proprietaire);
+    if (!proprietaire) { basculer('resa'); return; }
+
+    let dernierModule = 'resa';
+    try { dernierModule = localStorage.getItem('guinguette.module') || 'resa'; } catch {}
+    basculer(MODULES[dernierModule] ? dernierModule : 'resa');
+  } else {
+    viewDash.classList.add('hidden');
+    viewLogin.classList.remove('hidden');
+    if (unsub) { unsub(); unsub = null; }
+    resas = [];
+  }
+});
+
+/* ─── Écoute temps réel ─── */
+function ecouter() {
+  if (unsub) unsub();
+  const q = query(collection(db, 'reservations'), orderBy('date', 'asc'));
+  unsub = onSnapshot(q, snap => {
+    resas = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    resas.sort((a,b) => (a.date+a.heure).localeCompare(b.date+b.heure));
+    render();
+  }, err => {
+    console.error(err);
+    toast("Impossible de charger les réservations — vérifiez les règles Firestore.", true);
+  });
+}
+
+/* ─── Filtres & recherche ─── */
+$('filters').addEventListener('click', e => {
+  const b = e.target.closest('.pill'); if (!b) return;
+  filtre = b.dataset.f;
+  document.querySelectorAll('.pill').forEach(p => p.classList.toggle('active', p === b));
+  render();
+});
+$('search').addEventListener('input', e => { recherche = e.target.value.toLowerCase().trim(); render(); });
+
+function filtrer() {
+  const auj = todayStr();
+  let out = resas.filter(r => {
+    if (filtre === 'attente')  return r.statut === 'en_attente' && r.date >= auj;
+    if (filtre === 'avenir')   return r.date >= auj && (r.statut === 'en_attente' || r.statut === 'validee');
+    if (filtre === 'jour')     return r.date === auj;
+    if (filtre === 'archives') return r.statut === 'refusee' || r.statut === 'annulee' || r.date < auj;
+    return r.date >= auj; // toutes — les réservations passées sont dans Archives
+  });
+  if (recherche) {
+    out = out.filter(r =>
+      (r.nom||'').toLowerCase().includes(recherche) ||
+      (r.telephone||'').replace(/\s/g,'').includes(recherche.replace(/\s/g,'')));
+  }
+  return out;
+}
+
+/* ─── Rendu ─── */
+function render() {
+  const auj = todayStr();
+
+  /* Chiffres */
+  const attente = resas.filter(r => r.statut === 'en_attente' && r.date >= auj);
+  const jour = resas.filter(r => r.date === auj && r.statut !== 'refusee' && r.statut !== 'annulee');
+  $('st-attente').textContent = attente.length;
+  $('st-resa-jour').textContent = jour.length;
+  $('st-couverts-jour').textContent = jour.filter(r => r.statut === 'validee').reduce((s,r) => s + (r.personnes||0), 0);
+  $('c-attente').textContent = attente.length ? '· ' + attente.length : '';
+
+  /* Liste groupée par jour */
+  const liste = filtrer();
+  const wrap = $('list');
+  if (!liste.length) {
+    wrap.innerHTML = `<div class="empty"><div class="big">Rien à afficher</div>Aucune réservation ne correspond à ce filtre.</div>`;
+    return;
+  }
+  const parJour = {};
+  liste.forEach(r => { (parJour[r.date] ||= []).push(r); });
+
+  let html = '';
+  Object.keys(parJour).sort().forEach(d => {
+    const rs = parJour[d];
+    const cvOk = rs.filter(r => r.statut === 'validee').reduce((s,r) => s + (r.personnes||0), 0);
+    const cvAtt = rs.filter(r => r.statut === 'en_attente').reduce((s,r) => s + (r.personnes||0), 0);
+    html += `<div class="day-rail"><span class="d">${dateFR(d)}${d === todayStr() ? ' · aujourd\u2019hui' : ''}</span>
+      <span class="cv">${cvOk} couv. confirmés${cvAtt ? ' · ' + cvAtt + ' en attente' : ''}</span></div>`;
+    rs.forEach(r => { html += carte(r); });
+  });
+  wrap.innerHTML = html;
+}
+
+function carte(r) {
+  let lbl = { en_attente:'En attente', validee:'Validée', refusee:'Refusée', annulee:'Annulée' }[r.statut] || r.statut;
+  if (r.statut === 'annulee' && r.annuleParClient) lbl = 'Annulée par le client';
+  let actions = '';
+  if (r.statut === 'en_attente') {
+    actions = `<button class="btn-ok" data-a="valider" data-id="${r.id}">✓ Valider</button>
+               <button class="btn-no" data-a="refuser" data-id="${r.id}">✕ Refuser</button>`;
+  } else if (r.statut === 'validee') {
+    actions = `<button class="btn-min" data-a="annuler" data-id="${r.id}">Annuler la réservation</button>`;
+  } else {
+    actions = `<button class="btn-min" data-a="retablir" data-id="${r.id}">Remettre en attente</button>`;
+  }
+  actions += `<button class="btn-min btn-del" data-a="supprimer" data-id="${r.id}">🗑 Supprimer</button>`;
+  const mailNote = r.statut === 'validee'
+    ? (r.emailEnvoye ? ' · email de confirmation envoyé ✓' : (r.email ? '' : ' · pas d\u2019email, confirmée par téléphone ?'))
+    : '';
+  return `<div class="card st-${r.statut}">
+    <div class="top">
+      <span class="heure">${esc(r.heure)}</span>
+      <span class="nom">${esc(r.nom)}</span>
+      <span class="badge ${r.statut}">${lbl}</span>
+    </div>
+    <div class="pers"><b>${r.personnes||'?'}</b> personne${(r.personnes||0) > 1 ? 's' : ''}</div>
+    <div class="contact">
+      ${r.telephone ? `<a href="tel:${esc(r.telephone.replace(/\s/g,''))}">📞 ${esc(r.telephone)}</a>` : ''}
+      ${r.email ? `<a href="mailto:${esc(r.email)}">✉️ ${esc(r.email)}</a>` : '<span style="color:#aaa">✉️ pas d\u2019email</span>'}
+    </div>
+    ${r.message ? `<div class="msg">${esc(r.message)}</div>` : ''}
+    <div class="meta">${r.source === 'equipe' ? 'Ajoutée par l\u2019équipe' : 'Demande reçue'} ${r.creeLe && r.creeLe.toDate ? 'le ' + r.creeLe.toDate().toLocaleDateString('fr-FR') + ' à ' + r.creeLe.toDate().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}) : ''}${mailNote}</div>
+    <div class="actions">${actions}</div>
+  </div>`;
+}
+
+/* ─── Ajout manuel ─── */
+const modalBg = $('modal-bg');
+const majChk = () => { $('a-chk-wrap').style.display = ($('a-email').value.trim() && emailsActifs && $('a-statut').value === 'validee') ? '' : 'none'; };
+$('btn-add').addEventListener('click', () => {
+  $('add-form').reset();
+  $('a-date').value = todayStr();
+  majChk();
+  modalBg.classList.remove('hidden');
+  $('a-nom').focus();
+});
+$('a-fermer').addEventListener('click', () => modalBg.classList.add('hidden'));
+modalBg.addEventListener('click', e => { if (e.target === modalBg) modalBg.classList.add('hidden'); });
+$('a-email').addEventListener('input', majChk);
+$('a-statut').addEventListener('change', majChk);
+
+$('add-form').addEventListener('submit', async e => {
+  e.preventDefault();
+  const btn = $('a-save'); btn.disabled = true;
+  const resa = {
+    nom:        $('a-nom').value.trim(),
+    telephone:  $('a-tel').value.trim(),
+    date:       $('a-date').value,
+    heure:      $('a-heure').value,
+    personnes:  parseInt($('a-pers').value, 10) || 1,
+    email:      $('a-email').value.trim(),
+    message:    $('a-msg').value.trim(),
+    statut:     $('a-statut').value,
+    source:     'equipe',
+    emailEnvoye: false,
+    creeLe:     serverTimestamp(),
+    traitePar:  auth.currentUser ? auth.currentUser.email : ''
+  };
+  try {
+    const ref = await addDoc(collection(db, 'reservations'), resa);
+    modalBg.classList.add('hidden');
+    if (resa.statut === 'validee' && resa.email && emailsActifs && $('a-envoyer').checked) {
+      const r = { ...resa, id: ref.id };
+      const { sujet, corps } = emailConfirmation(r);
+      await envoyerEmail(r, sujet, corps);
+    } else {
+      toast(`Réservation de ${resa.nom} ajoutée.`);
+    }
+  } catch (ex) {
+    console.error(ex);
+    toast("Erreur : la réservation n'a pas pu être enregistrée.", true);
+  }
+  btn.disabled = false;
+});
+
+/* ─── Actions ─── */
+document.addEventListener('click', async e => {
+  const b = e.target.closest('[data-a]'); if (!b) return;
+  const r = resas.find(x => x.id === b.dataset.id); if (!r) return;
+  b.disabled = true;
+  try {
+    if (b.dataset.a === 'valider')  await valider(r);
+    if (b.dataset.a === 'refuser')  await refuser(r);
+    if (b.dataset.a === 'annuler')  { if (confirm(`Annuler la réservation de ${r.nom} ?`)) await maj(r.id, { statut:'annulee' }); }
+    if (b.dataset.a === 'retablir') await maj(r.id, { statut:'en_attente' });
+    if (b.dataset.a === 'supprimer') {
+      if (confirm("Supprimer définitivement cette réservation ?")) {
+        await deleteDoc(doc(db, 'reservations', r.id));
+        toast(`Réservation de ${r.nom} supprimée.`);
+      }
+    }
+  } catch (ex) {
+    console.error(ex);
+    toast("Erreur : l'action n'a pas pu être enregistrée.", true);
+  }
+  b.disabled = false;
+});
+
+async function maj(id, data) {
+  await updateDoc(doc(db, 'reservations', id), { ...data, traiteLe: serverTimestamp(), traitePar: auth.currentUser ? auth.currentUser.email : '' });
+}
+
+function emailConfirmation(r) {
+  const dFR = dateFR(r.date);
+  const prenom = (r.nom || "").trim().split(/\s+/)[0] || r.nom;
+  const perso = (r.messagePerso || "").trim();
+  const blocPerso = perso ? `${perso}\n\n` : "";
+  const corps =
+`Bonjour ${prenom},
+
+Bonne nouvelle : votre réservation est confirmée !
+
+📅 ${dFR} à ${r.heure}
+👥 ${r.personnes} personne${r.personnes > 1 ? 's' : ''}
+
+Rendez-vous au Parc du Dispensaire, 1 avenue Maurice Berteaux, 78500 Sartrouville.
+Petit rappel : l'ouverture dépend de la météo — en cas de doute, consultez nos réseaux ou appelez-nous au 06 67 42 65 65.
+
+${blocPerso}Un empêchement ? Vous pouvez annuler votre réservation en un clic :
+https://laguinguettedudispensaire.fr/annulation.html?id=${r.id}
+
+À très vite,
+L'équipe de La Guinguette du Dispensaire
+https://laguinguettedudispensaire.fr`;
+  return { sujet: `Votre réservation du ${dFR} est confirmée — La Guinguette du Dispensaire`, corps };
+}
+
+async function valider(r) {
+  await maj(r.id, { statut:'validee' });
+  if (!r.email) { toast(`Réservation de ${r.nom} validée — pas d'email, pensez à confirmer par téléphone.`); return; }
+  if (!emailsActifs) { toast(`Validée. Email non envoyé (EmailJS non configuré).`, true); return; }
+  const messagePerso = prompt("Message personnalisé à ajouter dans l'email de confirmation (facultatif) :", "");
+  const { sujet, corps } = emailConfirmation({ ...r, messagePerso: messagePerso || "" });
+  await envoyerEmail(r, sujet, corps);
+}
+
+async function refuser(r) {
+  if (!confirm(`Refuser la demande de ${r.nom} (${dateFR(r.date)} à ${r.heure}) ?`)) return;
+  await maj(r.id, { statut:'refusee' });
+  if (!r.email || !emailsActifs) { toast(`Demande de ${r.nom} refusée.`); return; }
+  if (!confirm("Envoyer un email au client pour l'en informer ?")) return;
+  const dFR = dateFR(r.date);
+  const prenom = (r.nom || "").trim().split(/\s+/)[0] || r.nom;
+  const corps =
+`Bonjour ${prenom},
+
+Malheureusement, nous ne pouvons pas confirmer votre réservation du ${dFR} à ${r.heure} (${r.personnes} personne${r.personnes > 1 ? 's' : ''}) — le créneau est complet ou la guinguette est fermée ce jour-là.
+
+N'hésitez pas à nous appeler au 06 67 42 65 65 pour trouver un autre moment ensemble, ou à refaire une demande sur notre site.
+
+L'équipe de La Guinguette du Dispensaire
+https://laguinguettedudispensaire.fr`;
+  await envoyerEmail(r, `Votre demande de réservation du ${dFR} — La Guinguette du Dispensaire`, corps);
+}
+
+async function envoyerEmail(r, sujet, corps) {
+  try {
+    await emailjs.send(EMAILJS.serviceId, EMAILJS.templateId, { to_email: r.email, name: r.nom, time: dateFR(r.date) + ' à ' + r.heure, message: corps });
+    await updateDoc(doc(db, 'reservations', r.id), { emailEnvoye: true });
+    toast(`Email envoyé à ${r.email} ✓`);
+  } catch (ex) {
+    console.error(ex);
+    toast(`Statut enregistré, mais l'email n'est pas parti — contactez ${r.nom} par téléphone.`, true);
+  }
+}
+/* ═══════════════════════════════════════════════════════════════
+   ONGLET VENTES
+   Lecture seule. Les chiffres viennent de Firestore, jamais du
+   fichier : un visiteur non connecté ne voit rien.
+     ventes/{AAAA-MM-JJ} = { date, ca_net, ca_ht, tva, tickets,
+                             especes, carte, autre, remboursements,
+                             remises, tva20_ttc, tva10_ttc,
+                             ecart_caisse, ouverture, fermeture }
+     ventes_meta/saison  = { debut, fin, ca_ttc, ca_ht, tva, remises,
+                             unites, tickets, categories:[{nom,unites,ca}],
+                             top:[{nom,categorie,unites,ca}] }
+═══════════════════════════════════════════════════════════════ */
+const SVGNS = 'http://www.w3.org/2000/svg';
+const mk = (n, a = {}) => { const e = document.createElementNS(SVGNS, n); for (const k in a) e.setAttribute(k, a[k]); return e; };
+const eur  = v => (Number(v)||0).toLocaleString('fr-FR', { minimumFractionDigits:2, maximumFractionDigits:2 }) + ' €';
+const eur0 = v => Math.round(Number(v)||0).toLocaleString('fr-FR') + ' €';
+const pct  = v => (Number(v)||0).toFixed(1).replace('.', ',') + ' %';
+
+let ventesChargees = false;
+
+let visiChargee = false;
+
+/* Seul le compte propriétaire voit les modules de pilotage.
+   Ce filtrage n'est que du confort : la vraie protection est dans
+   les règles Firestore, qui refusent la lecture aux autres comptes. */
+const COMPTE_PROPRIETAIRE = 'laguinguettedudispensaire@gmail.com';
+const MODULES_RESERVES = ['ventes', 'visi'];
+
+const MODULES = {
+  resa:   { section: 'tab-resa',        titre: 'Réservations' },
+  ventes: { section: 'tab-ventes',      titre: 'Ventes' },
+  visi:   { section: 'tab-visibilite',  titre: 'Visibilité' }
+};
+
+const modBtn = $('mod-btn'), modMenu = $('mod-menu');
+
+function ouvrirMenu(ouvert) {
+  modMenu.classList.toggle('hidden', !ouvert);
+  modBtn.setAttribute('aria-expanded', ouvert ? 'true' : 'false');
+}
+modBtn.addEventListener('click', e => {
+  e.stopPropagation();
+  ouvrirMenu(modMenu.classList.contains('hidden'));
+});
+document.addEventListener('click', e => {
+  if (!modMenu.contains(e.target) && e.target !== modBtn) ouvrirMenu(false);
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') ouvrirMenu(false); });
+
+modMenu.querySelectorAll('button[data-mod]').forEach(b =>
+  b.addEventListener('click', () => { basculer(b.dataset.mod); ouvrirMenu(false); }));
+
+function basculer(onglet) {
+  if (!MODULES[onglet]) onglet = 'resa';
+  Object.entries(MODULES).forEach(([nom, m]) => {
+    $(m.section).classList.toggle('hidden', nom !== onglet);
+  });
+  modMenu.querySelectorAll('button[data-mod]').forEach(b =>
+    b.classList.toggle('on', b.dataset.mod === onglet));
+  $('mod-titre').textContent = MODULES[onglet].titre;
+  try { localStorage.setItem('guinguette.module', onglet); } catch {}
+  if (onglet === 'ventes' && !ventesChargees) { ventesChargees = true; chargerVentes(); }
+  if (onglet === 'visi'   && !visiChargee)    { visiChargee   = true; chargerVisibilite(); }
+}
+
+/* Formate « mis à jour le … » à partir d'un horodatage d'écriture. */
+function texteMaj(dateReleve, ts) {
+  let t = 'Dernier relevé : ' + dateFR(dateReleve);
+  if (ts) {
+    const d = new Date(Number(ts));
+    if (!Number.isNaN(d.getTime())) {
+      t += ' · remonté le ' + d.toLocaleDateString('fr-FR', { day:'numeric', month:'long' }) +
+           ' à ' + d.toLocaleTimeString('fr-FR', { hour:'2-digit', minute:'2-digit' });
+    }
+  }
+  return t;
+}
+
+let joursVentes = [];
+let pasVentes = 'jour';
+
+/* Lundi de la semaine contenant la date donnée. */
+function lundiDe(iso) {
+  const [y, m, d] = iso.split('-').map(Number);
+  const dt = new Date(y, m - 1, d);
+  dt.setDate(dt.getDate() - ((dt.getDay() + 6) % 7));
+  return dt.getFullYear() + '-' +
+         String(dt.getMonth() + 1).padStart(2, '0') + '-' +
+         String(dt.getDate()).padStart(2, '0');
+}
+
+/* Regroupe par semaine. Une semaine incomplète — celle en cours, ou la
+   première de la saison — reste affichée, mais l'infobulle dit combien de
+   jours d'ouverture elle contient : sans quoi on la comparerait à une
+   semaine pleine sans le savoir. */
+function parSemaine(jours) {
+  const paquets = new Map();
+  jours.forEach(j => {
+    const l = lundiDe(j.date);
+    if (!paquets.has(l)) paquets.set(l, { date: l, ca_net: 0, tickets: 0, joursOuverts: 0 });
+    const p = paquets.get(l);
+    p.ca_net  += Number(j.ca_net)  || 0;
+    p.tickets += Number(j.tickets) || 0;
+    p.joursOuverts++;
+  });
+  return [...paquets.values()].sort((a, b) => a.date.localeCompare(b.date));
+}
+
+function dessinerVentes() {
+  const semaine = pasVentes === 'semaine';
+  $('v-jours-titre').textContent = semaine
+    ? "Chiffre d'affaires par semaine"
+    : "Chiffre d'affaires par jour";
+  graphJours(semaine ? parSemaine(joursVentes) : joursVentes, semaine);
+}
+
+async function chargerVentes() {
+  try {
+    const [snapJours, docSaison] = await Promise.all([
+      getDocs(query(collection(db, 'ventes'), orderBy('date', 'desc'), limit(60))),
+      getDoc(doc(db, 'ventes_meta', 'saison'))
+    ]);
+    const jours  = snapJours.docs.map(d => ({ id: d.id, ...d.data() })).sort((a,b) => String(a.date).localeCompare(String(b.date)));
+    const saison = docSaison.exists() ? docSaison.data() : null;
+
+    if (!jours.length && !saison) { $('v-vide').classList.remove('hidden'); return; }
+    $('v-vide').classList.add('hidden');
+    $('v-contenu').classList.remove('hidden');
+
+    const dernier = jours.length ? jours[jours.length - 1] : null;
+    $('v-maj').textContent = dernier ? texteMaj(dernier.date, dernier.maj)
+                                     : (saison && saison.maj ? texteMaj(saison.fin, saison.maj) : '');
+    if (jours.length) {
+      joursVentes = jours;
+      tuilesDuJour(dernier);
+      dessinerVentes();
+      blocJour(dernier);
+    }
+    else { ['v-card-jours','v-card-jour'].forEach(i => $(i).classList.add('hidden')); }
+
+    if (saison) { graphCategories(saison); tableauTop(saison); blocSaison(saison); }
+    else { ['v-card-cat','v-card-top','v-card-saison'].forEach(i => $(i).classList.add('hidden')); }
+  } catch (ex) {
+    console.error(ex);
+    $('v-vide').classList.remove('hidden');
+    $('v-vide').innerHTML = '<div class="big">Lecture impossible</div>' + esc(ex.message || String(ex));
+  }
+}
+
+function tuilesDuJour(j) {
+  const t = Number(j.tickets) || 0;
+  $('v-ca').textContent      = eur(j.ca_net);
+  $('v-tickets').textContent = t || '–';
+  $('v-panier').textContent  = t ? eur((Number(j.ca_net)||0) / t) : '–';
+  $('v-ecart').textContent   = j.ecart_caisse == null ? '–' : eur(j.ecart_caisse);
+  $('v-jours-sub').textContent = 'CA net TTC, toutes caisses · dernier relevé le ' + dateFR(j.date);
+}
+
+function graphJours(jours, semaine) {
+  const svg = $('v-ch-jours'); svg.innerHTML = '';
+  const W = 820, H = 210, mL = 52, mR = 8, mT = 12, mB = 26;
+  const iw = W - mL - mR, ih = H - mT - mB;
+  const max = Math.max(...jours.map(j => Number(j.ca_net) || 0), 1) * 1.08;
+  [0, .25, .5, .75, 1].forEach(f => {
+    const y = mT + ih - f * ih;
+    svg.appendChild(mk('line', { x1:mL, x2:W-mR, y1:y, y2:y, class:'v-grid' }));
+    const t = mk('text', { x:mL-8, y:y+3.5, class:'v-axis', 'text-anchor':'end' });
+    t.textContent = eur0(f * max); svg.appendChild(t);
+  });
+  const bw = iw / jours.length, w = Math.max(4, bw - 2);
+  jours.forEach((j, i) => {
+    const h = Math.max(2, (Number(j.ca_net)||0) / max * ih);
+    const x = mL + i * bw + (bw - w) / 2, y = mT + ih - h;
+    const r = mk('rect', { x, y, width:w, height:h, rx:4, fill:'#c4634a' });
+    const ti = mk('title');
+    ti.textContent = semaine
+      ? 'Semaine du ' + dateFR(j.date, { day:'numeric', month:'long' }) + ' — ' + eur(j.ca_net) +
+        ' · ' + j.joursOuverts + ' jour' + (j.joursOuverts > 1 ? 's' : '') + " d'ouverture"
+      : dateFR(j.date) + ' — ' + eur(j.ca_net);
+    r.appendChild(ti);
+    svg.appendChild(r);
+    if (i % Math.ceil(jours.length / 6) === 0 || i === jours.length - 1) {
+      const lb = mk('text', { x:mL + i*bw + bw/2, y:H-8, class:'v-axis', 'text-anchor':'middle' });
+      lb.textContent = (semaine ? 'sem. ' : '') + dateFR(j.date, { day:'numeric', month:'short' });
+      svg.appendChild(lb);
+    }
+  });
+}
+
+function graphCategories(s) {
+  const cats = (s.categories || []).slice().sort((a,b) => (b.ca||0) - (a.ca||0));
+  if (!cats.length) { $('v-card-cat').classList.add('hidden'); return; }
+  const svg = $('v-ch-cat'); svg.innerHTML = '';
+  const W = 820, rowH = 28, mL = 178, mR = 96, mT = 4;
+  const H = mT + cats.length * rowH + 6;
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  const iw = W - mL - mR, max = cats[0].ca || 1;
+  const total = Number(s.ca_ttc) || cats.reduce((a,c) => a + (c.ca||0), 0) || 1;
+  cats.forEach((c, i) => {
+    const y = mT + i * rowH, bh = rowH - 10, w = Math.max(3, (c.ca||0) / max * iw);
+    const lab = mk('text', { x:mL-10, y:y+bh/2+4, class:'v-cat', 'text-anchor':'end' });
+    lab.textContent = c.nom; svg.appendChild(lab);
+    const r = mk('rect', { x:mL, y, width:w, height:bh, rx:4, fill:'#c4634a' });
+    const ti = mk('title'); ti.textContent = `${c.nom} — ${eur(c.ca)} · ${(c.unites||0).toLocaleString('fr-FR')} unités`; r.appendChild(ti);
+    svg.appendChild(r);
+    const v = mk('text', { x:mL+w+8, y:y+bh/2+4, class:'v-lab' });
+    v.textContent = eur0(c.ca) + '  ·  ' + pct((c.ca||0) / total * 100); svg.appendChild(v);
+  });
+  $('v-cat-sub').textContent = 'Part du CA TTC par catégorie · ' + periode(s);
+}
+
+function tableauTop(s) {
+  const top = (s.top || []).slice().sort((a,b) => (b.ca||0) - (a.ca||0)).slice(0, 12);
+  if (!top.length) { $('v-card-top').classList.add('hidden'); return; }
+  const total = Number(s.ca_ttc) || 1;
+  $('v-top').innerHTML = top.map(p =>
+    `<tr><td>${esc(p.nom)}<div class="v-chip">${esc(p.categorie||'')}</div></td>
+         <td class="n">${(p.unites||0).toLocaleString('fr-FR')}</td>
+         <td class="n">${eur(p.ca)}</td>
+         <td class="n">${pct((p.ca||0)/total*100)}</td></tr>`).join('');
+}
+
+function blocJour(j) {
+  $('v-jour-sub').textContent = dateFR(j.date) + (j.ouverture ? ` · ${j.ouverture} → ${j.fermeture||''}` : '');
+  const a = Number(j.tva20_ttc) || 0, b = Number(j.tva10_ttc) || 0, tot = a + b;
+  const svg = $('v-ch-tva'); svg.innerHTML = '';
+  if (tot > 0) {
+    let x = 0;
+    [['TVA 20 %', a, '#a8452f'], ['TVA 10 %', b, '#c8a448']].forEach((p, i) => {
+      const w = p[1] / tot * 818;
+      svg.appendChild(mk('rect', { x, y:8, width:Math.max(0, w - (i ? 0 : 2)), height:34, rx:4, fill:p[2] }));
+      if (w > 140) {
+        const t = mk('text', { x:x+12, y:29, style:'font-size:12.5px;font-weight:700;fill:#fff' });
+        t.textContent = p[0] + ' — ' + eur(p[1]); svg.appendChild(t);
+      }
+      x += w + 2;
+    });
+  }
+  const kv = (l, v) => `<div class="v-kv"><span>${l}</span><b>${eur(v)}</b></div>`;
+  $('v-paiements').innerHTML =
+    kv('Espèces', j.especes) + kv('Carte', j.carte) + kv('Autre', j.autre) +
+    kv('Remboursements', j.remboursements) +
+    `<div class="v-kv tot"><span>CA net</span><b>${eur(j.ca_net)}</b></div>`;
+  $('v-tva').innerHTML =
+    kv('Total hors TVA', j.ca_ht) + kv('TVA collectée', j.tva) + kv('Remises accordées', j.remises) +
+    `<div class="v-kv tot"><span>Total TTC</span><b>${eur(j.ca_net)}</b></div>`;
+}
+
+function periode(s) {
+  if (!s.debut || !s.fin) return '';
+  return 'du ' + dateFR(s.debut, { day:'numeric', month:'long' }) + ' au ' + dateFR(s.fin, { day:'numeric', month:'long' });
+}
+
+function blocSaison(s) {
+  $('v-s-ca').textContent      = eur0(s.ca_ttc);
+  $('v-s-unites').textContent  = (Number(s.unites)||0).toLocaleString('fr-FR');
+  $('v-s-tickets').textContent = s.tickets ? Number(s.tickets).toLocaleString('fr-FR') : '–';
+  $('v-s-ht').textContent      = s.ca_ht ? eur0(s.ca_ht) : '–';
+  $('v-s-remises').textContent = eur(s.remises);
+
+  const t = Number(s.tickets) || 0;
+  const bouts = [periode(s)];
+  if (t) bouts.push(t.toLocaleString('fr-FR') + ' tickets');
+  if (t && s.ca_ttc) bouts.push('panier moyen ' + eur(Number(s.ca_ttc) / t));
+  $('v-saison-sub').textContent = bouts.filter(Boolean).join(' · ');
+}
+
+document.querySelectorAll('#v-bascule button').forEach(b =>
+  b.addEventListener('click', () => {
+    pasVentes = b.dataset.pas;
+    document.querySelectorAll('#v-bascule button').forEach(x => x.classList.toggle('on', x === b));
+    dessinerVentes();
+  }));
+
+/* ═══════════════════════════════════════════════════════════════
+   ONGLET VISIBILITÉ — seo/{AAAA-MM-JJ}
+   { date, sc_clics_28j, sc_impressions_28j, sc_ctr_pct, sc_position_moy,
+     gbp_vues_mois, gbp_interactions, gbp_avis, gbp_note,
+     umami_visiteurs_7j, commentaire }
+═══════════════════════════════════════════════════════════════ */
+const ent = v => v == null ? '–' : Math.round(Number(v)).toLocaleString('fr-FR');
+const dec = (v, n) => v == null ? '–' : Number(v).toFixed(n).replace('.', ',');
+
+async function chargerVisibilite() {
+  try {
+    const snap = await getDocs(query(collection(db, 'seo'), orderBy('date', 'desc'), limit(60)));
+    const r = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+                       .sort((a, b) => String(a.date).localeCompare(String(b.date)));
+    if (!r.length) { $('s-vide').classList.remove('hidden'); return; }
+    $('s-vide').classList.add('hidden');
+    $('s-contenu').classList.remove('hidden');
+
+    const d = r[r.length - 1];
+    $('s-maj').textContent = texteMaj(d.date, d.maj);
+    $('s-clics').textContent = ent(d.sc_clics_28j);
+    $('s-impr').textContent  = ent(d.sc_impressions_28j);
+    $('s-ctr').textContent   = d.sc_ctr_pct == null ? '–' : dec(d.sc_ctr_pct, 1) + ' %';
+    $('s-pos').textContent   = dec(d.sc_position_moy, 1);
+    $('s-vues').textContent  = ent(d.gbp_vues_mois);
+    $('s-inter').textContent = ent(d.gbp_interactions);
+    $('s-avis').textContent  = ent(d.gbp_avis);
+    $('s-note').textContent  = d.gbp_note == null ? '–' : dec(d.gbp_note, 1) + ' ★';
+
+    barres('s-ch-clics', r, 'sc_clics_28j', v => ent(v) + ' clics');
+    courbe('s-ch-vues',  r, 'gbp_vues_mois',   v => ent(v) + ' vues', false, true);
+    courbe('s-ch-inter', r, 'gbp_interactions', v => ent(v) + ' interactions');
+    noterRupture(r, 'gbp_vues_mois', 's-vues-sub', 'Cumul du mois affiché par Google');
+    courbe('s-ch-pos',   r, 'sc_position_moy', v => 'position ' + dec(v, 1), true);
+    barres('s-ch-umami', r, 'umami_visiteurs_7j', v => ent(v) + ' visiteurs');
+
+    if (d.commentaire) {
+      $('s-card-note').classList.remove('hidden');
+      $('s-note-date').textContent = dateFR(d.date);
+      $('s-commentaire').textContent = d.commentaire;
+    }
+  } catch (ex) {
+    console.error(ex);
+    $('s-vide').classList.remove('hidden');
+    $('s-vide').innerHTML = '<div class="big">Lecture impossible</div>' + esc(ex.message || String(ex));
+  }
+}
+
+function pointsUtiles(r, cle) {
+  return r.filter(x => x[cle] != null && !Number.isNaN(Number(x[cle])));
+}
+
+function barres(svgId, r, cle, libelle) {
+  const svg = $(svgId); svg.innerHTML = '';
+  const pts = pointsUtiles(r, cle);
+  if (!pts.length) { svg.closest('.v-card').classList.add('hidden'); return; }
+  const W = 820, H = 190, mL = 52, mR = 8, mT = 12, mB = 26;
+  const iw = W - mL - mR, ih = H - mT - mB;
+  const max = Math.max(...pts.map(x => Number(x[cle]))) * 1.1 || 1;
+  [0, .5, 1].forEach(f => {
+    const y = mT + ih - f * ih;
+    svg.appendChild(mk('line', { x1:mL, x2:W-mR, y1:y, y2:y, class:'v-grid' }));
+    const t = mk('text', { x:mL-8, y:y+3.5, class:'v-axis', 'text-anchor':'end' });
+    t.textContent = ent(f * max); svg.appendChild(t);
+  });
+  const bw = iw / pts.length, w = Math.max(5, bw - 3);
+  pts.forEach((x, i) => {
+    const h = Math.max(2, Number(x[cle]) / max * ih);
+    const px = mL + i * bw + (bw - w) / 2, py = mT + ih - h;
+    const b = mk('rect', { x:px, y:py, width:w, height:h, rx:4, fill:'#c4634a' });
+    const ti = mk('title'); ti.textContent = dateFR(x.date) + ' — ' + libelle(x[cle]); b.appendChild(ti);
+    svg.appendChild(b);
+    if (i === 0 || i === pts.length - 1 || i % Math.ceil(pts.length / 5) === 0) {
+      const l = mk('text', { x:px + w/2, y:H-8, class:'v-axis', 'text-anchor':'middle' });
+      l.textContent = dateFR(x.date, { day:'numeric', month:'short' }); svg.appendChild(l);
+    }
+  });
+}
+
+/* Repère les sauts qui trahissent un changement de mesure plutôt qu'une
+   vraie progression : un cumul mensuel qui bondit de plus de 60 % entre deux
+   relevés a presque toujours changé de fenêtre, pas de fréquentation. */
+function ruptures(pts, cle) {
+  const out = [];
+  for (let i = 1; i < pts.length; i++) {
+    const a = Number(pts[i-1][cle]), b = Number(pts[i][cle]);
+    if (a > 0 && b / a > 1.6) out.push(i);
+  }
+  return out;
+}
+
+function noterRupture(r, cle, sousTitreId, base) {
+  const pts = pointsUtiles(r, cle);
+  const rup = ruptures(pts, cle);
+  const el = $(sousTitreId);
+  if (!el) return;
+  el.textContent = rup.length
+    ? base + ' · le saut du ' + dateFR(pts[rup[0]].date, { day:'numeric', month:'long' }) +
+      " vient d'un changement de fenêtre de mesure, pas d'une hausse de fréquentation"
+    : base;
+}
+
+function courbe(svgId, r, cle, libelle, inverse, marquerRuptures) {
+  const svg = $(svgId); svg.innerHTML = '';
+  const pts = pointsUtiles(r, cle);
+  if (!pts.length) { svg.closest('.v-card').classList.add('hidden'); return; }
+  const W = 820, H = 170, mL = 52, mR = 10, mT = 14, mB = 26;
+  const iw = W - mL - mR, ih = H - mT - mB;
+  const vals = pts.map(x => Number(x[cle]));
+  let lo = Math.min(...vals), hi = Math.max(...vals);
+  if (lo === hi) { lo -= 1; hi += 1; }
+  const marge = (hi - lo) * 0.15; lo -= marge; hi += marge;
+  const py = v => { const f = (v - lo) / (hi - lo); return mT + (inverse ? f * ih : (1 - f) * ih); };
+  /* Des décimales n'ont de sens que sur les petites échelles (une position
+     moyenne, une note). Sur un compteur de vues, elles font du bruit. */
+  const axe = hi >= 100 ? (v => ent(v)) : (v => dec(v, 1));
+  [lo, (lo + hi) / 2, hi].forEach(v => {
+    const y = py(v);
+    svg.appendChild(mk('line', { x1:mL, x2:W-mR, y1:y, y2:y, class:'v-grid' }));
+    const t = mk('text', { x:mL-8, y:y+3.5, class:'v-axis', 'text-anchor':'end' });
+    t.textContent = axe(v); svg.appendChild(t);
+  });
+  const px = i => pts.length === 1 ? mL + iw / 2 : mL + i * (iw / (pts.length - 1));
+
+  if (marquerRuptures) {
+    ruptures(pts, cle).forEach(i => {
+      const x = (px(i - 1) + px(i)) / 2;
+      svg.appendChild(mk('line', { x1:x, x2:x, y1:mT, y2:mT + ih,
+        stroke:'#9a9a9a', 'stroke-width':1.5, 'stroke-dasharray':'4 4' }));
+      const t = mk('text', { x:x + 5, y:mT + 11, class:'v-axis' });
+      t.textContent = 'changement de mesure';
+      const ti = mk('title');
+      ti.textContent = "Avant ce point, Google affichait une fenêtre plus courte : les deux séries ne sont pas comparables.";
+      t.appendChild(ti);
+      svg.appendChild(t);
+    });
+  }
+
+  const d = pts.map((x, i) => (i ? 'L' : 'M') + px(i).toFixed(1) + ' ' + py(Number(x[cle])).toFixed(1)).join(' ');
+  svg.appendChild(mk('path', { d, fill:'none', stroke:'#c4634a', 'stroke-width':2,
+                               'stroke-linejoin':'round', 'stroke-linecap':'round' }));
+  pts.forEach((x, i) => {
+    const c = mk('circle', { cx:px(i), cy:py(Number(x[cle])), r:4.5, fill:'#c4634a',
+                             stroke:'#fff', 'stroke-width':2 });
+    const ti = mk('title'); ti.textContent = dateFR(x.date) + ' — ' + libelle(x[cle]); c.appendChild(ti);
+    svg.appendChild(c);
+    if (i === 0 || i === pts.length - 1) {
+      const l = mk('text', { x:px(i), y:H-8, class:'v-axis',
+                             'text-anchor': i ? 'end' : 'start' });
+      l.textContent = dateFR(x.date, { day:'numeric', month:'short' }); svg.appendChild(l);
+    }
+  });
+}
+
+</script>
+</body>
+</html>
