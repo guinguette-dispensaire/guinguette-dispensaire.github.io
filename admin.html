@@ -190,6 +190,37 @@ label.chk input { width: auto; margin: 0; }
 .v-legend i { display: inline-block; width: 11px; height: 11px; border-radius: 3px; margin-right: 0.35rem; vertical-align: -1px; }
 .v-two { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 @media (max-width: 560px) { .v-two { grid-template-columns: 1fr; } }
+
+/* ─── Planning ─── */
+.pl-nav { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.8rem; }
+.pl-nav button { background: var(--white); border: 1.5px solid rgba(0,0,0,0.12); border-radius: 50px; width: 34px; height: 34px; font-size: 0.9rem; color: var(--dark-green); flex: none; }
+.pl-nav button:disabled { opacity: 0.35; }
+.pl-nav .lab { flex: 1; text-align: center; font-family: 'Playfair Display','Playfair repli',serif; font-size: 1.02rem; color: var(--dark-green); }
+.pl-nav .auj { font-size: 0.72rem; font-weight: 700; color: var(--gold); border: none; background: none; width: auto; padding: 0 0.4rem; }
+.pl-jour { background: var(--white); border-radius: 14px; padding: 0.8rem 0.9rem 0.9rem; margin-bottom: 0.6rem; box-shadow: 0 2px 10px rgba(0,0,0,0.06); border-left: 4px solid var(--sage); }
+.pl-jour.trou { border-left-color: var(--burgundy); }
+.pl-jour.juste { border-left-color: var(--gold); }
+.pl-jour.ferme { border-left-color: rgba(0,0,0,0.12); opacity: 0.72; }
+.pl-jour.auj { box-shadow: 0 2px 10px rgba(0,0,0,0.06), 0 0 0 2px var(--gold); }
+.pl-tete { display: flex; align-items: baseline; gap: 0.5rem; margin-bottom: 0.15rem; }
+.pl-tete .j { font-family: 'Playfair Display','Playfair repli',serif; font-size: 1.02rem; color: var(--dark-green); }
+.pl-tete .j::first-letter { text-transform: uppercase; }
+.pl-tete .h { margin-left: auto; font-size: 0.8rem; font-weight: 700; color: #555; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.pl-etiq { font-size: 0.7rem; font-weight: 700; color: var(--terracotta); }
+.pl-jour svg { display: block; width: 100%; max-width: 520px; height: auto; overflow: visible; margin: 0.5rem 0 0.15rem; }
+.pl-equipe { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.45rem; }
+.pl-p { font-size: 0.75rem; border-radius: 50px; padding: 0.17rem 0.6rem; background: var(--cream); color: #555; }
+.pl-p b { color: var(--dark-green); font-weight: 700; }
+.pl-p.abs { opacity: 0.55; }
+.pl-p.note { background: rgba(196,99,74,0.12); }
+.pl-statut { font-size: 0.78rem; font-weight: 700; margin-top: 0.5rem; }
+.pl-statut.ok { color: var(--sage); }
+.pl-statut.warn { color: var(--gold); }
+.pl-statut.ko { color: var(--burgundy); }
+.pl-ecart { font-size: 0.72rem; color: #9a9a9a; margin-top: 0.2rem; }
+.pl-resa { font-size: 0.78rem; color: var(--dark-green); margin-top: 0.45rem; padding-top: 0.45rem; border-top: 1px solid rgba(0,0,0,0.06); }
+.pl-resa b { font-variant-numeric: tabular-nums; }
+.pl-resa .d { color: #9a9a9a; font-weight: 400; }
 .hidden { display: none !important; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 @media (max-width: 480px) {
@@ -236,6 +267,8 @@ label.chk input { width: auto; margin: 0; }
         <b>Réservations</b><i>Demandes en attente, à venir, archives</i></button>
       <button role="menuitem" data-mod="ventes">
         <b>Ventes</b><i>Caisse, produits, TVA — remontée Flatpay</i></button>
+      <button role="menuitem" data-mod="planning">
+        <b>Planning</b><i>Présences de l'équipe — tableau du Drive</i></button>
       <button role="menuitem" data-mod="visi">
         <b>Visibilité</b><i>Google, fiche, avis — relevé quotidien</i></button>
     </div>
@@ -380,6 +413,34 @@ label.chk input { width: auto; margin: 0; }
       </div>
     </div>
   </main>
+
+  <main id="tab-planning" class="hidden">
+    <div id="p-vide" class="empty hidden">
+      <div class="big">Planning non remonté</div>
+      Le tableau de présence du Drive n'a pas encore été recopié dans la base.
+    </div>
+    <div id="p-contenu" class="hidden">
+      <div class="pl-nav">
+        <button id="p-prec" aria-label="Semaine précédente">◀</button>
+        <div class="lab" id="p-lab">–</div>
+        <button class="auj" id="p-auj">aujourd'hui</button>
+        <button id="p-suiv" aria-label="Semaine suivante">▶</button>
+      </div>
+      <div class="v-legend">
+        <span><i style="background:var(--burgundy)"></i>personne au bar</span>
+        <span><i style="background:var(--gold)"></i>une seule</span>
+        <span><i style="background:var(--sage)"></i>deux</span>
+        <span><i style="background:var(--dark-green)"></i>trois et plus</span>
+      </div>
+      <div id="p-liste"></div>
+      <div class="v-card" id="p-card-concerts">
+        <h2>Prochains concerts</h2>
+        <div class="sub">Programmation de la saison</div>
+        <div id="p-concerts"></div>
+      </div>
+      <div class="v-maj" id="p-maj"></div>
+    </div>
+  </main>
 </div>
 
 <!-- ═══ AJOUT MANUEL ═══ -->
@@ -463,6 +524,10 @@ let resas = [];          // toutes les réservations (temps réel)
 let filtre = 'attente';
 let recherche = '';
 let unsub = null;
+let planningCharge = false;   // planning : chargé une seule fois
+let joursPlanning = [];       // recopie du tableau du Drive
+let concertsPlanning = [];
+let semainePlanning = null;   // lundi de la semaine affichée
 
 /* ─── Utilitaires ─── */
 const todayStr = () => {
@@ -510,12 +575,16 @@ onAuthStateChanged(auth, user => {
       const item = modMenu.querySelector(`button[data-mod="${m}"]`);
       if (item) item.classList.toggle('hidden', !proprietaire);
     });
-    modBtn.classList.toggle('hidden', !proprietaire);
-    if (!proprietaire) { basculer('resa'); return; }
+    /* Le bouton de menu reste visible dès qu'il reste plus d'un module
+       à choisir : l'équipe garde ainsi l'accès au planning. */
+    const visibles = [...modMenu.querySelectorAll('button[data-mod]')]
+      .filter(b => !b.classList.contains('hidden'));
+    modBtn.classList.toggle('hidden', visibles.length < 2);
 
     let dernierModule = 'resa';
     try { dernierModule = localStorage.getItem('guinguette.module') || 'resa'; } catch {}
-    basculer(MODULES[dernierModule] ? dernierModule : 'resa');
+    if (!MODULES[dernierModule] || MODULES_RESERVES.includes(dernierModule) && !proprietaire) dernierModule = 'resa';
+    basculer(dernierModule);
   } else {
     viewDash.classList.add('hidden');
     viewLogin.classList.remove('hidden');
@@ -532,6 +601,7 @@ function ecouter() {
     resas = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     resas.sort((a,b) => (a.date+a.heure).localeCompare(b.date+b.heure));
     render();
+    if (joursPlanning.length) dessinerPlanning();
   }, err => {
     console.error(err);
     toast("Impossible de charger les réservations — vérifiez les règles Firestore.", true);
@@ -799,9 +869,10 @@ const COMPTE_PROPRIETAIRE = 'laguinguettedudispensaire@gmail.com';
 const MODULES_RESERVES = ['ventes', 'visi'];
 
 const MODULES = {
-  resa:   { section: 'tab-resa',        titre: 'Réservations' },
-  ventes: { section: 'tab-ventes',      titre: 'Ventes' },
-  visi:   { section: 'tab-visibilite',  titre: 'Visibilité' }
+  resa:     { section: 'tab-resa',        titre: 'Réservations' },
+  ventes:   { section: 'tab-ventes',      titre: 'Ventes' },
+  planning: { section: 'tab-planning',    titre: 'Planning' },
+  visi:     { section: 'tab-visibilite',  titre: 'Visibilité' }
 };
 
 const modBtn = $('mod-btn'), modMenu = $('mod-menu');
@@ -833,7 +904,196 @@ function basculer(onglet) {
   try { localStorage.setItem('guinguette.module', onglet); } catch {}
   if (onglet === 'ventes' && !ventesChargees) { ventesChargees = true; chargerVentes(); }
   if (onglet === 'visi'   && !visiChargee)    { visiChargee   = true; chargerVisibilite(); }
+  if (onglet === 'planning' && !planningCharge) { planningCharge = true; chargerPlanning(); }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   PLANNING DE PRÉSENCE
+
+   La référence reste le tableau du Drive : ce module en affiche une
+   recopie, remontée par ingest.html dans la collection « planning ».
+   Le statut inscrit dans le tableau est repris tel quel ; la barre de
+   couverture, elle, est recalculée à partir des créneaux. Quand les
+   deux divergent, les deux sont montrés — c'est au tableau de trancher,
+   pas à cet écran.
+═══════════════════════════════════════════════════════════════ */
+
+const PERSONNES_PLANNING = ['Ema', 'Alban', 'Alex', 'Thomas', 'Guguss', 'Stéphanie'];
+
+const heureFR = x => {
+  const h = Math.floor(x + 1e-9), m = Math.round((x - h) * 60);
+  return m ? `${h}h${String(m).padStart(2,'0')}` : `${h}h`;
+};
+
+/* Nombre de personnes présentes, par quart d'heure, de l'ouverture à la
+   fermeture. Un créneau ne compte que s'il couvre le quart d'heure entier. */
+function couverturePlanning(j) {
+  if (j.ferme || j.ouverture == null || j.fermeture == null) return [];
+  const pas = 0.25, out = [];
+  const equipe = j.equipe || {};
+  for (let x = j.ouverture; x < j.fermeture - 1e-9; x += pas) {
+    let n = 0;
+    for (const p of Object.keys(equipe)) {
+      const cr = (equipe[p] || {}).creneaux || [];
+      if (cr.some(iv => iv[0] <= x + 1e-9 && iv[1] >= x + pas - 1e-9)) n++;
+    }
+    out.push(n);
+  }
+  return out;
+}
+
+/* Mêmes règles que le tableau : un trou dans l'ouverture, puis le renfort
+   du midi (week-end seulement) et celui du coup de feu du soir. */
+function diagPlanning(j) {
+  const cov = couverturePlanning(j);
+  if (!cov.length) return '';
+  const mini = (h1, h2) => {
+    const a = Math.max(0, Math.round((h1 - j.ouverture) / 0.25));
+    const b = Math.max(0, Math.round((h2 - j.ouverture) / 0.25));
+    const tr = cov.slice(a, b);
+    return tr.length ? Math.min(...tr) : 99;
+  };
+  if (Math.min(...cov) === 0) return '❌ Trou horaire';
+  if ((j.jour === 'samedi' || j.jour === 'dimanche') && j.ouverture <= 11.5 && mini(11.5, 13.5) <= 1)
+    return '⚠️ Midi 11h30-13h30 : 1 seul';
+  if (mini(19, 21) <= 1) return '⚠️ 19h-21h : 1 seul';
+  return '✅ OK';
+}
+
+const COUL_COUV = ['var(--burgundy)', 'var(--gold)', 'var(--sage)', 'var(--dark-green)'];
+
+/* Barre de couverture + repères des réservations validées de la journée. */
+function barrePlanning(j, resasJour) {
+  const cov = couverturePlanning(j);
+  if (!cov.length) return '';
+  /* Le repère est calé sur la largeur réelle à l'écran : une unité SVG vaut
+     à peu près un pixel, sinon les heures et les couverts deviennent illisibles. */
+  const L = 360, H = resasJour.length ? 44 : 27;
+  const a = j.ouverture, b = j.fermeture, ech = x => (x - a) / (b - a) * L;
+  let s = '';
+  cov.forEach((n, i) => {
+    const x = ech(a + i * 0.25), w = L / cov.length + 0.4;
+    s += `<rect x="${x.toFixed(1)}" y="0" width="${w.toFixed(1)}" height="13" rx="1" fill="${COUL_COUV[Math.min(n, 3)]}"></rect>`;
+  });
+  const pasH = (b - a) > 8 ? 2 : 1;
+  for (let h = Math.ceil(a); h < b; h++) {
+    const x = ech(h);
+    s += `<line x1="${x.toFixed(1)}" y1="13" x2="${x.toFixed(1)}" y2="16" class="v-grid"></line>`;
+    if (h % pasH === 0) {
+      const anc = x < 7 ? 'start' : x > L - 7 ? 'end' : 'middle';
+      s += `<text x="${x.toFixed(1)}" y="24" class="v-axis" text-anchor="${anc}" style="font-size:8.5px">${h}h</text>`;
+    }
+  }
+  resasJour.forEach(r => {
+    const [hh, mm] = String(r.heure || '').split(':').map(Number);
+    if (!Number.isFinite(hh)) return;
+    const x = Math.min(L - 7, Math.max(7, ech(hh + (mm || 0) / 60)));
+    s += `<circle cx="${x.toFixed(1)}" cy="35" r="7" fill="var(--terracotta)"></circle>`;
+    s += `<text x="${x.toFixed(1)}" y="38.2" text-anchor="middle" fill="#fff" style="font-size:9px;font-weight:700">${r.personnes || '?'}</text>`;
+  });
+  return `<svg viewBox="0 0 ${L} ${H}" role="img" aria-label="Couverture horaire du ${j.date}">${s}</svg>`;
+}
+
+function lundiPlanning(iso) { return lundiDe(iso); }
+
+function decalerSemaine(iso, n) {
+  const [y, m, d] = iso.split('-').map(Number);
+  const dt = new Date(y, m - 1, d);
+  dt.setDate(dt.getDate() + n * 7);
+  return dt.getFullYear() + '-' + String(dt.getMonth() + 1).padStart(2, '0') + '-' + String(dt.getDate()).padStart(2, '0');
+}
+
+function dessinerPlanning() {
+  if (!joursPlanning.length) return;
+  const semaines = [...new Set(joursPlanning.map(j => lundiPlanning(j.date)))].sort();
+  if (!semaines.includes(semainePlanning)) {
+    semainePlanning = semaines.find(s => s >= lundiPlanning(todayStr())) || semaines[semaines.length - 1];
+  }
+  const i = semaines.indexOf(semainePlanning);
+  $('p-prec').disabled = i <= 0;
+  $('p-suiv').disabled = i >= semaines.length - 1;
+
+  const dimanche = decalerSemaine(semainePlanning, 1);
+  const jours = joursPlanning.filter(j => j.date >= semainePlanning && j.date < dimanche);
+  $('p-lab').textContent = 'Semaine du ' + dateFR(semainePlanning, { day: 'numeric', month: 'long' });
+
+  const auj = todayStr();
+  $('p-liste').innerHTML = jours.map(j => {
+    const diag = j.ferme ? '' : diagPlanning(j);
+    const cls = j.ferme ? 'ferme'
+      : diag.startsWith('❌') ? 'trou'
+      : diag.startsWith('⚠️') ? 'juste' : '';
+    const rs = resas
+      .filter(r => r.date === j.date && r.statut === 'validee')
+      .sort((x, y) => String(x.heure).localeCompare(String(y.heure)));
+    const couverts = rs.reduce((s, r) => s + (Number(r.personnes) || 0), 0);
+
+    const pastilles = PERSONNES_PLANNING.map(p => {
+      const e = (j.equipe || {})[p];
+      if (!e) return '';
+      if (e.creneaux && e.creneaux.length)
+        return `<span class="pl-p"><b>${esc(p)}</b> ${e.creneaux.map(iv => heureFR(iv[0]) + '–' + heureFR(iv[1])).join(' + ')}</span>`;
+      if (e.absence) return `<span class="pl-p abs"><b>${esc(p)}</b> ${esc(e.absence)}</span>`;
+      return `<span class="pl-p note"><b>${esc(p)}</b> ${esc(e.note)}</span>`;
+    }).join('');
+
+    const ecart = (!j.ferme && j.statut_source && diag && diag !== j.statut_source)
+      ? `<div class="pl-ecart">Le tableau du Drive indique « ${esc(j.statut_source)} » — le recalcul des créneaux donne « ${esc(diag)} ». Le tableau fait foi.</div>`
+      : '';
+
+    return `<div class="pl-jour ${cls} ${j.date === auj ? 'auj' : ''}">
+      <div class="pl-tete">
+        <span class="j">${dateFR(j.date, { weekday: 'long', day: 'numeric', month: 'long' })}</span>
+        ${j.concert ? `<span class="pl-etiq">♪ ${esc(j.concert.groupe)}</span>`
+          : j.libelle ? `<span class="pl-etiq">${esc(j.libelle)}</span>` : ''}
+        <span class="h">${j.ferme ? 'Fermé' : esc(j.horaires || '')}</span>
+      </div>
+      ${barrePlanning(j, rs)}
+      <div class="pl-equipe">${pastilles || '<span class="pl-p abs">personne d’inscrit</span>'}</div>
+      ${j.ferme ? '' : `<div class="pl-statut ${diag.startsWith('❌') ? 'ko' : diag.startsWith('⚠️') ? 'warn' : 'ok'}">${esc(j.statut_source || diag)}</div>`}
+      ${ecart}
+      ${rs.length ? `<div class="pl-resa"><b>${rs.length}</b> réservation${rs.length > 1 ? 's' : ''} · <b>${couverts}</b> couvert${couverts > 1 ? 's' : ''} <span class="d">— ${rs.map(r => esc(r.heure) + ' (' + (r.personnes || '?') + ')').join(', ')}</span></div>` : ''}
+    </div>`;
+  }).join('') || '<div class="empty">Aucun jour renseigné cette semaine.</div>';
+
+  const aVenir = concertsPlanning.filter(c => c.date >= auj).slice(0, 5);
+  $('p-card-concerts').classList.toggle('hidden', !aVenir.length);
+  $('p-concerts').innerHTML = aVenir.map(c =>
+    `<div class="v-kv"><span>${dateFR(c.date, { weekday: 'long', day: 'numeric', month: 'long' })} — ${esc(c.groupe)} <span class="v-chip">${esc(c.type || '')}</span></span><b>${Number(c.remuneration) ? Number(c.remuneration) + ' €' : '—'}</b></div>`
+  ).join('');
+}
+
+async function chargerPlanning() {
+  try {
+    const [snap, docConcerts] = await Promise.all([
+      getDocs(query(collection(db, 'planning'), orderBy('date', 'asc'))),
+      getDoc(doc(db, 'planning_meta', 'concerts'))
+    ]);
+    joursPlanning = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    concertsPlanning = docConcerts.exists() ? (docConcerts.data().liste || []) : [];
+
+    if (!joursPlanning.length) { $('p-vide').classList.remove('hidden'); return; }
+    $('p-vide').classList.add('hidden');
+    $('p-contenu').classList.remove('hidden');
+
+    const maj = Math.max(...joursPlanning.map(j => Number(j.maj) || 0));
+    $('p-maj').textContent = maj
+      ? 'Recopie du tableau du Drive — dernière remontée le ' +
+        new Date(maj).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' }) +
+        ' à ' + new Date(maj).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
+      : 'Recopie du tableau de présence du Drive.';
+
+    dessinerPlanning();
+  } catch (ex) {
+    console.error(ex);
+    $('p-vide').classList.remove('hidden');
+    $('p-vide').querySelector('.big').textContent = 'Planning illisible';
+  }
+}
+
+$('p-prec').addEventListener('click', () => { semainePlanning = decalerSemaine(semainePlanning, -1); dessinerPlanning(); });
+$('p-suiv').addEventListener('click', () => { semainePlanning = decalerSemaine(semainePlanning,  1); dessinerPlanning(); });
+$('p-auj').addEventListener('click',  () => { semainePlanning = lundiPlanning(todayStr()); dessinerPlanning(); });
 
 /* Formate « mis à jour le … » à partir d'un horodatage d'écriture. */
 function texteMaj(dateReleve, ts) {

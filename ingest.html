@@ -78,6 +78,7 @@ import { firebaseConfig } from "./firebase-config.js";
    Charges utiles acceptées :
      { "type":"ventes", "jours":[ {...}, ... ], "saison": {...} }
      { "type":"seo",    "releve": {...} }        ou "releves":[ ... ]
+     { "type":"planning", "jours":[ {...}, ... ], "concerts":[ ... ] }
 
    Un jour de vente :
      { date:"AAAA-MM-JJ", ca_net, ca_ht, tva, tickets,
@@ -87,6 +88,12 @@ import { firebaseConfig } from "./firebase-config.js";
    La saison :
      { debut, fin, ca_ttc, ca_ht, tva, remises, unites, tickets,
        categories:[{nom,unites,ca}], top:[{nom,categorie,unites,ca}] }
+
+   Une journée de planning (recopie du tableau du Drive) :
+     { date:"AAAA-MM-JJ", jour:"jeudi", ferme:false, horaires:"16h30 – 22h",
+       ouverture:16.5, fermeture:22, duree:5.5, statut_source:"✅ OK",
+       libelle:"The Gates", concert:{groupe,type,remuneration},
+       equipe:{ "Ema":{creneaux:[[17,22]]}, "Alban":{absence:"congés"} } }
 
    Un relevé SEO :
      { date:"AAAA-MM-JJ", sc_clics_28j, sc_impressions_28j, sc_ctr_pct,
@@ -143,6 +150,36 @@ function nettoyerJour(j) {
   return out;
 }
 
+/* Une journée de planning : recopie du tableau de présence du Drive.
+   Le tableau reste la référence — on ne recalcule rien ici, on range. */
+function nettoyerPlanning(j) {
+  if (!j || !j.date) throw new Error('Une journée de planning n’a pas de date.');
+  const out = { date: String(j.date), ferme: !!j.ferme };
+  ['jour','horaires','statut_source','duree_source','libelle','source'].forEach(k => {
+    if (j[k]) out[k] = String(j[k]).slice(0, 200);
+  });
+  ['ouverture','fermeture','duree'].forEach(k => {
+    if (j[k] !== undefined && j[k] !== null) out[k] = Number(j[k]) || 0;
+  });
+  if (j.concert && j.concert.groupe) out.concert = {
+    groupe: String(j.concert.groupe).slice(0, 80),
+    type: String(j.concert.type || '').slice(0, 80),
+    remuneration: Number(j.concert.remuneration) || 0
+  };
+  const eq = {};
+  Object.entries(j.equipe || {}).forEach(([nom, e]) => {
+    const p = {};
+    if (Array.isArray(e.creneaux) && e.creneaux.length)
+      p.creneaux = e.creneaux.map(iv => [Number(iv[0]) || 0, Number(iv[1]) || 0]);
+    if (e.absence) p.absence = String(e.absence).slice(0, 40);
+    if (e.note)    p.note    = String(e.note).slice(0, 80);
+    if (Object.keys(p).length) eq[String(nom).slice(0, 40)] = p;
+  });
+  out.equipe = eq;
+  out.maj = Date.now();
+  return out;
+}
+
 function nettoyerReleve(r) {
   if (!r || !r.date) throw new Error('Un relevé SEO n’a pas de date.');
   const out = { date: String(r.date) };
@@ -170,7 +207,7 @@ const jourISO = d => d.getFullYear() + '-' +
 
 async function etat(type) {
   const debut = params().get('debut') || DEBUT_PAR_DEFAUT;
-  const collec = type === 'seo' ? 'seo' : 'ventes';
+  const collec = ['seo', 'planning', 'ventes'].includes(type) ? type : 'ventes';
 
   const snap = await getDocs(query(collection(db, collec), orderBy('date', 'asc')));
   const presentes = new Set(snap.docs.map(d => d.id));
@@ -233,6 +270,20 @@ async function traiter() {
         await setDoc(doc(db, 'seo', d.date), d, { merge: true });
         lignes.push(`Relevé SEO du ${d.date} enregistré`);
       }
+
+    } else if (type === 'planning') {
+      const jours = charge.jours || (charge.jour ? [charge.jour] : []);
+      for (const j of jours) {
+        const d = nettoyerPlanning(j);
+        await setDoc(doc(db, 'planning', d.date), d);
+        lignes.push(`Planning du ${d.date} enregistré`);
+      }
+      if (charge.concerts) {
+        await setDoc(doc(db, 'planning_meta', 'concerts'),
+                     { liste: charge.concerts, maj: Date.now() });
+        lignes.push('Programmation des concerts mise à jour');
+      }
+      if (!jours.length && !charge.concerts) throw new Error('Charge utile « planning » vide.');
 
     } else {
       throw new Error(`Type inconnu : ${type}`);
