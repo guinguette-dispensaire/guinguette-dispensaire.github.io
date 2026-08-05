@@ -1149,7 +1149,7 @@ function dessinerVentes() {
 async function chargerVentes() {
   try {
     const [snapJours, docSaison] = await Promise.all([
-      getDocs(query(collection(db, 'ventes'), orderBy('date', 'desc'), limit(60))),
+      getDocs(query(collection(db, 'ventes'), orderBy('date', 'desc'), limit(400))),
       getDoc(doc(db, 'ventes_meta', 'saison'))
     ]);
     const jours  = snapJours.docs.map(d => ({ id: d.id, ...d.data() })).sort((a,b) => String(a.date).localeCompare(String(b.date)));
@@ -1170,8 +1170,10 @@ async function chargerVentes() {
     }
     else { ['v-card-jours','v-card-jour'].forEach(i => $(i).classList.add('hidden')); }
 
-    if (saison) { graphCategories(saison); tableauTop(saison); blocSaison(saison); }
-    else { ['v-card-cat','v-card-top','v-card-saison'].forEach(i => $(i).classList.add('hidden')); }
+    blocSaison(saison, jours);
+    if (saison) { graphCategories(saison); tableauTop(saison); }
+    else { ['v-card-cat','v-card-top'].forEach(i => $(i).classList.add('hidden')); }
+    $('v-card-saison').classList.toggle('hidden', !saison && !jours.length);
   } catch (ex) {
     console.error(ex);
     $('v-vide').classList.remove('hidden');
@@ -1283,17 +1285,46 @@ function periode(s) {
   return 'du ' + dateFR(s.debut, { day:'numeric', month:'long' }) + ' au ' + dateFR(s.fin, { day:'numeric', month:'long' });
 }
 
-function blocSaison(s) {
-  $('v-s-ca').textContent      = eur0(s.ca_ttc);
-  $('v-s-unites').textContent  = (Number(s.unites)||0).toLocaleString('fr-FR');
-  $('v-s-tickets').textContent = s.tickets ? Number(s.tickets).toLocaleString('fr-FR') : '–';
-  $('v-s-ht').textContent      = s.ca_ht ? eur0(s.ca_ht) : '–';
-  $('v-s-remises').textContent = eur(s.remises);
+/* Le total de la saison est la somme des journées, pas le report du mix
+   produit : le mix vient d'une page Flatpay capricieuse qui n'est rafraîchie
+   qu'au passage du soir, et le total restait figé à la dernière fois qu'elle
+   avait bien voulu répondre. Les journées, elles, sont remontées à chaque
+   passage. Le mix ne garde que ce que lui seul sait : les unités vendues,
+   les catégories et le palmarès des produits. */
+function cumulJours(jours) {
+  const c = { ca_ttc:0, ca_ht:0, tva:0, tickets:0, remises:0,
+              debut: jours.length ? jours[0].date : null,
+              fin:   jours.length ? jours[jours.length - 1].date : null };
+  jours.forEach(j => {
+    c.ca_ttc  += Number(j.ca_net)  || 0;
+    c.ca_ht   += Number(j.ca_ht)   || 0;
+    c.tva     += Number(j.tva)     || 0;
+    c.tickets += Number(j.tickets) || 0;
+    c.remises += Number(j.remises) || 0;
+  });
+  return c;
+}
 
-  const t = Number(s.tickets) || 0;
-  const bouts = [periode(s)];
-  if (t) bouts.push(t.toLocaleString('fr-FR') + ' tickets');
-  if (t && s.ca_ttc) bouts.push('panier moyen ' + eur(Number(s.ca_ttc) / t));
+function blocSaison(s, jours) {
+  const c = cumulJours(jours || []);
+  const ouvert = !!(jours && jours.length);
+
+  $('v-s-ca').textContent      = eur0(ouvert ? c.ca_ttc : s && s.ca_ttc);
+  $('v-s-tickets').textContent = c.tickets ? c.tickets.toLocaleString('fr-FR')
+                               : (s && s.tickets ? Number(s.tickets).toLocaleString('fr-FR') : '–');
+  $('v-s-ht').textContent      = ouvert && c.ca_ht ? eur0(c.ca_ht)
+                               : (s && s.ca_ht ? eur0(s.ca_ht) : '–');
+  $('v-s-remises').textContent = eur(ouvert ? c.remises : (s ? s.remises : 0));
+  /* Les unités ne se déduisent pas des rapports de caisse : elles ne viennent
+     que du mix produit. Sans lui, on n'invente pas un chiffre. */
+  $('v-s-unites').textContent  = s && s.unites ? Number(s.unites).toLocaleString('fr-FR') : '–';
+
+  const ca = ouvert ? c.ca_ttc : Number(s && s.ca_ttc) || 0;
+  const t  = c.tickets || Number(s && s.tickets) || 0;
+  const bouts = [periode(ouvert ? c : (s || {}))];
+  if (ouvert) bouts.push(jours.length + (jours.length > 1 ? ' jours ouverts' : ' jour ouvert'));
+  if (t)      bouts.push(t.toLocaleString('fr-FR') + ' tickets');
+  if (t && ca) bouts.push('panier moyen ' + eur(ca / t));
   $('v-saison-sub').textContent = bouts.filter(Boolean).join(' · ');
 }
 
