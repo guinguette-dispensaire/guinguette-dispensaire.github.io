@@ -655,7 +655,7 @@ onAuthStateChanged(auth, user => {
     $('user-email').textContent = user.email;
     ecouter();
 
-    const proprietaire = (user.email || '').toLowerCase() === COMPTE_PROPRIETAIRE;
+    const proprietaire = COMPTES_DIRECTION.includes((user.email || '').toLowerCase());
     MODULES_RESERVES.forEach(m => {
       const item = modMenu.querySelector(`button[data-mod="${m}"]`);
       if (item) item.classList.toggle('hidden', !proprietaire);
@@ -950,7 +950,12 @@ let visiChargee = false;
 /* Seul le compte propriétaire voit les modules de pilotage.
    Ce filtrage n'est que du confort : la vraie protection est dans
    les règles Firestore, qui refusent la lecture aux autres comptes. */
-const COMPTE_PROPRIETAIRE = 'laguinguettedudispensaire@gmail.com';
+const COMPTES_DIRECTION = [
+  'tdechangy@gmail.com',
+  'alban.jourdet@gmail.com',
+  'alexandre.topin@gmail.com',
+  'emamalika.enzo@gmail.com'
+];
 const MODULES_RESERVES = ['ventes', 'visi', 'caisse'];
 
 const MODULES = {
