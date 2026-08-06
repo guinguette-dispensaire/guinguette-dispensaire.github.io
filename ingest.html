@@ -93,7 +93,7 @@ import { firebaseConfig } from "./firebase-config.js";
      { date:"AAAA-MM-JJ", jour:"jeudi", ferme:false, horaires:"16h30 – 22h",
        ouverture:16.5, fermeture:22, duree:5.5, statut_source:"✅ OK",
        libelle:"The Gates", concert:{groupe,type,remuneration},
-       equipe:{ "Ema":{creneaux:[[17,22]]}, "Alban":{absence:"congés"} } }
+       equipe:{ "Ema":{creneaux:[{debut:17,fin:22}]}, "Alban":{absence:"congés"} } }
 
    Un relevé SEO :
      { date:"AAAA-MM-JJ", sc_clics_28j, sc_impressions_28j, sc_ctr_pct,
@@ -169,8 +169,13 @@ function nettoyerPlanning(j) {
   const eq = {};
   Object.entries(j.equipe || {}).forEach(([nom, e]) => {
     const p = {};
+    /* Firestore refuse les tableaux imbriqués : un créneau est donc un objet
+       { debut, fin }, jamais une paire [debut, fin]. On accepte les deux en
+       entrée pour ne pas casser les charges utiles déjà écrites. */
     if (Array.isArray(e.creneaux) && e.creneaux.length)
-      p.creneaux = e.creneaux.map(iv => [Number(iv[0]) || 0, Number(iv[1]) || 0]);
+      p.creneaux = e.creneaux.map(iv => Array.isArray(iv)
+        ? { debut: Number(iv[0]) || 0, fin: Number(iv[1]) || 0 }
+        : { debut: Number(iv.debut) || 0, fin: Number(iv.fin) || 0 });
     if (e.absence) p.absence = String(e.absence).slice(0, 40);
     if (e.note)    p.note    = String(e.note).slice(0, 80);
     if (Object.keys(p).length) eq[String(nom).slice(0, 40)] = p;
