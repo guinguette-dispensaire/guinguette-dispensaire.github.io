@@ -221,6 +221,36 @@ label.chk input { width: auto; margin: 0; }
 .pl-resa { font-size: 0.78rem; color: var(--dark-green); margin-top: 0.45rem; padding-top: 0.45rem; border-top: 1px solid rgba(0,0,0,0.06); }
 .pl-resa b { font-variant-numeric: tabular-nums; }
 .pl-resa .d { color: #9a9a9a; font-weight: 400; }
+
+/* ─── Caisse ─── */
+.ca-form { background: var(--white); border-radius: 14px; padding: 0.9rem 1rem 1rem; margin-bottom: 0.8rem; box-shadow: 0 2px 10px rgba(0,0,0,0.06); }
+.ca-form h2 { font-family: 'Playfair Display','Playfair repli',serif; font-size: 1.02rem; color: var(--dark-green); margin-bottom: 0.6rem; }
+.ca-bascule { display: flex; gap: 0.3rem; margin-bottom: 0.7rem; }
+.ca-bascule button { flex: 1; background: none; border: 1.5px solid rgba(0,0,0,0.16); color: var(--dark); font-size: 0.8rem; font-weight: 700; padding: 0.4rem 0.6rem; border-radius: 50px; }
+.ca-bascule button.on { background: var(--dark-green); border-color: var(--dark-green); color: var(--white); }
+.ca-bascule button.on[data-sens="depense"] { background: var(--burgundy); border-color: var(--burgundy); }
+.ca-champs { display: grid; grid-template-columns: 1fr 1fr; gap: 0.55rem; }
+.ca-champs label { font-size: 0.72rem; font-weight: 700; color: var(--dark-green); display: block; }
+.ca-champs .large { grid-column: 1 / -1; }
+.ca-champs input { width: 100%; margin-top: 0.2rem; font-size: 0.95rem; padding: 0.5rem 0.6rem; border: 1.5px solid rgba(0,0,0,0.15); border-radius: 10px; background: var(--cream); font-family: inherit; }
+.ca-champs input:focus { outline: none; border-color: var(--gold); }
+.ca-form .btn-main { width: 100%; margin-top: 0.7rem; }
+.ca-err { color: var(--burgundy); font-size: 0.78rem; font-weight: 700; margin-top: 0.5rem; }
+.ca-jour { background: var(--white); border-radius: 14px; padding: 0.75rem 0.9rem 0.8rem; margin-bottom: 0.55rem; box-shadow: 0 2px 10px rgba(0,0,0,0.06); border-left: 4px solid var(--sage); }
+.ca-jour.deficit { border-left-color: var(--burgundy); }
+.ca-tete { display: flex; align-items: baseline; gap: 0.5rem; margin-bottom: 0.45rem; }
+.ca-tete .j { font-family: 'Playfair Display','Playfair repli',serif; font-size: 0.98rem; color: var(--dark-green); }
+.ca-tete .j::first-letter { text-transform: uppercase; }
+.ca-tete .s { margin-left: auto; font-weight: 700; font-variant-numeric: tabular-nums; font-size: 0.9rem; }
+.ca-mvt { display: flex; align-items: center; gap: 0.5rem; font-size: 0.83rem; padding: 0.3rem 0; border-top: 1px solid rgba(0,0,0,0.06); }
+.ca-mvt .l { flex: 1; }
+.ca-mvt .m { font-variant-numeric: tabular-nums; font-weight: 700; white-space: nowrap; }
+.ca-mvt .m.plus { color: var(--sage); }
+.ca-mvt .m.moins { color: var(--burgundy); }
+.ca-mvt .x { background: none; border: none; color: #c9c9c9; font-size: 1rem; line-height: 1; padding: 0 0.15rem; }
+.ca-mvt .x:hover { color: var(--burgundy); }
+.ca-flat { font-size: 0.72rem; color: #9a9a9a; margin-top: 0.4rem; padding-top: 0.35rem; border-top: 1px dashed rgba(0,0,0,0.1); }
+.ca-flat b { font-variant-numeric: tabular-nums; color: #555; }
 .hidden { display: none !important; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 @media (max-width: 480px) {
@@ -269,6 +299,8 @@ label.chk input { width: auto; margin: 0; }
         <b>Ventes</b><i>Caisse, produits, TVA — remontée Flatpay</i></button>
       <button role="menuitem" data-mod="planning">
         <b>Planning</b><i>Présences de l'équipe — tableau du Drive</i></button>
+      <button role="menuitem" data-mod="caisse">
+        <b>Caisse</b><i>Espèces encaissées et dépenses payées en liquide</i></button>
       <button role="menuitem" data-mod="visi">
         <b>Visibilité</b><i>Google, fiche, avis — relevé quotidien</i></button>
     </div>
@@ -359,6 +391,55 @@ label.chk input { width: auto; margin: 0; }
           <div class="stat attn"><div class="n" id="v-s-remises">–</div><div class="l">Remises</div></div>
         </div>
       </div>
+    </div>
+  </main>
+
+  <main id="tab-caisse" class="hidden">
+    <div class="v-hero">
+      <div class="lab">Espèces en caisse</div>
+      <div class="n" id="ca-solde">–</div>
+      <div class="sub" id="ca-sous">—</div>
+    </div>
+
+    <div class="ca-form">
+      <h2>Ajouter un mouvement</h2>
+      <div class="ca-bascule" id="ca-sens">
+        <button data-sens="recette" class="on">Espèces encaissées</button>
+        <button data-sens="depense">Dépense payée en liquide</button>
+      </div>
+      <form id="ca-form">
+        <div class="ca-champs">
+          <label>Date<input type="date" id="ca-date" required></label>
+          <label>Montant (€)<input type="number" id="ca-montant" step="0.01" min="0" required inputmode="decimal"></label>
+          <label class="large">Libellé<input type="text" id="ca-libelle" maxlength="90" placeholder="Recette du soir, achat glace, note de frais…"></label>
+        </div>
+        <button type="submit" class="btn-main" id="ca-btn">Enregistrer</button>
+        <div class="ca-err hidden" id="ca-err"></div>
+      </form>
+    </div>
+
+    <div id="ca-vide" class="empty hidden">
+      <div class="big">Aucun mouvement</div>
+      Rien n'a encore été saisi dans la caisse.
+    </div>
+
+    <div id="ca-contenu" class="hidden">
+      <div class="stats">
+        <div class="stat"><div class="n" id="ca-recettes">–</div><div class="l">Encaissé</div></div>
+        <div class="stat"><div class="n" id="ca-depenses">–</div><div class="l">Dépensé</div></div>
+        <div class="stat"><div class="n" id="ca-jours">–</div><div class="l">Jours saisis</div></div>
+      </div>
+      <div class="v-card">
+        <h2 id="ca-graph-titre">Espèces encaissées par jour</h2>
+        <div class="sub">Barres vertes : encaissé · barres bordeaux : dépensé</div>
+        <div class="v-bascule" id="ca-pas">
+          <button data-pas="jour" class="on">Par jour</button>
+          <button data-pas="semaine">Par semaine</button>
+        </div>
+        <svg id="ca-ch" viewBox="0 0 820 210" role="img" aria-label="Mouvements de caisse"></svg>
+      </div>
+      <div class="v-titre-rang">Détail des mouvements</div>
+      <div id="ca-liste"></div>
     </div>
   </main>
 
@@ -494,7 +575,7 @@ label.chk input { width: auto; margin: 0; }
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, doc, updateDoc, deleteDoc, serverTimestamp, getDoc, getDocs, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, collection, addDoc, setDoc, query, orderBy, onSnapshot, doc, updateDoc, deleteDoc, serverTimestamp, getDoc, getDocs, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { firebaseConfig } from "./firebase-config.js";
 
 /* ═══════════════════════════════════════════════════════
@@ -524,6 +605,10 @@ let resas = [];          // toutes les réservations (temps réel)
 let filtre = 'attente';
 let recherche = '';
 let unsub = null;
+let caisseChargee = false;    // caisse : chargée une seule fois
+let mouvements = [];          // mouvements d'espèces
+let sensCaisse = 'recette';
+let pasCaisse = 'jour';
 let planningCharge = false;   // planning : chargé une seule fois
 let joursPlanning = [];       // recopie du tableau du Drive
 let concertsPlanning = [];
@@ -866,12 +951,13 @@ let visiChargee = false;
    Ce filtrage n'est que du confort : la vraie protection est dans
    les règles Firestore, qui refusent la lecture aux autres comptes. */
 const COMPTE_PROPRIETAIRE = 'laguinguettedudispensaire@gmail.com';
-const MODULES_RESERVES = ['ventes', 'visi'];
+const MODULES_RESERVES = ['ventes', 'visi', 'caisse'];
 
 const MODULES = {
   resa:     { section: 'tab-resa',        titre: 'Réservations' },
   ventes:   { section: 'tab-ventes',      titre: 'Ventes' },
   planning: { section: 'tab-planning',    titre: 'Planning' },
+  caisse:   { section: 'tab-caisse',      titre: 'Caisse' },
   visi:     { section: 'tab-visibilite',  titre: 'Visibilité' }
 };
 
@@ -905,6 +991,176 @@ function basculer(onglet) {
   if (onglet === 'ventes' && !ventesChargees) { ventesChargees = true; chargerVentes(); }
   if (onglet === 'visi'   && !visiChargee)    { visiChargee   = true; chargerVisibilite(); }
   if (onglet === 'planning' && !planningCharge) { planningCharge = true; chargerPlanning(); }
+  if (onglet === 'caisse'   && !caisseChargee)  { caisseChargee  = true; chargerCaisse(); }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   CAISSE — espèces encaissées et dépenses payées en liquide
+
+   Un mouvement = { date, sens: 'recette'|'depense', montant, libelle }.
+   L'identifiant du document est calculé à partir du contenu : réimporter
+   deux fois la même ligne l'écrase au lieu de la doubler. C'est ce qui
+   permet de reprendre un historique sans créer de doublons à chaque essai.
+
+   Rien n'est déduit des ventes : les espèces relevées par Flatpay sont
+   affichées à côté, jamais additionnées ni substituées. Deux sources qui
+   racontent la même journée doivent rester lisibles séparément.
+═══════════════════════════════════════════════════════════════ */
+
+/* Empreinte courte et stable d'une chaîne — sert d'identifiant de document. */
+function empreinte(txt) {
+  let h = 5381;
+  for (let i = 0; i < txt.length; i++) h = ((h * 33) ^ txt.charCodeAt(i)) >>> 0;
+  return h.toString(36);
+}
+const idMouvement = m =>
+  `${m.date}-${m.sens === 'depense' ? 'd' : 'r'}-${empreinte(m.libelle + '|' + m.montant)}`;
+
+$('ca-sens').addEventListener('click', e => {
+  const b = e.target.closest('button[data-sens]'); if (!b) return;
+  sensCaisse = b.dataset.sens;
+  $('ca-sens').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b));
+});
+
+$('ca-pas').addEventListener('click', e => {
+  const b = e.target.closest('button[data-pas]'); if (!b) return;
+  pasCaisse = b.dataset.pas;
+  $('ca-pas').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b));
+  dessinerCaisse();
+});
+
+$('ca-form').addEventListener('submit', async e => {
+  e.preventDefault();
+  const err = $('ca-err'), btn = $('ca-btn');
+  err.classList.add('hidden');
+  const m = {
+    date: $('ca-date').value,
+    sens: sensCaisse,
+    montant: Math.round(Number($('ca-montant').value) * 100) / 100,
+    libelle: $('ca-libelle').value.trim() || (sensCaisse === 'recette' ? 'Espèces du jour' : 'Dépense')
+  };
+  if (!m.date)            { err.textContent = 'Il manque la date.'; err.classList.remove('hidden'); return; }
+  if (!(m.montant > 0))   { err.textContent = 'Le montant doit être supérieur à zéro.'; err.classList.remove('hidden'); return; }
+  btn.disabled = true;
+  try {
+    m.maj = Date.now();
+    m.source = 'saisie-manuelle';
+    await setDoc(doc(db, 'caisse', idMouvement(m)), m);
+    $('ca-montant').value = ''; $('ca-libelle').value = '';
+    await chargerCaisse();
+    toast(`${m.sens === 'recette' ? 'Encaissement' : 'Dépense'} du ${dateFR(m.date, { day:'numeric', month:'long' })} enregistré${m.sens === 'recette' ? '' : 'e'} ✓`);
+  } catch (ex) {
+    console.error(ex);
+    err.textContent = ex?.message || String(ex);
+    err.classList.remove('hidden');
+  }
+  btn.disabled = false;
+});
+
+async function supprimerMouvement(id, libelle) {
+  if (!confirm(`Supprimer « ${libelle} » ?`)) return;
+  try {
+    await deleteDoc(doc(db, 'caisse', id));
+    await chargerCaisse();
+    toast('Mouvement supprimé ✓');
+  } catch (ex) { console.error(ex); toast(ex?.message || 'Suppression impossible', true); }
+}
+window.supprimerMouvement = supprimerMouvement;
+
+/* Regroupe les mouvements par jour, puis éventuellement par semaine. */
+function paquetsCaisse(mvts, parSemaine) {
+  const p = new Map();
+  mvts.forEach(m => {
+    const cle = parSemaine ? lundiDe(m.date) : m.date;
+    if (!p.has(cle)) p.set(cle, { date: cle, recette: 0, depense: 0, lignes: [] });
+    const q = p.get(cle);
+    q[m.sens === 'depense' ? 'depense' : 'recette'] += Number(m.montant) || 0;
+    q.lignes.push(m);
+  });
+  return [...p.values()].sort((a, b) => a.date.localeCompare(b.date));
+}
+
+function graphCaisse(paquets, semaine) {
+  const svg = $('ca-ch');
+  if (!paquets.length) { svg.innerHTML = ''; return; }
+  const L = 820, H = 210, bas = H - 26, haut = 10;
+  const hi = Math.max(...paquets.map(p => Math.max(p.recette, p.depense)), 1);
+  const pas = L / paquets.length, larg = Math.max(2, Math.min(18, pas / 2 - 1.5));
+  const y = v => bas - (v / hi) * (bas - haut);
+  let out = '';
+  [0.5, 1].forEach(f => {
+    out += `<line x1="0" y1="${y(hi*f).toFixed(1)}" x2="${L}" y2="${y(hi*f).toFixed(1)}" class="v-grid"></line>` +
+           `<text x="0" y="${(y(hi*f) - 3).toFixed(1)}" class="v-axis">${Math.round(hi*f).toLocaleString('fr-FR')} €</text>`;
+  });
+  paquets.forEach((p, i) => {
+    const x = i * pas + pas / 2;
+    out += `<rect x="${(x - larg - 0.8).toFixed(1)}" y="${y(p.recette).toFixed(1)}" width="${larg.toFixed(1)}" height="${(bas - y(p.recette)).toFixed(1)}" rx="1.5" fill="var(--sage)"><title>${dateFR(p.date)} — encaissé ${eur(p.recette)}</title></rect>`;
+    if (p.depense > 0)
+      out += `<rect x="${(x + 0.8).toFixed(1)}" y="${y(p.depense).toFixed(1)}" width="${larg.toFixed(1)}" height="${(bas - y(p.depense)).toFixed(1)}" rx="1.5" fill="var(--burgundy)"><title>${dateFR(p.date)} — dépensé ${eur(p.depense)}</title></rect>`;
+    if (paquets.length <= 20 || i % Math.ceil(paquets.length / 14) === 0) {
+      const [, mo, jr] = p.date.split('-');
+      out += `<text x="${x.toFixed(1)}" y="${H - 8}" class="v-axis" text-anchor="middle">${semaine ? 'sem. ' : ''}${Number(jr)}/${Number(mo)}</text>`;
+    }
+  });
+  svg.innerHTML = out;
+}
+
+function dessinerCaisse() {
+  const semaine = pasCaisse === 'semaine';
+  $('ca-graph-titre').textContent = semaine ? 'Espèces par semaine' : 'Espèces par jour';
+  graphCaisse(paquetsCaisse(mouvements, semaine), semaine);
+
+  const jours = paquetsCaisse(mouvements, false).slice().reverse();
+  const especesFlatpay = new Map(joursVentes.map(j => [j.date, Number(j.especes) || 0]));
+  $('ca-liste').innerHTML = jours.map(p => {
+    const solde = p.recette - p.depense;
+    const flat = especesFlatpay.get(p.date);
+    return `<div class="ca-jour ${solde < 0 ? 'deficit' : ''}">
+      <div class="ca-tete">
+        <span class="j">${dateFR(p.date, { weekday:'long', day:'numeric', month:'long' })}</span>
+        <span class="s" style="color:${solde < 0 ? 'var(--burgundy)' : 'var(--dark-green)'}">${solde >= 0 ? '+' : ''}${eur(solde)}</span>
+      </div>
+      ${p.lignes.map(m => `<div class="ca-mvt">
+        <span class="l">${esc(m.libelle)}</span>
+        <span class="m ${m.sens === 'depense' ? 'moins' : 'plus'}">${m.sens === 'depense' ? '−' : '+'}${eur(m.montant)}</span>
+        <button class="x" title="Supprimer" onclick="supprimerMouvement('${m.id}', ${JSON.stringify(m.libelle).replace(/"/g, '&quot;')})">✕</button>
+      </div>`).join('')}
+      ${flat !== undefined ? `<div class="ca-flat">Flatpay a relevé <b>${eur(flat)}</b> d'espèces dans le tiroir ce jour-là.</div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+async function chargerCaisse() {
+  try {
+    $('ca-date').value = $('ca-date').value || todayStr();
+    const snap = await getDocs(query(collection(db, 'caisse'), orderBy('date', 'asc')));
+    mouvements = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+    const rec = mouvements.filter(m => m.sens !== 'depense').reduce((s, m) => s + (Number(m.montant) || 0), 0);
+    const dep = mouvements.filter(m => m.sens === 'depense').reduce((s, m) => s + (Number(m.montant) || 0), 0);
+    const jours = new Set(mouvements.map(m => m.date));
+
+    $('ca-solde').textContent = eur(rec - dep);
+    $('ca-recettes').textContent = eur0(rec);
+    $('ca-depenses').textContent = eur0(dep);
+    $('ca-jours').textContent = jours.size || '–';
+    const dates = [...jours].sort();
+    $('ca-sous').textContent = dates.length
+      ? `du ${dateFR(dates[0], { day:'numeric', month:'long' })} au ${dateFR(dates[dates.length-1], { day:'numeric', month:'long' })} · ${eur0(rec)} encaissés, ${eur0(dep)} dépensés`
+      : 'Rien de saisi pour l’instant';
+
+    $('ca-vide').classList.toggle('hidden', mouvements.length > 0);
+    $('ca-contenu').classList.toggle('hidden', mouvements.length === 0);
+
+    /* Les ventes servent de repère : si elles ne sont pas encore chargées,
+       on les charge en silence pour pouvoir afficher les espèces du tiroir. */
+    if (!joursVentes.length && !ventesChargees) { ventesChargees = true; await chargerVentes(); }
+    if (mouvements.length) dessinerCaisse();
+  } catch (ex) {
+    console.error(ex);
+    $('ca-vide').classList.remove('hidden');
+    $('ca-vide').querySelector('.big').textContent = 'Lecture impossible';
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════════
