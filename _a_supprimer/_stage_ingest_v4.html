@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Remontée de données — La Guinguette du Dispensaire</title>
+<style>
+:root{--cream:#f5f0e6;--terracotta:#c4634a;--dark-green:#2a4e14;--sage:#5e7f42;
+      --burgundy:#742939;--gold:#c8a448;--dark:#1a1a1a;--white:#fff}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Lato',Arial,sans-serif;background:var(--cream);color:var(--dark);
+     line-height:1.55;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1.5rem}
+.card{background:var(--white);border-radius:18px;box-shadow:0 6px 32px rgba(0,0,0,.10);
+      padding:2.1rem 1.9rem;width:100%;max-width:460px}
+.eyebrow{font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:.35rem}
+h1{font-family:'Playfair Display',Georgia,'Times New Roman',serif;font-size:1.45rem;
+   color:var(--dark-green);line-height:1.2;margin-bottom:1rem}
+h1.err{color:var(--burgundy)}
+ul{margin:0 0 1rem;padding-left:1.15rem;font-size:.86rem;line-height:1.75}
+.msg{background:rgba(116,41,57,.08);color:var(--burgundy);border-radius:10px;
+     padding:.6rem .8rem;font-size:.85rem;font-weight:700;margin-bottom:1rem;word-break:break-word}
+label{display:block;text-align:left;font-size:.78rem;font-weight:700;color:var(--dark-green);margin-bottom:.9rem}
+input{width:100%;margin-top:.3rem;font-size:1rem;padding:.65rem .8rem;border:1.5px solid rgba(0,0,0,.15);
+      border-radius:10px;background:var(--cream);font-family:inherit}
+input:focus{outline:none;border-color:var(--gold)}
+.btn{display:inline-block;background:var(--dark-green);color:var(--white);border:none;border-radius:50px;
+     padding:.7rem 1.9rem;font-size:.9rem;font-weight:700;cursor:pointer;font-family:inherit}
+.btn:hover{background:var(--sage)}
+.btn:disabled{opacity:.6;cursor:wait}
+.marqueur{font-size:.72rem;color:#9a9a9a;margin-top:1.1rem;border-top:1px solid rgba(0,0,0,.08);padding-top:.7rem}
+a{color:var(--dark-green)}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="eyebrow">La Guinguette du Dispensaire</div>
+
+  <!-- Connexion (si la session n'est pas déjà ouverte) -->
+  <form id="f-login" class="hidden">
+    <h1>Connexion requise</h1>
+    <p style="font-size:.86rem;color:#666;margin-bottom:1rem">
+      Cette page écrit dans la base. Elle n'est accessible qu'au compte de la guinguette.</p>
+    <label>Adresse email
+      <input type="email" id="email" required autocomplete="username" inputmode="email"></label>
+    <label>Mot de passe
+      <input type="password" id="pass" required autocomplete="current-password"></label>
+    <div id="login-err" class="msg hidden"></div>
+    <button type="submit" class="btn" id="login-btn">Se connecter</button>
+  </form>
+
+  <!-- Résultat -->
+  <div id="resultat" class="hidden">
+    <h1 id="titre">Enregistrement…</h1>
+    <ul id="lignes"></ul>
+    <div id="erreur" class="msg hidden"></div>
+    <a href="admin.html" class="btn" style="text-decoration:none">Ouvrir le back-office</a>
+    <div class="marqueur" id="ingest-statut" data-statut="encours">statut : encours</div>
+    <div class="marqueur hidden" id="ingest-manquants" data-dates="" data-type="">manquants : –</div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, setDoc, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { firebaseConfig } from "./firebase-config.js";
+
+/* ═══════════════════════════════════════════════════════════════
+   REMONTÉE AUTOMATIQUE VERS FIRESTORE
+
+   Adresse :  ingest.html#p=<JSON encodé en base64url>
+              (la charge utile est dans le fragment : elle ne transite
+               jamais par le serveur, seul le navigateur la lit)
+
+   Charges utiles acceptées :
+     { "type":"ventes", "jours":[ {...}, ... ], "saison": {...} }
+     { "type":"seo",    "releve": {...} }        ou "releves":[ ... ]
+     { "type":"planning", "jours":[ {...}, ... ], "concerts":[ ... ] }
+
+   Un jour de vente :
+     { date:"AAAA-MM-JJ", ca_net, ca_ht, tva, tickets,
+       especes, carte, autre, remboursements, remises,
+       tva20_ttc, tva10_ttc, ecart_caisse, ouverture, fermeture }
+
+   La saison :
+     { debut, fin, ca_ttc, ca_ht, tva, remises, unites, tickets,
+       categories:[{nom,unites,ca}], top:[{nom,categorie,unites,ca}] }
+
+   Une journée de planning (recopie du tableau du Drive) :
+     { date:"AAAA-MM-JJ", jour:"jeudi", ferme:false, horaires:"16h30 – 22h",
+       ouverture:16.5, fermeture:22, duree:5.5, statut_source:"✅ OK",
+       libelle:"The Gates", concert:{groupe,type,remuneration},
+       equipe:{ "Ema":{creneaux:[[17,22]]}, "Alban":{absence:"congés"} } }
+
+   Un relevé SEO :
+     { date:"AAAA-MM-JJ", sc_clics_28j, sc_impressions_28j, sc_ctr_pct,
+       sc_position_moy, gbp_vues_mois, gbp_interactions, gbp_avis,
+       gbp_note, umami_visiteurs_7j, commentaire }
+
+   Les documents sont clés par date : rejouer une remontée écrase,
+   elle ne duplique jamais.
+
+   La page doit être ouverte dans un navigateur déjà connecté au
+   back-office ; sinon elle demande d'abord les identifiants.
+═══════════════════════════════════════════════════════════════ */
+
+const $ = id => document.getElementById(id);
+
+/* Les paramètres sont lus D'ABORD dans le fragment « # », qui n'est jamais
+   envoyé au serveur : la charge utile ne quitte pas le navigateur.
+   La query string « ? » reste acceptée en repli. */
+function params() {
+  const h = location.hash.replace(/^#\/?/, '');
+  const p = new URLSearchParams(h);
+  if ([...p.keys()].length) return p;
+  return new URLSearchParams(location.search);
+}
+const app  = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db   = getFirestore(app);
+
+function statut(v) {
+  const m = $('ingest-statut');
+  m.dataset.statut = v;
+  m.textContent = 'statut : ' + v;
+}
+
+function decoder(p) {
+  const b64 = p.replace(/-/g, '+').replace(/_/g, '/');
+  const pad = b64 + '='.repeat((4 - (b64.length % 4)) % 4);
+  const bin = atob(pad);
+  const oct = Uint8Array.from(bin, c => c.charCodeAt(0));
+  return JSON.parse(new TextDecoder('utf-8').decode(oct));
+}
+
+const nombre = v => (v === '' || v === null || v === undefined) ? null : (Number(v) || 0);
+
+function nettoyerJour(j) {
+  if (!j || !j.date) throw new Error('Une journée de vente n’a pas de date.');
+  const out = { date: String(j.date) };
+  ['ca_net','ca_ht','tva','tickets','especes','carte','autre','remboursements',
+   'remises','tva20_ttc','tva10_ttc','ecart_caisse'].forEach(k => {
+     if (j[k] !== undefined) out[k] = nombre(j[k]);
+   });
+  ['ouverture','fermeture','source'].forEach(k => { if (j[k]) out[k] = String(j[k]); });
+  out.maj = Date.now();
+  return out;
+}
+
+/* Une journée de planning : recopie du tableau de présence du Drive.
+   Le tableau reste la référence — on ne recalcule rien ici, on range. */
+function nettoyerPlanning(j) {
+  if (!j || !j.date) throw new Error('Une journée de planning n’a pas de date.');
+  const out = { date: String(j.date), ferme: !!j.ferme };
+  ['jour','horaires','statut_source','duree_source','libelle','source'].forEach(k => {
+    if (j[k]) out[k] = String(j[k]).slice(0, 200);
+  });
+  ['ouverture','fermeture','duree'].forEach(k => {
+    if (j[k] !== undefined && j[k] !== null) out[k] = Number(j[k]) || 0;
+  });
+  if (j.concert && j.concert.groupe) out.concert = {
+    groupe: String(j.concert.groupe).slice(0, 80),
+    type: String(j.concert.type || '').slice(0, 80),
+    remuneration: Number(j.concert.remuneration) || 0
+  };
+  const eq = {};
+  Object.entries(j.equipe || {}).forEach(([nom, e]) => {
+    const p = {};
+    if (Array.isArray(e.creneaux) && e.creneaux.length)
+      p.creneaux = e.creneaux.map(iv => [Number(iv[0]) || 0, Number(iv[1]) || 0]);
+    if (e.absence) p.absence = String(e.absence).slice(0, 40);
+    if (e.note)    p.note    = String(e.note).slice(0, 80);
+    if (Object.keys(p).length) eq[String(nom).slice(0, 40)] = p;
+  });
+  out.equipe = eq;
+  out.maj = Date.now();
+  return out;
+}
+
+function nettoyerReleve(r) {
+  if (!r || !r.date) throw new Error('Un relevé SEO n’a pas de date.');
+  const out = { date: String(r.date) };
+  ['sc_clics_28j','sc_impressions_28j','sc_ctr_pct','sc_position_moy','gbp_vues_mois',
+   'gbp_interactions','gbp_avis','gbp_note','umami_visiteurs_7j'].forEach(k => {
+     if (r[k] !== undefined) out[k] = nombre(r[k]);
+   });
+  if (r.commentaire) out.commentaire = String(r.commentaire).slice(0, 600);
+  if (r.source) out.source = String(r.source);
+  out.maj = Date.now();
+  return out;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Mode état :  ingest.html#etat=ventes   ou   #etat=seo
+   N'écrit rien. Liste les dates absentes de la collection entre
+   « debut » (par défaut le 1er juin 2026) et hier, pour que la
+   tâche automatique sache exactement quoi aller chercher.
+───────────────────────────────────────────────────────────── */
+const DEBUT_PAR_DEFAUT = '2026-06-01';
+
+const jourISO = d => d.getFullYear() + '-' +
+  String(d.getMonth() + 1).padStart(2, '0') + '-' +
+  String(d.getDate()).padStart(2, '0');
+
+async function etat(type) {
+  const debut = params().get('debut') || DEBUT_PAR_DEFAUT;
+  const collec = ['seo', 'planning', 'ventes'].includes(type) ? type : 'ventes';
+
+  const snap = await getDocs(query(collection(db, collec), orderBy('date', 'asc')));
+  const presentes = new Set(snap.docs.map(d => d.id));
+
+  const hier = new Date(); hier.setDate(hier.getDate() - 1);
+  const manquantes = [];
+  for (let d = new Date(debut + 'T12:00:00'); jourISO(d) <= jourISO(hier); d.setDate(d.getDate() + 1)) {
+    const iso = jourISO(d);
+    if (!presentes.has(iso)) manquantes.push(iso);
+  }
+
+  const m = $('ingest-manquants');
+  m.classList.remove('hidden');
+  m.dataset.type  = collec;
+  m.dataset.dates = manquantes.join(',');
+  m.textContent = manquantes.length
+    ? `manquants (${manquantes.length}) : ${manquantes.join(', ')}`
+    : 'manquants : aucun';
+
+  $('titre').textContent = manquantes.length
+    ? `${manquantes.length} journée${manquantes.length > 1 ? 's' : ''} à remonter`
+    : '✓ Aucune journée manquante';
+  $('lignes').innerHTML =
+    `<li>Collection « ${collec} »</li>` +
+    `<li>${presentes.size} document${presentes.size > 1 ? 's' : ''} déjà en base</li>` +
+    `<li>Période contrôlée : du ${debut} à hier</li>`;
+  statut('ok');
+}
+
+async function traiter() {
+  const lignes = [];
+  try {
+    const q = params();
+    const modeEtat = q.get('etat');
+    if (modeEtat) { await etat(modeEtat); return; }
+
+    const p = q.get('p');
+    if (!p) throw new Error("Paramètre « p » absent de l’adresse.");
+    const charge = decoder(p);
+    const type = charge.type || 'ventes';
+
+    if (type === 'ventes') {
+      const jours = charge.jours || (charge.jour ? [charge.jour] : []);
+      for (const j of jours) {
+        const d = nettoyerJour(j);
+        await setDoc(doc(db, 'ventes', d.date), d, { merge: true });
+        lignes.push(`Journée du ${d.date} enregistrée`);
+      }
+      if (charge.saison) {
+        await setDoc(doc(db, 'ventes_meta', 'saison'), { ...charge.saison, maj: Date.now() });
+        lignes.push('Synthèse de saison mise à jour');
+      }
+      if (!jours.length && !charge.saison) throw new Error('Charge utile « ventes » vide.');
+
+    } else if (type === 'seo') {
+      const releves = charge.releves || (charge.releve ? [charge.releve] : []);
+      if (!releves.length) throw new Error('Aucun relevé dans la charge utile.');
+      for (const r of releves) {
+        const d = nettoyerReleve(r);
+        await setDoc(doc(db, 'seo', d.date), d, { merge: true });
+        lignes.push(`Relevé SEO du ${d.date} enregistré`);
+      }
+
+    } else if (type === 'planning') {
+      const jours = charge.jours || (charge.jour ? [charge.jour] : []);
+      for (const j of jours) {
+        const d = nettoyerPlanning(j);
+        await setDoc(doc(db, 'planning', d.date), d);
+        lignes.push(`Planning du ${d.date} enregistré`);
+      }
+      if (charge.concerts) {
+        await setDoc(doc(db, 'planning_meta', 'concerts'),
+                     { liste: charge.concerts, maj: Date.now() });
+        lignes.push('Programmation des concerts mise à jour');
+      }
+      if (!jours.length && !charge.concerts) throw new Error('Charge utile « planning » vide.');
+
+    } else {
+      throw new Error(`Type inconnu : ${type}`);
+    }
+
+    $('titre').textContent = '✓ Données enregistrées';
+    $('lignes').innerHTML = lignes.map(l => `<li>${l}</li>`).join('');
+    statut('ok');
+
+  } catch (ex) {
+    console.error(ex);
+    $('titre').textContent = "Échec de l’enregistrement";
+    $('titre').className = 'err';
+    $('lignes').innerHTML = lignes.map(l => `<li>${l}</li>`).join('');
+    $('erreur').textContent = ex?.message || String(ex);
+    $('erreur').classList.remove('hidden');
+    statut('erreur');
+  }
+}
+
+$('f-login').addEventListener('submit', async e => {
+  e.preventDefault();
+  const btn = $('login-btn'), err = $('login-err');
+  btn.disabled = true; err.classList.add('hidden');
+  try {
+    await signInWithEmailAndPassword(auth, $('email').value.trim(), $('pass').value);
+  } catch {
+    err.textContent = 'Email ou mot de passe incorrect.';
+    err.classList.remove('hidden');
+  }
+  btn.disabled = false;
+});
+
+onAuthStateChanged(auth, user => {
+  if (user) {
+    $('f-login').classList.add('hidden');
+    $('resultat').classList.remove('hidden');
+    traiter();
+  } else {
+    $('resultat').classList.add('hidden');
+    $('f-login').classList.remove('hidden');
+    statut('connexion');
+  }
+});
+</script>
+</body>
+</html>
