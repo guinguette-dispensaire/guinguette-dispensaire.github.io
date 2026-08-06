@@ -58,6 +58,8 @@ a { color: var(--dark-green); }
 .btn-main { display: inline-block; background: var(--dark-green); color: var(--white); border: none; border-radius: 50px; padding: 0.75rem 2.2rem; font-size: 0.95rem; font-weight: 700; letter-spacing: 0.03em; transition: background 0.2s; }
 .btn-main:hover { background: var(--sage); }
 .btn-main:disabled { opacity: 0.6; cursor: wait; }
+.btn-lien { background: none; border: 0; color: var(--burgundy); font: inherit; font-size: 0.85rem; text-decoration: underline; cursor: pointer; margin-top: 0.75rem; padding: 0.25rem; }
+.btn-lien:disabled { opacity: 0.5; cursor: default; text-decoration: none; }
 .login-err { color: var(--burgundy); font-size: 0.85rem; font-weight: 700; margin-top: 1rem; min-height: 1.2em; }
 .login-note { font-size: 0.75rem; color: #999; margin-top: 1.25rem; }
 
@@ -274,6 +276,7 @@ label.chk input { width: auto; margin: 0; }
       <input type="password" id="login-pass" required autocomplete="current-password">
     </label>
     <button type="submit" class="btn-main" id="login-btn">Se connecter</button>
+    <button type="button" class="btn-lien" id="login-lien">Recevoir un lien de connexion par email</button>
     <p class="login-err" id="login-err"></p>
     <p class="login-note">Accès réservé à l'équipe de La Guinguette du Dispensaire.</p>
   </form>
@@ -574,7 +577,7 @@ label.chk input { width: auto; margin: 0; }
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendSignInLinkToEmail, isSignInWithEmailLink, signInWithEmailLink } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, collection, addDoc, setDoc, query, orderBy, onSnapshot, doc, updateDoc, deleteDoc, serverTimestamp, getDoc, getDocs, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { firebaseConfig } from "./firebase-config.js";
 
@@ -646,6 +649,53 @@ $('login-form').addEventListener('submit', async e => {
   }
   btn.disabled = false;
 });
+/* ─── Connexion par lien envoyé au mail (sans mot de passe) ───
+   Réservée aux comptes de direction. Le contrôle ci-dessous est un confort
+   d'interface, PAS une sécurité : la protection réelle est dans les règles
+   Firestore, qui doivent refuser tout compte hors liste. */
+const CLE_LIEN = 'guinguette.lienEmail';
+
+$('login-lien').addEventListener('click', async () => {
+  const bt = $('login-lien'), err = $('login-err');
+  const email = $('login-email').value.trim().toLowerCase();
+  err.textContent = '';
+  if (!email) { err.textContent = "Indiquez d'abord votre adresse email."; return; }
+  if (!COMPTES_DIRECTION.includes(email)) {
+    err.textContent = "Cette adresse n'a pas d'accès par lien. Utilisez le mot de passe.";
+    return;
+  }
+  bt.disabled = true; bt.textContent = 'Envoi en cours…';
+  try {
+    await sendSignInLinkToEmail(auth, email, {
+      url: location.origin + location.pathname,
+      handleCodeInApp: true
+    });
+    try { localStorage.setItem(CLE_LIEN, email); } catch {}
+    bt.textContent = 'Lien envoyé — regardez vos mails';
+  } catch (e) {
+    bt.disabled = false;
+    bt.textContent = 'Recevoir un lien de connexion par email';
+    err.textContent = e.code === 'auth/operation-not-allowed'
+      ? "La connexion par lien n'est pas encore activée dans Firebase."
+      : "Envoi impossible : " + (e.code || e.message);
+  }
+});
+
+/* Retour depuis le lien reçu par mail */
+if (isSignInWithEmailLink(auth, location.href)) {
+  let email = '';
+  try { email = localStorage.getItem(CLE_LIEN) || ''; } catch {}
+  if (!email) email = (prompt('Confirmez votre adresse email pour terminer la connexion :') || '').trim();
+  if (email) {
+    signInWithEmailLink(auth, email.toLowerCase(), location.href)
+      .then(() => {
+        try { localStorage.removeItem(CLE_LIEN); } catch {}
+        history.replaceState(null, '', location.pathname);
+      })
+      .catch(e => { const err = $('login-err'); if (err) err.textContent = "Lien invalide ou expiré : " + (e.code || e.message); });
+  }
+}
+
 $('btn-logout').addEventListener('click', () => signOut(auth));
 
 onAuthStateChanged(auth, user => {
@@ -660,6 +710,10 @@ onAuthStateChanged(auth, user => {
       const item = modMenu.querySelector(`button[data-mod="${m}"]`);
       if (item) item.classList.toggle('hidden', !proprietaire);
     });
+    MODULES_SUSPENDUS.forEach(m => {
+      const item = modMenu.querySelector(`button[data-mod="${m}"]`);
+      if (item) item.classList.add('hidden');
+    });
     /* Le bouton de menu reste visible dès qu'il reste plus d'un module
        à choisir : l'équipe garde ainsi l'accès au planning. */
     const visibles = [...modMenu.querySelectorAll('button[data-mod]')]
@@ -668,7 +722,7 @@ onAuthStateChanged(auth, user => {
 
     let dernierModule = 'resa';
     try { dernierModule = localStorage.getItem('guinguette.module') || 'resa'; } catch {}
-    if (!MODULES[dernierModule] || MODULES_RESERVES.includes(dernierModule) && !proprietaire) dernierModule = 'resa';
+    if (!MODULES[dernierModule] || MODULES_SUSPENDUS.includes(dernierModule) || MODULES_RESERVES.includes(dernierModule) && !proprietaire) dernierModule = 'resa';
     basculer(dernierModule);
   } else {
     viewDash.classList.add('hidden');
@@ -956,7 +1010,15 @@ const COMPTES_DIRECTION = [
   'alexandre.topin@gmail.com',
   'emamalika.enzo@gmail.com'
 ];
-const MODULES_RESERVES = ['ventes', 'visi', 'caisse'];
+const MODULES_RESERVES = ['ventes', 'visi', 'caisse', 'planning'];
+
+/* ─── Modules suspendus ───
+   Retirés pour TOUT LE MONDE, direction comprise, à la demande de Thomas le
+   06/08/2026 : le compte partagé de l'équipe est déjà entre les mains des
+   employés, et les règles Firestore ne peuvent pas encore être resserrées (la
+   console Firebase est bloquée par l'authentification à deux facteurs).
+   Remettre cette liste à [] pour rétablir les modules. */
+const MODULES_SUSPENDUS = ['ventes', 'visi', 'caisse', 'planning'];
 
 const MODULES = {
   resa:     { section: 'tab-resa',        titre: 'Réservations' },
