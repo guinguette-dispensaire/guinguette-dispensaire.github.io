@@ -1,0 +1,36 @@
+name: Remontee des ventes Flatpay
+
+# 22h00 et 07h00, heure de Paris.
+# GitHub ne connait que l'heure UTC : en heure d'ete (mars -> octobre) Paris
+# est a UTC+2, donc 20:00 et 05:00 UTC. En heure d'hiver ces horaires
+# deviendraient 21h et 6h a Paris ; la guinguette etant saisonniere, on ajustera
+# si besoin a la reprise.
+on:
+  schedule:
+    - cron: '0 20 * * *'
+    - cron: '0 5 * * *'
+  workflow_dispatch:        # permet aussi de la lancer a la main depuis GitHub
+
+jobs:
+  remontee:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Installer les dependances
+        run: npm install playwright firebase-admin
+
+      - name: Installer le navigateur
+        run: npx playwright install --with-deps chromium
+
+      - name: Remonter les ventes
+        env:
+          FLATPAY_EMAIL: ${{ secrets.FLATPAY_EMAIL }}
+          FLATPAY_PASSWORD: ${{ secrets.FLATPAY_PASSWORD }}
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: node outils/remontee-ventes.mjs
