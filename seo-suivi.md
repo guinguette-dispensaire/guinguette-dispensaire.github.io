@@ -282,6 +282,14 @@ Google a déployé la **programmation native des posts en novembre 2025** (bouto
 
 **Et une correction de plus au kit** : il annonçait « 0 post publié ». **Faux** — la fiche en avait déjà deux, vieux de deux mois (concert Burning Legs, ouverture de la saison), tous deux avec photo. Le chiffre venait de l'analyse du 26 juillet et avait été repris sans vérification. C'est le quatrième constat de cette fiche repris d'une source antérieure sans contrôle direct, après la livraison, le lien de réservation et les questions/réponses. **Aucun chiffre concernant cette fiche ne doit plus être réutilisé sans avoir été revu à l'écran.**
 
+### Alerte Search Console du 5 août — fausse alerte, et une très bonne nouvelle (5 août)
+
+Le mail « De nouvelles raisons empêchent l'indexation » signale un nouveau motif : **« Page avec redirection », 1 page**. Vérification dans le rapport : l'URL concernée est **`http://laguinguettedudispensaire.fr/`** — la version non sécurisée de l'accueil, explorée le 5 août, qui renvoie en 301 vers `https://`. **C'est exactement le comportement attendu** : la redirection HTTP → HTTPS est celle qu'on veut, la version `https://` est indexée. Aucune correction à faire, aucune validation à lancer — ce motif restera listé tant que Google explorera l'URL http, et c'est normal.
+
+La vraie information du rapport est ailleurs : **14 pages dans l'index** — elles étaient 6 le 2 août, 8 hier en `site:`. Les demandes d'indexation manuelles et le maillage depuis l'accueil ont fait leur travail. Restent 6 URL hors index pour des motifs sains : 2 « autre page avec balise canonique correcte » (nos pages de redirection volontaires), 1 explorée et 3 détectées non indexées — de la fraîcheur d'exploration, validation déjà « Commencée » côté Google.
+
+**Règle confirmée une fois de plus** : un mail d'alerte Google se lit dans le rapport, pas dans son objet.
+
 ### Audit complet du 4 août — 96,9/100, et une règle de fond qui change
 
 **Positions mesurées** (session connectée, personnalisation possible) : **1ʳᵉ** sur « guinguette sartrouville », « bar terrasse sartrouville » et « afterwork sartrouville », 2ᵉ sur « où boire un verre sartrouville » derrière PagesJaunes, 3ᵉ sur « guinguette près de paris rer ». **Indexation** : `site:` renvoie 8 URL (6 le 2 août) — `guinguette-pres-de-paris-rer-a` et `que-faire-boucle-de-seine` sont entrées dans l'index. **Le sitelink « Terrasse au bord de la Seine » a disparu** du résultat de marque ; le renommage d'URL envisagé perd son urgence. **Performance, run CI n° 88** : mobile 96/100/91/99, desktop 98–100, SEO et bonnes pratiques 100 sur les 8 mesures, CLS ≤ 0,066.
