@@ -1,15 +1,17 @@
 name: Remontee des ventes Flatpay
 
-# 22h00 et 07h00, heure de Paris.
-# GitHub ne connait que l'heure UTC : en heure d'ete (mars -> octobre) Paris
-# est a UTC+2, donc 20:00 et 05:00 UTC. En heure d'hiver ces horaires
-# deviendraient 21h et 6h a Paris ; la guinguette etant saisonniere, on ajustera
-# si besoin a la reprise.
+# Deux passages fixes : 22h et 07h, heure de Paris.
+# GitHub ne connait que l'UTC : en heure d'ete Paris est a UTC+2, donc 20:00 et
+# 05:00 UTC. En heure d'hiver ces horaires glisseraient a 21h et 6h.
+#
+# Plus un passage toutes les 15 minutes qui ne fait RIEN, sauf si le bouton
+# « Lancer la remontee maintenant » de l'outil a pose une demande dans la base.
 on:
   schedule:
     - cron: '0 20 * * *'
     - cron: '0 5 * * *'
-  workflow_dispatch:        # permet aussi de la lancer a la main depuis GitHub
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
 
 jobs:
   remontee:
@@ -22,13 +24,32 @@ jobs:
         with:
           node-version: '20'
 
+      # Passage de quart d'heure : on ne reveille la machinerie que si le
+      # bouton de l'outil a pose une demande. Sinon on s'arrete ici, en une
+      # vingtaine de secondes et sans installer de navigateur.
+      - name: Y a-t-il une demande en attente ?
+        id: portier
+        if: github.event.schedule == '*/15 * * * *'
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          npm install --no-audit --no-fund firebase-admin
+          if node outils/demande-en-attente.mjs; then
+            echo "suite=oui" >> $GITHUB_OUTPUT
+          else
+            echo "suite=non" >> $GITHUB_OUTPUT
+          fi
+
       - name: Installer les dependances
-        run: npm install playwright firebase-admin
+        if: github.event.schedule != '*/15 * * * *' || steps.portier.outputs.suite == 'oui'
+        run: npm install --no-audit --no-fund playwright firebase-admin
 
       - name: Installer le navigateur
+        if: github.event.schedule != '*/15 * * * *' || steps.portier.outputs.suite == 'oui'
         run: npx playwright install --with-deps chromium
 
       - name: Remonter les ventes
+        if: github.event.schedule != '*/15 * * * *' || steps.portier.outputs.suite == 'oui'
         env:
           FLATPAY_EMAIL: ${{ secrets.FLATPAY_EMAIL }}
           FLATPAY_PASSWORD: ${{ secrets.FLATPAY_PASSWORD }}

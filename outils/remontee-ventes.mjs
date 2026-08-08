@@ -110,6 +110,56 @@ async function lireRapport(page, sessionId, caisseId) {
   };
 }
 
+/* ─── Mix produit (ce qui a ete vendu) ───
+   Compartiment separe : cette page est nettement plus capricieuse que les
+   rapports de fin de journee. Elle ignore les parametres d'URL, il faut passer
+   par le selecteur de dates, et elle affiche parfois "Aucune vente" alors que
+   les donnees existent — il faut toucher un autre controle pour la reveiller.
+   Un echec ici ne doit PAS empecher les journees de remonter : on le signale,
+   et on ne fait echouer le job que si le mix n'a pas bouge depuis 3 jours. */
+async function lireMixProduit(page) {
+  await page.goto('https://portal.flatpay.com/pos/saleafterproduct', { waitUntil: 'networkidle' });
+  await page.waitForTimeout(3000);
+
+  const tableauRempli = async () => {
+    const t = await page.innerText('main').catch(() => '');
+    if (/Aucune vente/i.test(t)) return false;
+    return (await page.locator('tbody tr').count()) > 3;
+  };
+
+  // Reveil paresseux : jusqu'a trois tentatives en touchant les controles.
+  for (let essai = 0; essai < 3; essai++) {
+    if (await tableauRempli()) break;
+    const filtre = page.locator('button, [role="combobox"]').filter({ hasText: /cat[ée]gorie/i }).first();
+    if (await filtre.count()) { await filtre.click().catch(() => {}); await page.waitForTimeout(1200); await page.keyboard.press('Escape').catch(() => {}); }
+    await page.waitForTimeout(2500);
+  }
+  if (!await tableauRempli()) throw new Error("page 'ventes par produit' vide apres trois tentatives");
+
+  const lignes = await page.evaluate(() => {
+    const n = t => { const m = String(t||'').replace(/\s| /g,'').match(/-?\d+(?:[.,]\d+)?/); return m ? parseFloat(m[0].replace(',','.')) : 0; };
+    return [...document.querySelectorAll('tbody tr')].map(tr => {
+      const c = [...tr.querySelectorAll('td')].map(td => td.innerText.trim());
+      return c.length < 3 ? null : { nom: c[0], categorie: c[1] || '', unites: n(c[c.length-2]), ca: n(c[c.length-1]) };
+    }).filter(Boolean);
+  });
+  if (!lignes.length) throw new Error("aucune ligne de produit lue");
+
+  const parCategorie = {};
+  for (const l of lignes) {
+    const k = l.categorie || 'Sans categorie';
+    parCategorie[k] = parCategorie[k] || { nom: k, unites: 0, ca: 0 };
+    parCategorie[k].unites += l.unites; parCategorie[k].ca += l.ca;
+  }
+  const arrondir = o => ({ ...o, ca: +o.ca.toFixed(2) });
+  return {
+    produits: lignes.length,
+    unites: lignes.reduce((t,l) => t + l.unites, 0),
+    categories: Object.values(parCategorie).map(arrondir).sort((a,b) => b.ca - a.ca),
+    top: lignes.slice().sort((a,b) => b.ca - a.ca).slice(0,15).map(arrondir)
+  };
+}
+
 /* ─── Programme ─── */
 (async () => {
   const { debut, fin, jours } = fenetre();
@@ -220,9 +270,30 @@ async function lireRapport(page, sessionId, caisseId) {
            (j.ecart_caisse ? `, ECART DE CAISSE ${j.ecart_caisse} EUR` : ''));
       if (j.ecart_caisse) anomalies.push(`${jour} : ecart de caisse de ${j.ecart_caisse} EUR.`);
     }
+
+    /* Mix produit — isole : son echec ne doit pas emporter les journees. */
+    try {
+      const mix = await lireMixProduit(page);
+      await db.collection('ventes_meta').doc('saison').set({
+        ...mix, fin: aParis(new Date()), maj: Date.now(), source: 'flatpay-ventes-par-produit'
+      }, { merge: true });
+      dire(`Mix produit mis a jour : ${mix.produits} produits, ${mix.unites} unites, ${mix.categories.length} categories.`);
+    } catch (e) {
+      dire(`Mix produit NON mis a jour : ${e.message}`);
+      const doc = await db.collection('ventes_meta').doc('saison').get();
+      const vieux = doc.exists && doc.data().maj ? (Date.now() - Number(doc.data().maj)) / 86400000 : 999;
+      if (vieux > 3) anomalies.push(`Mix produit pas rafraichi depuis ${Math.floor(vieux)} jours.`);
+      else dire(`  (dernier rafraichissement il y a ${vieux.toFixed(1)} jour(s) — on laisse passer)`);
+    }
   } finally {
     await navigateur.close();
   }
+
+  // Une demande faite depuis le bouton de l'outil est marquee traitee,
+  // que la remontee ait trouve quelque chose a ecrire ou non.
+  try {
+    await db.collection('commandes').doc('remontee').set({ traitee: Date.now() }, { merge: true });
+  } catch (e) { dire('Marquage de la demande impossible : ' + e.message); }
 
   if (anomalies.length) {
     console.log('\n--- A REGARDER ---');
