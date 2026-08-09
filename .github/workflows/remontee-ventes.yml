@@ -12,6 +12,20 @@ on:
     - cron: '0 5 * * *'
     - cron: '*/15 * * * *'
   workflow_dispatch:
+    inputs:
+      depuis:
+        description: 'Reconsolidation : date de debut (AAAA-MM-JJ). Laisser vide pour la remontee normale.'
+        required: false
+        default: ''
+      jusqua:
+        description: 'Reconsolidation : date de fin (AAAA-MM-JJ).'
+        required: false
+        default: ''
+      reconsolider:
+        description: 'Relire et REECRIRE les journees deja en base sur cette periode'
+        type: boolean
+        required: false
+        default: false
 
 jobs:
   remontee:
@@ -54,4 +68,7 @@ jobs:
           FLATPAY_EMAIL: ${{ secrets.FLATPAY_EMAIL }}
           FLATPAY_PASSWORD: ${{ secrets.FLATPAY_PASSWORD }}
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          DEPUIS: ${{ inputs.depuis }}
+          JUSQUA: ${{ inputs.jusqua }}
+          RECONSOLIDER: ${{ inputs.reconsolider && 'oui' || 'non' }}
         run: node outils/remontee-ventes.mjs

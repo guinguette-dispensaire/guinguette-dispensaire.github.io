@@ -18,6 +18,18 @@ import admin from 'firebase-admin';
 const JOURS_EN_ARRIERE = 10;
 const CAISSES_CONNUES = ['1854318182', '1854318183'];
 
+/* Journees dont le tiroir est reste ouvert plusieurs jours d'affilee : aucun
+   rapport journalier n'existe pour elles, et les recoller collerait plusieurs
+   jours de recettes sur une seule date. Leurs chiffres viennent du journal des
+   commandes du premier import, qui est juste. On n'y touche jamais. */
+const JOURNEES_INTOUCHABLES = ['2026-06-06', '2026-06-07', '2026-06-08', '2026-06-14', '2026-06-25'];
+
+/* Reconsolidation : relit et reecrit une periode entiere, meme deja en base.
+   Pilotee depuis GitHub (Run workflow), jamais automatique. */
+const RECONSOLIDER = process.env.RECONSOLIDER === 'oui';
+const DEPUIS = process.env.DEPUIS || '';
+const JUSQUA = process.env.JUSQUA || '';
+
 const journal = [];
 const dire = m => { journal.push(m); console.log(m); };
 const anomalies = [];
@@ -28,8 +40,9 @@ const aParis = d => new Intl.DateTimeFormat('fr-CA', {
 }).format(d);
 
 function fenetre() {
-  const fin = new Date();
-  const debut = new Date(fin.getTime() - JOURS_EN_ARRIERE * 86400000);
+  const fin = JUSQUA ? new Date(JUSQUA + 'T23:59:59') : new Date();
+  const debut = DEPUIS ? new Date(DEPUIS + 'T00:00:00')
+                       : new Date(fin.getTime() - JOURS_EN_ARRIERE * 86400000);
   const jours = [];
   for (let d = new Date(debut); d <= fin; d = new Date(d.getTime() + 86400000)) jours.push(aParis(d));
   return { debut, fin, jours };
@@ -151,8 +164,24 @@ async function lireMixProduit(page) {
     parCategorie[k] = parCategorie[k] || { nom: k, unites: 0, ca: 0 };
     parCategorie[k].unites += l.unites; parCategorie[k].ca += l.ca;
   }
+  // Les totaux financiers de la periode, lus sur la meme page. Sans eux, ecrire
+  // une date de fin a jour a cote de montants perimes serait un mensonge muet.
+  const brut = await page.innerText('main').catch(() => '');
+  const L2 = brut.split('\n').map(l => l.trim()).filter(Boolean);
+  const n2 = t => { const m = String(t||'').replace(/\s| /g,'').match(/-?\d+(?:[.,]\d+)?/); return m ? parseFloat(m[0].replace(',','.')) : null; };
+  const apres = e => { const i = L2.findIndex(l => l === e); return i === -1 ? null : n2(L2[i+1]); };
+  const totaux = {};
+  const ttc = apres('Total TTC') ?? apres("Chiffre d'affaires brut") ?? apres("Chiffre d'affaires");
+  const ht  = apres('Total HT')  ?? apres('Ventes hors TVA');
+  const tva = apres('Total TVA') ?? apres('TVA collectée');
+  if (ttc != null) totaux.ca_ttc = ttc;
+  if (ht  != null) totaux.ca_ht  = ht;
+  if (tva != null) totaux.tva    = tva;
+
   const arrondir = o => ({ ...o, ca: +o.ca.toFixed(2) });
   return {
+    ...totaux,
+    totauxLus: Object.keys(totaux).length === 3,
     produits: lignes.length,
     unites: lignes.reduce((t,l) => t + l.unites, 0),
     categories: Object.values(parCategorie).map(arrondir).sort((a,b) => b.ca - a.ca),
@@ -169,7 +198,9 @@ async function lireMixProduit(page) {
   const deja = new Set();
   const snap = await db.collection('ventes').get();
   snap.forEach(d => deja.add(d.id));
-  const manquantes = jours.filter(j => !deja.has(j));
+  const manquantes = (RECONSOLIDER ? jours.slice() : jours.filter(j => !deja.has(j)))
+    .filter(j => { if (JOURNEES_INTOUCHABLES.includes(j)) { dire(`${j} : ecartee — tiroir reste ouvert plusieurs jours, pas de rapport journalier.`); return false; } return true; });
+  if (RECONSOLIDER) dire('MODE RECONSOLIDATION : les journees deja en base seront relues et reecrites.');
   dire(`${deja.size} journees deja en base. Manquantes sur la fenetre : ${manquantes.length ? manquantes.join(', ') : 'aucune'}`);
   if (!manquantes.length) { dire('Rien a faire.'); return; }
 
@@ -196,23 +227,31 @@ async function lireMixProduit(page) {
     await page.goto(`https://portal.flatpay.com/pos/drawer?pageIndex=0&${bornes}`, { waitUntil: 'networkidle' });
     await page.waitForTimeout(4000);
 
-    const sessions = await page.evaluate(() => {
-      const out = [];
-      document.querySelectorAll('tr').forEach(tr => {
-        const k = Object.keys(tr).find(k => k.startsWith('__reactFiber'));
-        if (!k) return;
-        let f = tr[k], n = 0;
-        while (f && n++ < 12) {
-          const p = f.memoizedProps;
-          if (p && p.row && p.row.original) {
-            const o = p.row.original;
-            out.push({ id: o.id, caisse: o.drawerId, debut: o.startDate, fin: o.closedDate });
-            return;
-          }
-          f = f.return;
-        }
-      });
-      return out;
+    /* La liste est paginee par vingt. Une seule page suffisait sur dix jours ;
+       sur une saison elle en cacherait la moitie. On parcourt tout. */
+    const sessions = await page.evaluate(async () => {
+      const lire = () => { const out = [];
+        document.querySelectorAll('tr').forEach(tr => {
+          const k = Object.keys(tr).find(k => k.startsWith('__reactFiber'));
+          if (!k) return;
+          let f = tr[k], n = 0;
+          while (f && n++ < 12) { const p = f.memoizedProps;
+            if (p && p.row && p.row.original) { const o = p.row.original;
+              out.push({ id: o.id, caisse: String(o.drawerId), debut: o.startDate, fin: o.closedDate }); return; }
+            f = f.return; } });
+        return out; };
+      const suivant = () => [...document.querySelectorAll('button')].find(b =>
+        /suivant|next/i.test((b.textContent || '') + (b.getAttribute('aria-label') || '')) && !b.disabled);
+      const vu = new Map();
+      lire().forEach(r => vu.set(r.id, r));
+      for (let i = 0; i < 30; i++) {
+        const b = suivant(); if (!b) break;
+        const avant = vu.size; b.click();
+        await new Promise(r => setTimeout(r, 2200));
+        lire().forEach(r => vu.set(r.id, r));
+        if (vu.size === avant) break;
+      }
+      return [...vu.values()];
     });
     dire(`${sessions.length} sessions de caisse trouvees.`);
     if (!sessions.length) throw new Error("Aucune session lue : la page a change de structure.");
@@ -274,10 +313,17 @@ async function lireMixProduit(page) {
     /* Mix produit — isole : son echec ne doit pas emporter les journees. */
     try {
       const mix = await lireMixProduit(page);
-      await db.collection('ventes_meta').doc('saison').set({
-        ...mix, fin: aParis(new Date()), maj: Date.now(), source: 'flatpay-ventes-par-produit'
-      }, { merge: true });
+      const { totauxLus, ...aEcrire } = mix;
+      // "fin" date les MONTANTS, pas le mix. On ne l'avance que si les totaux
+      // ont ete relus : sinon la page afficherait une date fraiche a cote de
+      // chiffres perimes, ce que personne ne verrait passer.
+      if (totauxLus) aEcrire.fin = aParis(new Date());
+      aEcrire.mix_fin = aParis(new Date());
+      await db.collection('ventes_meta').doc('saison').set(
+        { ...aEcrire, maj: Date.now(), source: 'flatpay-ventes-par-produit' }, { merge: true });
       dire(`Mix produit mis a jour : ${mix.produits} produits, ${mix.unites} unites, ${mix.categories.length} categories.`);
+      dire(totauxLus ? `  totaux de periode relus : ${mix.ca_ttc} TTC / ${mix.ca_ht} HT`
+                     : `  totaux de periode NON relus : les montants de saison restent ceux du dernier relevé`);
     } catch (e) {
       dire(`Mix produit NON mis a jour : ${e.message}`);
       const doc = await db.collection('ventes_meta').doc('saison').get();

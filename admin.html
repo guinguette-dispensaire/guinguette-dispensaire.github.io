@@ -58,6 +58,15 @@ a { color: var(--dark-green); }
 .btn-main { display: inline-block; background: var(--dark-green); color: var(--white); border: none; border-radius: 50px; padding: 0.75rem 2.2rem; font-size: 0.95rem; font-weight: 700; letter-spacing: 0.03em; transition: background 0.2s; }
 .btn-main:hover { background: var(--sage); }
 .btn-main:disabled { opacity: 0.6; cursor: wait; }
+.v-conso { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 1rem; margin: 0 0 1.6rem; }
+.v-conso-c { background: #fff; border: 1px solid #e8e2e4; border-radius: 14px; padding: 1rem 1.1rem; }
+.v-conso-c.total { background: var(--burgundy); border-color: var(--burgundy); color: #fff; }
+.v-conso-c .l { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; color: #8a7a80; font-weight: 700; }
+.v-conso-c.total .l { color: rgba(255,255,255,0.75); }
+.v-conso-c .n { font-size: 1.6rem; font-weight: 700; margin-top: 0.25rem; }
+.v-conso-c .d { font-size: 0.78rem; color: #8a7a80; margin-top: 0.3rem; line-height: 1.35; }
+.v-conso-c.total .d { color: rgba(255,255,255,0.8); }
+.v-conso-c .estime { font-style: italic; }
 .v-relance { display: flex; align-items: center; gap: 0.9rem; flex-wrap: wrap; margin: 0 0 1.4rem; }
 .v-relance button { background: var(--burgundy); color: #fff; border: 0; border-radius: 50px; padding: 0.55rem 1.4rem; font: inherit; font-size: 0.9rem; font-weight: 700; cursor: pointer; }
 .v-relance button:disabled { opacity: 0.45; cursor: default; }
@@ -352,6 +361,24 @@ label.chk input { width: auto; margin: 0; }
         <div class="lab">Chiffre d'affaires de la saison</div>
         <div class="n" id="v-s-ca">–</div>
         <div class="sub" id="v-saison-sub"></div>
+      </div>
+
+      <div class="v-conso">
+        <div class="v-conso-c">
+          <div class="l">Chiffre d'affaires HT</div>
+          <div class="n" id="v-c-ht">–</div>
+          <div class="d" id="v-c-ht-d"></div>
+        </div>
+        <div class="v-conso-c">
+          <div class="l">Espèces consolidées</div>
+          <div class="n" id="v-c-esp">–</div>
+          <div class="d" id="v-c-esp-d"></div>
+        </div>
+        <div class="v-conso-c total">
+          <div class="l">Total</div>
+          <div class="n" id="v-c-tot">–</div>
+          <div class="d" id="v-c-tot-d"></div>
+        </div>
       </div>
 
       <div class="v-titre-rang">Dernier jour relevé</div>
@@ -1704,6 +1731,72 @@ function somme(jours, cle) {
   return { total, n, complet: n > 0 && n === jours.length };
 }
 
+/* ─── Bandeau consolidé : HT, espèces, et le total des deux ───
+   Les espèces relevées ne couvrent pas toutes les journées. Pour les autres on
+   applique le taux constaté sur les journées documentées — et on l'affiche.
+   Un chiffre consolidé qui ne dit pas ce qu'il contient finit toujours par être
+   cité comme une donnée mesurée : la part estimée reste donc lisible, et le
+   taux avec elle. */
+async function blocConsolide(jours) {
+  jours = jours || [];
+  if (!jours.length) return;
+
+  const especesParJour = {};
+  try {
+    const snap = await getDocs(collection(db, 'caisse'));
+    snap.forEach(d => { const m = d.data();
+      if (m.sens !== 'depense') especesParJour[m.date] = (especesParJour[m.date] || 0) + Number(m.montant || 0); });
+  } catch { return; }   // lecture refusée : on n'affiche rien plutôt qu'un faux
+
+  let cbDocumente = 0, especesRelevees = 0, cbSansEspeces = 0, joursSansEspeces = 0;
+  for (const j of jours) {
+    const cb = Number(j.ca_net) || 0;
+    if (especesParJour[j.date] !== undefined) { cbDocumente += cb; especesRelevees += especesParJour[j.date]; }
+    else { cbSansEspeces += cb; joursSansEspeces++; }
+  }
+
+  const taux = cbDocumente > 0 ? especesRelevees / cbDocumente : 0;
+  const estimees = Math.round(cbSansEspeces * taux);
+  /* Le HT ne figure que sur les journées passées par les rapports de fin de
+     journée. Les 51 journées du premier import venaient du journal des
+     commandes, qui ne porte ni HT ni TVA. Tant que le compte n'y est pas, on
+     prend le total de saison relevé sur le mix produit — un vrai chiffre
+     Flatpay — plutôt qu'une somme partielle qui aurait l'air d'un total. */
+  const ht = somme(jours, 'ca_ht');
+  let htTotal, htDetail;
+  if (ht.complet) {
+    htTotal = ht.total;
+    htDetail = jours.length + ' journées relevées';
+  } else {
+    let saison = null;
+    try { const d = await getDoc(doc(db, 'ventes_meta', 'saison')); if (d.exists()) saison = d.data(); } catch {}
+    if (saison && saison.ca_ht) {
+      htTotal = Number(saison.ca_ht);
+      htDetail = 'relevé de saison Flatpay' + (saison.fin ? ', arrêté au ' + dateFR(saison.fin, { day:'numeric', month:'long' }) : '')
+               + ' — le détail HT manque sur ' + (jours.length - ht.n) + ' journées';
+    } else {
+      htTotal = ht.total;
+      htDetail = ht.n + ' journées sur ' + jours.length + ' — total partiel';
+    }
+  }
+  const especes = especesRelevees + estimees;
+
+  $('v-c-ht').textContent = eur0(htTotal);
+  $('v-c-ht-d').textContent = htDetail;
+
+  $('v-c-esp').textContent = eur0(especes);
+  $('v-c-esp-d').innerHTML = estimees
+    ? eur0(especesRelevees) + ' comptés sur ' + (jours.length - joursSansEspeces) + ' journées'
+      + '<br><span class="estime">+ ' + eur0(estimees) + ' estimés sur ' + joursSansEspeces
+      + ' journées sans relevé, au taux de ' + (taux * 100).toFixed(1).replace('.', ',') + ' % du CB constaté</span>'
+    : 'toutes les journées relevées';
+
+  $('v-c-tot').textContent = eur0(htTotal + especes);
+  $('v-c-tot-d').textContent = estimees
+    ? 'dont ' + eur0(estimees) + ' estimés — HT + espèces TTC'
+    : 'HT + espèces';
+}
+
 function blocSaison(s, jours) {
   jours = jours || [];
   const ouvert = jours.length > 0;
@@ -1740,6 +1833,7 @@ function blocSaison(s, jours) {
   if (t)      bouts.push(t.toLocaleString('fr-FR') + ' tickets');
   if (t && ca) bouts.push('panier moyen ' + eur(ca / t));
   $('v-saison-sub').textContent = bouts.filter(Boolean).join(' · ');
+  blocConsolide(jours);
 }
 
 document.querySelectorAll('#v-bascule button').forEach(b =>
