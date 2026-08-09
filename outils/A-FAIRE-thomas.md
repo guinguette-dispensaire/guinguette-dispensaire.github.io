@@ -130,3 +130,36 @@ page changée, contrôle de TVA qui ne tombe pas.
   son environnement. Il peut lire la page et cliquer, pas taper dedans.
 - **Pousser sur le dépôt** — non autorisé pour sa session. Se lève en ajoutant
   le dépôt aux sources autorisées, et alors il poussera lui-même.
+
+---
+
+## Le planning — ce qui a changé le 09/08/2026
+
+Le tableau du Drive et l'outil se recopient maintenant l'un l'autre. Tu peux
+modifier une journée des deux côtés, indifféremment.
+
+Ce qui a été fait sans toi :
+
+- le tableau `Planning_presence_Guinguette` est partagé en **Éditeur** avec le
+  compte technique `firebase-adminsdk-fbsvc@guinguette-stocks.iam.gserviceaccount.com` ;
+- l'**API Google Sheets** est activée sur le projet `guinguette-stocks` ;
+- les 131 journées du tableau (23 juin → 31 octobre) sont dans la base ;
+- `outils/sync-planning.mjs` synchronise les deux sens, branché sur les
+  passages de 22h et 7h et sur le bouton « Lancer la remontée maintenant » ;
+- l'onglet Planning a un bouton **modifier** sur chaque journée et une vue
+  **mon planning**.
+
+Ce que le robot n'écrit jamais dans le tableau : la colonne **Statut** et
+toutes les colonnes à droite. Ce sont des formules, elles se recalculent
+seules. Il ne touche que les horaires, la durée et les six colonnes de
+prénoms.
+
+En cas de modification des deux côtés le même jour, **c'est l'outil qui
+gagne**, et la valeur du tableau qui a été écrasée est gardée dans la journée
+(champ `conflit`) — rien ne disparaît en silence.
+
+### Ce qu'il te reste à faire
+
+**Pousser le dépôt.** Ouvre GitHub Desktop et clique sur *Push origin*. Le
+commit est déjà fait, il s'appelle « Planning : synchronisation dans les deux
+sens… ». Sans ce clic, rien de tout ça n'est en ligne.

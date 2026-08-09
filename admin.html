@@ -217,7 +217,7 @@ label.chk input { width: auto; margin: 0; }
 .pl-jour.juste { border-left-color: var(--gold); }
 .pl-jour.ferme { border-left-color: rgba(0,0,0,0.12); opacity: 0.72; }
 .pl-jour.auj { box-shadow: 0 2px 10px rgba(0,0,0,0.06), 0 0 0 2px var(--gold); }
-.pl-tete { display: flex; align-items: baseline; gap: 0.5rem; margin-bottom: 0.15rem; }
+.pl-tete { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.5rem 0.5rem; margin-bottom: 0.15rem; }
 .pl-tete .j { font-family: 'Playfair Display','Playfair repli',serif; font-size: 1.02rem; color: var(--dark-green); }
 .pl-tete .j::first-letter { text-transform: uppercase; }
 .pl-tete .h { margin-left: auto; font-size: 0.8rem; font-weight: 700; color: #555; font-variant-numeric: tabular-nums; white-space: nowrap; }
@@ -237,7 +237,14 @@ label.chk input { width: auto; margin: 0; }
 .pl-vue button { flex: 1; border: none; background: none; font-family: inherit; font-size: 0.78rem; font-weight: 700; color: #7a7a7a; border-radius: 50px; padding: 0.42rem 0.6rem; }
 .pl-vue button.on { background: var(--white); color: var(--dark-green); box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
 .pl-total { font-size: 0.78rem; color: #777; text-align: center; margin: -0.35rem 0 0.75rem; }
-.pl-modif { margin-left: 0.55rem; border: none; background: none; font-family: inherit; font-size: 0.72rem; font-weight: 700; color: var(--gold); padding: 0; }
+.pl-modif { display: block; margin: 0.7rem 0 0 auto; border: 1.5px solid rgba(200,164,72,0.75); background: rgba(200,164,72,0.14); font-family: inherit; font-size: 0.74rem; font-weight: 700; color: var(--gold); border-radius: 50px; padding: 0.32rem 0.9rem; line-height: 1.15; }
+.pl-modif:active { background: rgba(200,164,72,0.3); }
+/* Sur un telephone : pleine largeur, dore franc, en pied de journee. On ne
+   peut pas le rater, et le pouce le trouve sans viser. */
+@media (max-width: 620px) {
+  .pl-modif { width: 100%; margin: 0.8rem 0 0; padding: 0.62rem 0.9rem; font-size: 0.88rem; border: none; background: var(--gold); color: var(--dark-green); box-shadow: 0 1px 5px rgba(0,0,0,0.14); }
+  .pl-modif:active { background: #b8933a; }
+}
 .pl-moi { font-size: 1.02rem; font-weight: 700; color: var(--dark-green); font-variant-numeric: tabular-nums; margin-top: 0.45rem; }
 .pl-moi.rien { font-size: 0.84rem; font-weight: 400; color: #9a9a9a; }
 .modal textarea { width: 100%; margin-top: 0.3rem; font-size: 0.95rem; padding: 0.55rem 0.75rem; border: 1.5px solid rgba(0,0,0,0.15); border-radius: 10px; background: var(--cream); font-family: 'Lato','Lato repli',sans-serif; resize: vertical; }
@@ -1610,7 +1617,6 @@ function dessinerPlanning() {
         ${j.concert ? `<span class="pl-etiq">♪ ${esc(j.concert.groupe)}</span>`
           : j.libelle ? `<span class="pl-etiq">${esc(j.libelle)}</span>` : ''}
         <span class="h">${j.ferme ? 'Fermé' : esc(j.horaires || '')}</span>
-        ${peutModifierPlanning ? `<button type="button" class="pl-modif" data-modif="${j.date}">modifier</button>` : ''}
       </div>
       ${barrePlanning(j, rs)}
       ${moi ? blocMoiPlanning(j, moi)
@@ -1618,6 +1624,7 @@ function dessinerPlanning() {
       ${j.ferme ? '' : `<div class="pl-statut ${diag.startsWith('❌') ? 'ko' : diag.startsWith('⚠️') ? 'warn' : 'ok'}">${esc(j.statut_source || diag)}</div>`}
       ${ecart}
       ${rs.length ? `<div class="pl-resa"><b>${rs.length}</b> réservation${rs.length > 1 ? 's' : ''} · <b>${couverts}</b> couvert${couverts > 1 ? 's' : ''} <span class="d">— ${rs.map(r => esc(r.heure) + ' (' + (r.personnes || '?') + ')').join(', ')}</span></div>` : ''}
+      ${peutModifierPlanning ? `<button type="button" class="pl-modif" data-modif="${j.date}">Modifier cette journée</button>` : ''}
     </div>`;
   }).join('') || '<div class="empty">Aucun jour renseigné cette semaine.</div>';
 
