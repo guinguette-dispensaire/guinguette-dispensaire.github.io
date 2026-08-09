@@ -56,7 +56,7 @@ jobs:
 
       - name: Installer les dependances
         if: github.event.schedule != '*/15 * * * *' || steps.portier.outputs.suite == 'oui'
-        run: npm install --no-audit --no-fund playwright firebase-admin
+        run: npm install --no-audit --no-fund playwright firebase-admin googleapis
 
       - name: Installer le navigateur
         if: github.event.schedule != '*/15 * * * *' || steps.portier.outputs.suite == 'oui'
@@ -72,3 +72,12 @@ jobs:
           JUSQUA: ${{ inputs.jusqua }}
           RECONSOLIDER: ${{ inputs.reconsolider && 'oui' || 'non' }}
         run: node outils/remontee-ventes.mjs
+
+      # Le planning : le tableau du Drive et l'outil se recopient l'un l'autre.
+      # Independant de la remontee des ventes — si Flatpay tombe, le planning
+      # se synchronise quand meme.
+      - name: Synchroniser le planning
+        if: always() && (github.event.schedule != '*/15 * * * *' || steps.portier.outputs.suite == 'oui')
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: node outils/sync-planning.mjs

@@ -233,6 +233,16 @@ label.chk input { width: auto; margin: 0; }
 .pl-statut.warn { color: var(--gold); }
 .pl-statut.ko { color: var(--burgundy); }
 .pl-ecart { font-size: 0.72rem; color: #9a9a9a; margin-top: 0.2rem; }
+.pl-vue { display: flex; gap: 0.25rem; background: rgba(0,0,0,0.055); border-radius: 50px; padding: 0.2rem; margin-bottom: 0.8rem; }
+.pl-vue button { flex: 1; border: none; background: none; font-family: inherit; font-size: 0.78rem; font-weight: 700; color: #7a7a7a; border-radius: 50px; padding: 0.42rem 0.6rem; }
+.pl-vue button.on { background: var(--white); color: var(--dark-green); box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
+.pl-total { font-size: 0.78rem; color: #777; text-align: center; margin: -0.35rem 0 0.75rem; }
+.pl-modif { margin-left: 0.55rem; border: none; background: none; font-family: inherit; font-size: 0.72rem; font-weight: 700; color: var(--gold); padding: 0; }
+.pl-moi { font-size: 1.02rem; font-weight: 700; color: var(--dark-green); font-variant-numeric: tabular-nums; margin-top: 0.45rem; }
+.pl-moi.rien { font-size: 0.84rem; font-weight: 400; color: #9a9a9a; }
+.modal textarea { width: 100%; margin-top: 0.3rem; font-size: 0.95rem; padding: 0.55rem 0.75rem; border: 1.5px solid rgba(0,0,0,0.15); border-radius: 10px; background: var(--cream); font-family: 'Lato','Lato repli',sans-serif; resize: vertical; }
+.modal textarea:focus { outline: none; border-color: var(--gold); }
+.modal .aide { font-size: 0.72rem; font-weight: 400; color: #8d8d8d; margin: -0.45rem 0 0.95rem; line-height: 1.45; }
 .pl-resa { font-size: 0.78rem; color: var(--dark-green); margin-top: 0.45rem; padding-top: 0.45rem; border-top: 1px solid rgba(0,0,0,0.06); }
 .pl-resa b { font-variant-numeric: tabular-nums; }
 .pl-resa .d { color: #9a9a9a; font-weight: 400; }
@@ -547,6 +557,11 @@ label.chk input { width: auto; margin: 0; }
         <button class="auj" id="p-auj">aujourd'hui</button>
         <button id="p-suiv" aria-label="Semaine suivante">▶</button>
       </div>
+      <div class="pl-vue" id="p-vue">
+        <button type="button" data-vue="equipe" class="on">Toute l'équipe</button>
+        <button type="button" data-vue="moi" id="p-vue-moi">Mon planning</button>
+      </div>
+      <div class="pl-total hidden" id="p-total"></div>
       <div class="v-legend">
         <span><i style="background:var(--burgundy)"></i>personne au bar</span>
         <span><i style="background:var(--gold)"></i>une seule</span>
@@ -605,6 +620,23 @@ label.chk input { width: auto; margin: 0; }
     <div class="modal-actions">
       <button type="button" class="btn-min" id="a-fermer">Fermer</button>
       <button type="submit" class="btn-ok" id="a-save">Enregistrer</button>
+    </div>
+  </form>
+</div>
+
+<!-- ═══ MODIFIER UNE JOURNÉE DU PLANNING ═══ -->
+<div id="pl-modal-bg" class="modal-bg hidden">
+  <form class="modal" id="pl-form">
+    <h2 id="pl-m-titre">Modifier la journée</h2>
+    <label>Horaires d'ouverture
+      <input type="text" id="pl-m-horaires" maxlength="40" placeholder="16h30 – 22h">
+    </label>
+    <div class="aide">Écris « Fermé » pour une journée sans ouverture.</div>
+    <div id="pl-m-personnes"></div>
+    <div class="aide">Pour chacun : un créneau par ligne (« 17h-22h »), ou <b>off</b> pour un repos, <b>vac</b> pour des congés. Vide = pas concerné. La modification redescend dans le tableau du Drive à la prochaine synchronisation.</div>
+    <div class="modal-actions">
+      <button type="button" class="btn-min" id="pl-m-fermer">Fermer</button>
+      <button type="submit" class="btn-ok" id="pl-m-save">Enregistrer</button>
     </div>
   </form>
 </div>
@@ -786,6 +818,12 @@ onAuthStateChanged(auth, user => {
     const courriel = (user.email || '').toLowerCase();
     const proprietaire = COMPTES_DIRECTION.includes(courriel);
     const administrateur = courriel === COMPTE_ADMIN;
+
+    /* Le planning : on ne propose « mon planning » qu'aux comptes qui
+       correspondent à quelqu'un du tableau. */
+    moiPlanning = QUI_EST_QUI[courriel] || null;
+    peutModifierPlanning = proprietaire;
+    if (!moiPlanning) { vuePlanning = 'equipe'; $('p-vue-moi').classList.add('hidden'); }
 
     /* Seul le declenchement de la remontee est reserve a l'administrateur.
        La saisie, elle, reste ouverte a toute la direction. */
@@ -1332,6 +1370,98 @@ async function chargerCaisse() {
 
 const PERSONNES_PLANNING = ['Ema', 'Alban', 'Alex', 'Thomas', 'Guguss', 'Stéphanie'];
 
+/* ─── Qui est qui ───
+   Le planning parle en prénoms, les comptes en adresses. Cette table fait le
+   pont : c'est elle qui alimente la vue « mon planning ». Guguss et Stéphanie
+   n'ont pas de compte à eux — ils passent par le compte partagé de l'équipe,
+   qui n'a pas accès à cet onglet. */
+const QUI_EST_QUI = {
+  'tdechangy@gmail.com':       'Thomas',
+  'alban.jourdet@gmail.com':   'Alban',
+  'alexandre.topin@gmail.com': 'Alex',
+  'emamalika.enzo@gmail.com':  'Ema'
+};
+let moiPlanning = null;
+let vuePlanning = 'equipe';
+let peutModifierPlanning = false;
+let jourEnEdition = null;
+
+/* ─── La syntaxe des cases, la même que dans le tableau du Drive ───
+   « 17h-22h » (une ligne par créneau), « off », « vac », ou du texte libre.
+   Ces deux fonctions sont le jumeau de celles de outils/sync-planning.mjs :
+   si l'une change, l'autre doit changer aussi. */
+const sansAccentPl = t => String(t || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
+function heurePl(texte) {
+  const t = String(texte);
+  let m = t.match(/(\d{1,2})\s*h\s*(\d{2})/);
+  if (m) return Number(m[1]) + Number(m[2]) / 60;
+  m = t.match(/(\d{1,2})/);
+  return m ? Number(m[1]) : null;
+}
+
+function bornesTextePl(texte) {
+  const p = String(texte || '').replace(/[–—]/g, '-').split('-');
+  if (p.length < 2) return null;
+  const a = heurePl(p[0]), b = heurePl(p[p.length - 1]);
+  return (a == null || b == null) ? null : [a, b];
+}
+
+function lireCasePl(brut) {
+  const texte = String(brut == null ? '' : brut).trim();
+  if (!texte) return null;
+  const bas = sansAccentPl(texte.toLowerCase());
+  if (bas === 'off' || bas === 'repos') return { absence: 'repos' };
+  if (bas === 'vac' || bas === 'vacances' || bas === 'conges') return { absence: 'congés' };
+  if (bas === 'absent') return { absence: 'absent' };
+  const creneaux = [], notes = [];
+  for (let bout of texte.split(/[\n;+]/)) {
+    bout = bout.trim().replace(/\?+$/, '').trim();
+    if (!bout) continue;
+    const t = bout.replace(/[–—]/g, '-');
+    let paire = null;
+    if (t.includes('-')) {
+      const q = t.split('-');
+      const a = heurePl(q[0]), b = heurePl(q[q.length - 1]);
+      if (a != null && b != null) paire = [a, b];
+    } else {
+      const m = t.replace(/\s/g, '').match(/^(\d{1,2})h(\d{1,2})h?$/);
+      if (m) paire = [Number(m[1]), Number(m[2])];
+    }
+    if (paire && paire[0] >= 0 && paire[0] < 24 && paire[1] > paire[0] && paire[1] <= 24)
+      creneaux.push({ debut: paire[0], fin: paire[1] });
+    else notes.push(bout);
+  }
+  if (creneaux.length) {
+    const o = { creneaux };
+    if (notes.length) o.note = notes.join(' ');
+    return o;
+  }
+  return notes.length ? { note: notes.join(' ') } : null;
+}
+
+function ecrireCasePl(e) {
+  if (!e) return '';
+  if (e.absence === 'repos')  return 'off';
+  if (e.absence === 'congés') return 'vac';
+  if (e.absence)              return e.absence;
+  if (e.creneaux && e.creneaux.length) {
+    const h = e.creneaux.map(iv => { const [a, b] = bornes(iv); return heureFR(a) + '-' + heureFR(b); }).join('\n');
+    return e.note ? h + '\n' + e.note : h;
+  }
+  return e.note || '';
+}
+
+/* Ce qu'on montre d'une journée quand on ne regarde que soi. */
+function blocMoiPlanning(j, moi) {
+  const e = (j.equipe || {})[moi] || {};
+  if (e.creneaux && e.creneaux.length)
+    return `<div class="pl-moi">${e.creneaux.map(iv => { const [a, b] = bornes(iv); return heureFR(a) + '–' + heureFR(b); }).join('  +  ')}` +
+           `${e.note ? ` <span class="pl-etiq">${esc(e.note)}</span>` : ''}</div>`;
+  if (e.absence) return `<div class="pl-moi rien">${esc(e.absence)}</div>`;
+  return `<div class="pl-moi rien">${esc(e.note || '—')}</div>`;
+}
+
 const heureFR = x => {
   const h = Math.floor(x + 1e-9), m = Math.round((x - h) * 60);
   return m ? `${h}h${String(m).padStart(2,'0')}` : `${h}h`;
@@ -1434,7 +1564,20 @@ function dessinerPlanning() {
   $('p-suiv').disabled = i >= semaines.length - 1;
 
   const dimanche = decalerSemaine(semainePlanning, 1);
-  const jours = joursPlanning.filter(j => j.date >= semainePlanning && j.date < dimanche);
+  let jours = joursPlanning.filter(j => j.date >= semainePlanning && j.date < dimanche);
+
+  /* Vue « mon planning » : les journées où l'on apparaît, et le total. */
+  const moi = (vuePlanning === 'moi' && moiPlanning) ? moiPlanning : null;
+  if (moi) jours = jours.filter(j => (j.equipe || {})[moi]);
+  $('p-total').classList.toggle('hidden', !moi);
+  if (moi) {
+    const services = jours.filter(j => (((j.equipe || {})[moi] || {}).creneaux || []).length);
+    const heures = services.reduce((t, j) => t + j.equipe[moi].creneaux
+      .reduce((u, iv) => { const [a, b] = bornes(iv); return u + (b - a); }, 0), 0);
+    $('p-total').textContent = services.length
+      ? `${services.length} service${services.length > 1 ? 's' : ''} · ${heureFR(heures)} au total`
+      : 'Aucun service cette semaine';
+  }
   $('p-lab').textContent = 'Semaine du ' + dateFR(semainePlanning, { day: 'numeric', month: 'long' });
 
   const auj = todayStr();
@@ -1467,9 +1610,11 @@ function dessinerPlanning() {
         ${j.concert ? `<span class="pl-etiq">♪ ${esc(j.concert.groupe)}</span>`
           : j.libelle ? `<span class="pl-etiq">${esc(j.libelle)}</span>` : ''}
         <span class="h">${j.ferme ? 'Fermé' : esc(j.horaires || '')}</span>
+        ${peutModifierPlanning ? `<button type="button" class="pl-modif" data-modif="${j.date}">modifier</button>` : ''}
       </div>
       ${barrePlanning(j, rs)}
-      <div class="pl-equipe">${pastilles || '<span class="pl-p abs">personne d’inscrit</span>'}</div>
+      ${moi ? blocMoiPlanning(j, moi)
+            : `<div class="pl-equipe">${pastilles || '<span class="pl-p abs">personne d’inscrit</span>'}</div>`}
       ${j.ferme ? '' : `<div class="pl-statut ${diag.startsWith('❌') ? 'ko' : diag.startsWith('⚠️') ? 'warn' : 'ok'}">${esc(j.statut_source || diag)}</div>`}
       ${ecart}
       ${rs.length ? `<div class="pl-resa"><b>${rs.length}</b> réservation${rs.length > 1 ? 's' : ''} · <b>${couverts}</b> couvert${couverts > 1 ? 's' : ''} <span class="d">— ${rs.map(r => esc(r.heure) + ' (' + (r.personnes || '?') + ')').join(', ')}</span></div>` : ''}
@@ -1514,6 +1659,87 @@ async function chargerPlanning() {
 $('p-prec').addEventListener('click', () => { semainePlanning = decalerSemaine(semainePlanning, -1); dessinerPlanning(); });
 $('p-suiv').addEventListener('click', () => { semainePlanning = decalerSemaine(semainePlanning,  1); dessinerPlanning(); });
 $('p-auj').addEventListener('click',  () => { semainePlanning = lundiPlanning(todayStr()); dessinerPlanning(); });
+
+$('p-vue').addEventListener('click', ev => {
+  const b = ev.target.closest('button[data-vue]');
+  if (!b) return;
+  vuePlanning = b.dataset.vue;
+  $('p-vue').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b));
+  dessinerPlanning();
+});
+
+$('p-liste').addEventListener('click', ev => {
+  const b = ev.target.closest('button[data-modif]');
+  if (b) ouvrirEditionPlanning(b.dataset.modif);
+});
+
+/* ─── Modifier une journée ───
+   On écrit dans la base ; la synchronisation de 22h et 7h recopie ensuite la
+   journée dans le tableau du Drive. Le champ « maj » est ce qui lui signale
+   qu'il s'est passé quelque chose de ce côté-ci. */
+function ouvrirEditionPlanning(date) {
+  const j = joursPlanning.find(x => x.date === date);
+  if (!j) return;
+  jourEnEdition = date;
+  $('pl-m-titre').textContent = dateFR(date, { weekday: 'long', day: 'numeric', month: 'long' });
+  $('pl-m-horaires').value = j.ferme ? 'Fermé' : (j.horaires || '');
+  $('pl-m-personnes').innerHTML = PERSONNES_PLANNING.map((p, i) =>
+    `<label>${esc(p)}<textarea id="pl-m-p${i}" rows="1" maxlength="80">${esc(ecrireCasePl((j.equipe || {})[p]))}</textarea></label>`
+  ).join('');
+  $('pl-modal-bg').classList.remove('hidden');
+}
+
+function fermerEditionPlanning() {
+  jourEnEdition = null;
+  $('pl-modal-bg').classList.add('hidden');
+}
+
+$('pl-m-fermer').addEventListener('click', fermerEditionPlanning);
+$('pl-modal-bg').addEventListener('click', ev => { if (ev.target === $('pl-modal-bg')) fermerEditionPlanning(); });
+
+$('pl-form').addEventListener('submit', async ev => {
+  ev.preventDefault();
+  if (!jourEnEdition) return;
+  const bouton = $('pl-m-save');
+  bouton.disabled = true;
+
+  const horaires = $('pl-m-horaires').value.trim();
+  const ferme = !horaires || sansAccentPl(horaires.toLowerCase()).startsWith('ferme');
+  const maj = {
+    horaires: horaires || 'Fermé',
+    ferme,
+    ouverture: null, fermeture: null, duree: null, duree_source: null,
+    equipe: {},
+    maj: Date.now()
+  };
+  if (!ferme) {
+    const b = bornesTextePl(horaires);
+    if (b) {
+      maj.ouverture = b[0];
+      maj.fermeture = b[1];
+      maj.duree = Math.round((b[1] - b[0]) * 100) / 100;
+      maj.duree_source = String(maj.duree).replace('.', ',') + ' h';
+    }
+  }
+  PERSONNES_PLANNING.forEach((p, i) => {
+    const e = lireCasePl($('pl-m-p' + i).value);
+    if (e) maj.equipe[p] = e;
+  });
+
+  try {
+    await updateDoc(doc(db, 'planning', jourEnEdition), maj);
+    const j = joursPlanning.find(x => x.date === jourEnEdition);
+    if (j) Object.assign(j, maj);
+    fermerEditionPlanning();
+    dessinerPlanning();
+    toast('Journée modifiée — elle repartira vers le Drive ce soir.');
+  } catch (e) {
+    console.error(e);
+    toast('Modification impossible : ' + e.message, true);
+  } finally {
+    bouton.disabled = false;
+  }
+});
 
 /* Formate « mis à jour le … » à partir d'un horodatage d'écriture. */
 function texteMaj(dateReleve, ts) {
