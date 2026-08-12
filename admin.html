@@ -245,6 +245,9 @@ label.chk input { width: auto; margin: 0; }
   .pl-modif { width: 100%; margin: 0.8rem 0 0; padding: 0.62rem 0.9rem; font-size: 0.88rem; border: none; background: var(--gold); color: var(--dark-green); box-shadow: 0 1px 5px rgba(0,0,0,0.14); }
   .pl-modif:active { background: #b8933a; }
 }
+.pl-conc-ajout { display: block; width: 100%; margin-top: 0.7rem; border: 1.5px dashed rgba(200,164,72,0.8); background: none; font-family: inherit; font-size: 0.8rem; font-weight: 700; color: var(--gold); border-radius: 50px; padding: 0.5rem 0.9rem; }
+.pl-conc-ajout:active { background: rgba(200,164,72,0.14); }
+#p-concerts .v-kv { cursor: pointer; }
 .pl-moi { font-size: 1.02rem; font-weight: 700; color: var(--dark-green); font-variant-numeric: tabular-nums; margin-top: 0.45rem; }
 .pl-moi.rien { font-size: 0.84rem; font-weight: 400; color: #9a9a9a; }
 .modal textarea { width: 100%; margin-top: 0.3rem; font-size: 0.95rem; padding: 0.55rem 0.75rem; border: 1.5px solid rgba(0,0,0,0.15); border-radius: 10px; background: var(--cream); font-family: 'Lato','Lato repli',sans-serif; resize: vertical; }
@@ -580,6 +583,7 @@ label.chk input { width: auto; margin: 0; }
         <h2>Prochains concerts</h2>
         <div class="sub">Programmation de la saison</div>
         <div id="p-concerts"></div>
+        <button type="button" class="pl-conc-ajout hidden" id="p-conc-ajout">+ Ajouter un concert</button>
       </div>
       <div class="v-maj" id="p-maj"></div>
     </div>
@@ -632,6 +636,33 @@ label.chk input { width: auto; margin: 0; }
 </div>
 
 <!-- ═══ MODIFIER UNE JOURNÉE DU PLANNING ═══ -->
+<!-- ═══ UN CONCERT ═══ -->
+<div id="conc-modal-bg" class="modal-bg hidden">
+  <form class="modal" id="conc-form">
+    <h2 id="conc-titre">Ajouter un concert</h2>
+    <div class="row2">
+      <label>Date *
+        <input type="date" id="conc-date" required>
+      </label>
+      <label>Cachet (€)
+        <input type="number" id="conc-remu" min="0" max="9999" step="10" inputmode="numeric" placeholder="0">
+      </label>
+    </div>
+    <label>Groupe ou artiste *
+      <input type="text" id="conc-groupe" required maxlength="80" placeholder="Yipikiyay">
+    </label>
+    <label>Style
+      <input type="text" id="conc-type" maxlength="60" placeholder="reprises folk, DJ set…">
+    </label>
+    <div class="aide">Le concert repart vers l'onglet « concerts » du Drive à la prochaine synchronisation, et s'affiche sur la journée dans le planning.</div>
+    <div class="modal-actions">
+      <button type="button" class="btn-min hidden" id="conc-suppr">Supprimer</button>
+      <button type="button" class="btn-min" id="conc-fermer">Fermer</button>
+      <button type="submit" class="btn-ok" id="conc-save">Enregistrer</button>
+    </div>
+  </form>
+</div>
+
 <div id="pl-modal-bg" class="modal-bg hidden">
   <form class="modal" id="pl-form">
     <h2 id="pl-m-titre">Modifier la journée</h2>
@@ -1629,10 +1660,13 @@ function dessinerPlanning() {
   }).join('') || '<div class="empty">Aucun jour renseigné cette semaine.</div>';
 
   const aVenir = concertsPlanning.filter(c => c.date >= auj).slice(0, 5);
-  $('p-card-concerts').classList.toggle('hidden', !aVenir.length);
+  /* La carte reste affichee pour la direction meme sans concert a venir :
+     c'est par la qu'on en ajoute un. */
+  $('p-card-concerts').classList.toggle('hidden', !aVenir.length && !peutModifierPlanning);
+  $('p-conc-ajout').classList.toggle('hidden', !peutModifierPlanning);
   $('p-concerts').innerHTML = aVenir.map(c =>
-    `<div class="v-kv"><span>${dateFR(c.date, { weekday: 'long', day: 'numeric', month: 'long' })} — ${esc(c.groupe)} <span class="v-chip">${esc(c.type || '')}</span></span><b>${Number(c.remuneration) ? Number(c.remuneration) + ' €' : '—'}</b></div>`
-  ).join('');
+    `<div class="v-kv" data-conc="${esc(c.date)}"><span>${dateFR(c.date, { weekday: 'long', day: 'numeric', month: 'long' })} — ${esc(c.groupe)} <span class="v-chip">${esc(c.type || '')}</span></span><b>${Number(c.remuneration) ? Number(c.remuneration) + ' €' : '—'}</b></div>`
+  ).join('') || '<div class="sub" style="margin:0">Aucun concert programmé pour l\'instant.</div>';
 }
 
 async function chargerPlanning() {
@@ -1700,6 +1734,74 @@ function fermerEditionPlanning() {
   jourEnEdition = null;
   $('pl-modal-bg').classList.add('hidden');
 }
+
+/* ─── Les concerts ───
+   La liste vit dans planning_meta/concerts ; la synchronisation la recopie
+   dans l'onglet « concerts » du Drive, et inversement. */
+let concertEnEdition = null;   /* la date d'origine, ou null pour un ajout */
+
+function ouvrirConcert(date) {
+  const c = date ? concertsPlanning.find(x => x.date === date) : null;
+  concertEnEdition = c ? c.date : null;
+  $('conc-titre').textContent = c ? 'Modifier le concert' : 'Ajouter un concert';
+  $('conc-date').value   = c ? c.date : '';
+  $('conc-groupe').value = c ? (c.groupe || '') : '';
+  $('conc-type').value   = c ? (c.type || '') : '';
+  $('conc-remu').value   = c && Number(c.remuneration) ? Number(c.remuneration) : '';
+  $('conc-suppr').classList.toggle('hidden', !c);
+  $('conc-modal-bg').classList.remove('hidden');
+}
+
+function fermerConcert() {
+  concertEnEdition = null;
+  $('conc-modal-bg').classList.add('hidden');
+}
+
+async function enregistrerConcerts(liste, message) {
+  liste.sort((a, b) => a.date.localeCompare(b.date));
+  await setDoc(doc(db, 'planning_meta', 'concerts'),
+               { liste, maj: Date.now() }, { merge: true });
+  concertsPlanning = liste;
+  fermerConcert();
+  dessinerPlanning();
+  toast(message);
+}
+
+$('p-conc-ajout').addEventListener('click', () => ouvrirConcert(null));
+$('p-concerts').addEventListener('click', ev => {
+  if (!peutModifierPlanning) return;
+  const l = ev.target.closest('[data-conc]');
+  if (l) ouvrirConcert(l.dataset.conc);
+});
+$('conc-fermer').addEventListener('click', fermerConcert);
+$('conc-modal-bg').addEventListener('click', ev => { if (ev.target === $('conc-modal-bg')) fermerConcert(); });
+
+$('conc-suppr').addEventListener('click', async () => {
+  if (!concertEnEdition) return;
+  const liste = concertsPlanning.filter(c => c.date !== concertEnEdition);
+  try { await enregistrerConcerts(liste, 'Concert supprimé.'); }
+  catch (e) { toast('Suppression impossible : ' + e.message, true); }
+});
+
+$('conc-form').addEventListener('submit', async ev => {
+  ev.preventDefault();
+  const date = $('conc-date').value;
+  const groupe = $('conc-groupe').value.trim();
+  if (!date || !groupe) return;
+  const nouveau = {
+    date, groupe,
+    type: $('conc-type').value.trim(),
+    remuneration: Number($('conc-remu').value) || 0
+  };
+  /* Une seule affiche par soir : on remplace ce qui occupait la date. */
+  const liste = concertsPlanning
+    .filter(c => c.date !== concertEnEdition && c.date !== date)
+    .concat([nouveau]);
+  $('conc-save').disabled = true;
+  try { await enregistrerConcerts(liste, 'Concert enregistré — il repartira vers le Drive ce soir.'); }
+  catch (e) { console.error(e); toast('Enregistrement impossible : ' + e.message, true); }
+  finally { $('conc-save').disabled = false; }
+});
 
 $('pl-m-fermer').addEventListener('click', fermerEditionPlanning);
 $('pl-modal-bg').addEventListener('click', ev => { if (ev.target === $('pl-modal-bg')) fermerEditionPlanning(); });

@@ -300,32 +300,107 @@ if (conflits.length) {
   await lot.commit();
 }
 
-/* ── Les concerts, dans un seul sens (le tableau fait foi) ────────── */
+/* ── Les concerts, eux aussi dans les deux sens ───────────────────────
+   L'onglet « concerts » : colonne C le groupe, D le style, E la date,
+   F le cachet. Les lignes sans vraie date (« Option jeudi 17 ou 24 ») sont
+   conservees telles quelles, on ne fait que les recopier plus bas. */
 try {
-  const c = await feuilles.spreadsheets.values.get({
-    spreadsheetId: CLASSEUR, range: 'concerts!A1:F80', valueRenderOption: 'UNFORMATTED_VALUE'
+  const repC = await feuilles.spreadsheets.values.get({
+    spreadsheetId: CLASSEUR, range: 'concerts!A1:F200', valueRenderOption: 'UNFORMATTED_VALUE'
   });
-  const brut = (c.data.values || []).slice(1);
-  const serie = brut.map(l => {
-    /* les colonnes utiles commencent en C */
-    const [groupe, type, date, remuneration] = [l[2], l[3], l[4], l[5]];
-    if (!groupe || typeof date !== 'number') return null;   /* « Option jeudi 17 ou 24 » */
-    /* Le serial Sheets compte les jours depuis le 30/12/1899. */
-    const d = new Date(Date.UTC(1899, 11, 30) + Math.round(date) * 86400000);
-    return {
-      groupe: String(groupe).trim(),
-      type: String(type || '').trim(),
-      date: d.toISOString().slice(0, 10),
-      remuneration: Number(remuneration) || 0
+  const brut = (repC.data.values || []).slice(1);
+
+  const dates = [], autres = [];
+  for (const l of brut) {
+    const [groupe, type, date, remu] = [l[2], l[3], l[4], l[5]];
+    if (!groupe && !type && !date) continue;
+    if (typeof date === 'number') {
+      /* Le serial Sheets compte les jours depuis le 30/12/1899. */
+      const d = new Date(Date.UTC(1899, 11, 30) + Math.round(date) * 86400000);
+      dates.push({
+        groupe: String(groupe || '').trim(),
+        type: String(type || '').trim(),
+        date: d.toISOString().slice(0, 10),
+        remuneration: Number(remu) || 0
+      });
+    } else {
+      autres.push([groupe, type, date, remu].map(x => x == null ? '' : x));
+    }
+  }
+  const parDate   = l => [...l].sort((x, y) => x.date.localeCompare(y.date));
+  const signature = l => parDate(l)
+    .map(c => `${c.date}|${c.groupe}|${c.type}|${c.remuneration}`).join('#');
+
+  const serieDrive = parDate(dates);
+  const ref  = db.collection('planning_meta').doc('concerts');
+  const snap = await ref.get();
+  const a    = snap.exists ? snap.data() : {};
+
+  const empDrive   = signature(serieDrive);
+  const jamais     = !a.sync;
+  const driveBouge = jamais || a.sync.empreinte !== empDrive;
+  const outilBouge = !jamais && Number(a.maj || 0) > Number(a.sync.le || 0);
+
+  let serie = serieDrive;
+
+  if (outilBouge) {
+    /* L'outil a la main : on reecrit l'onglet a partir de la base. */
+    serie = parDate(a.liste || []);
+    const texte = v => {
+      const t = String(v == null ? '' : v);
+      return t.startsWith('=') ? "'" + t : t;   /* jamais une formule par accident */
     };
-  }).filter(Boolean).sort((x, y) => x.date.localeCompare(y.date));
-  if (serie.length) {
-    await db.collection('planning_meta').doc('concerts')
-      .set({ liste: serie, maj: maintenant }, { merge: true });
-    console.log(`Concerts : ${serie.length} dates.`);
+    const lignes = serie.map(c => [texte(c.groupe), texte(c.type), c.date, c.remuneration || 0])
+      .concat(autres);
+    /* On efface ce qui depassait de l'ancienne liste. */
+    const aEffacer = Math.max(0, brut.length - lignes.length);
+    for (let i = 0; i < aEffacer; i++) lignes.push(['', '', '', '']);
+    if (lignes.length) {
+      await feuilles.spreadsheets.values.update({
+        spreadsheetId: CLASSEUR,
+        range: `concerts!C2:F${1 + lignes.length}`,
+        valueInputOption: 'USER_ENTERED',
+        requestBody: { values: lignes }
+      });
+    }
+    await ref.set({ sync: { empreinte: signature(serie), le: maintenant, sens: 'outil' } },
+                  { merge: true });
+    console.log(`Concerts : ${serie.length} dates renvoyees vers le tableau.`);
+  } else if (driveBouge) {
+    await ref.set({ liste: serieDrive, maj: maintenant,
+                    sync: { empreinte: empDrive, le: maintenant, sens: 'drive' } },
+                  { merge: true });
+    console.log(`Concerts : ${serieDrive.length} dates reprises du tableau.`);
+  } else {
+    console.log('Concerts : rien a mettre a jour.');
+  }
+
+  /* Chaque concert s'accroche a sa journee, pour s'afficher sur la carte du
+     jour. Une date qui n'a plus de concert perd son etiquette. */
+  const carte = new Map(serie.map(c => [c.date, c]));
+  const lotC = db.batch();
+  let poses = 0, retires = 0;
+  for (const [date] of cote) {
+    const j = enBase.get(date) || {};
+    const c = carte.get(date);
+    const identique = j.concert && c && j.concert.groupe === c.groupe
+      && j.concert.type === c.type && Number(j.concert.remuneration) === Number(c.remuneration);
+    if (c && !identique) {
+      lotC.set(db.collection('planning').doc(date), { concert: c }, { merge: true });
+      poses++;
+    } else if (!c && j.concert) {
+      lotC.set(db.collection('planning').doc(date),
+               { concert: admin.firestore.FieldValue.delete() }, { merge: true });
+      retires++;
+    }
+  }
+  if (poses || retires) {
+    await lotC.commit();
+    console.log(`Concerts accroches aux journees : ${poses} pose(s), ${retires} retire(s).`);
   }
 } catch (e) {
-  console.log('Concerts : onglet illisible, ignore. ' + e.message);
+  console.log('Concerts : onglet illisible ou refus d ecriture, ignore. ' + e.message);
+  process.exitCode = 1;
 }
 
 console.log('Synchronisation terminee.');
