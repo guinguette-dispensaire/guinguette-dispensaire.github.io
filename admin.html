@@ -2215,29 +2215,33 @@ async function blocConsolide(jours) {
      commandes, qui ne porte ni HT ni TVA. Tant que le compte n'y est pas, on
      prend le total de saison relevé sur le mix produit — un vrai chiffre
      Flatpay — plutôt qu'une somme partielle qui aurait l'air d'un total. */
-  const ht = somme(jours, 'ca_ht');
-  let htTotal, htDetail;
-  if (ht.complet) {
-    htTotal = ht.total;
-    htDetail = jours.length + ' journées relevées';
-  } else {
-    let saison = null;
-    try { const d = await getDoc(doc(db, 'ventes_meta', 'saison')); if (d.exists()) saison = d.data(); } catch {}
-    if (saison && saison.ca_ht) {
-      htTotal = Number(saison.ca_ht);
-      htDetail = 'relevé de saison Flatpay' + (saison.fin ? ', arrêté au ' + dateFR(saison.fin, { day:'numeric', month:'long' }) : '')
-               + ' — le détail HT manque sur ' + (jours.length - ht.n) + ' journées';
-    } else {
-      htTotal = ht.total;
-      htDetail = ht.n + ' journées sur ' + jours.length + ' — total partiel';
-    }
+  /* Le hors-taxe se reconstitue journee par journee, dans cet ordre :
+     le HT du rapport quand il est la ; sinon l'encaisse moins la TVA du jour ;
+     sinon, en dernier recours, le taux moyen constate sur les journees connues.
+     On ne se rabat plus sur le total de saison du mix produit : il vient d'une
+     page capricieuse, et un chiffre fige au 8 aout finit par etre lu comme s'il
+     etait a jour. Ce qui est estime reste dit. */
+  let htSur = 0, htEstime = 0, joursEstimes = 0, caNetSur = 0, caNetEstime = 0;
+  for (const j of jours) {
+    const net = Number(j.ca_net) || 0;
+    if (typeof j.ca_ht === 'number')      { htSur += j.ca_ht;       caNetSur += net; }
+    else if (typeof j.tva === 'number')   { htSur += net - j.tva;   caNetSur += net; }
+    else                                  { caNetEstime += net; joursEstimes++; }
   }
+  const tauxHT = caNetSur > 0 ? htSur / caNetSur : 0;
+  htEstime = Math.round(caNetEstime * tauxHT);
+  const htTotal = htSur + htEstime;
+  const htDetail = joursEstimes
+    ? eur0(htSur) + ' relevés sur ' + (jours.length - joursEstimes) + ' journées'
+      + '<br><span class="estime">+ ' + eur0(htEstime) + ' estimés sur ' + joursEstimes
+      + ' journées sans détail de TVA, au taux de ' + (tauxHT * 100).toFixed(1).replace('.', ',') + ' % du net</span>'
+    : jours.length + ' journées relevées';
   especesAuto = especesRelevees + estimees;
   if (!especesManuelLu) await relireEspecesManuel();
   const especes = especesManuel ? Number(especesManuel.total) : especesAuto;
 
   $('v-c-ht').textContent = eur0(htTotal);
-  $('v-c-ht-d').textContent = htDetail;
+  $('v-c-ht-d').innerHTML = htDetail;
 
   $('v-esp-corr').classList.toggle('hidden', !estAdmin);
   $('v-c-esp').textContent = eur0(especes);
