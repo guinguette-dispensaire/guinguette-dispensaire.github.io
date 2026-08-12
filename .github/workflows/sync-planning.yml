@@ -1,19 +1,17 @@
 name: Synchronisation du planning
 
-# Le planning et les concerts, dans les deux sens, toutes les quinze minutes.
+# Le planning et les concerts, dans les deux sens, quatre fois par jour.
 #
-# La remontee des ventes, elle, ne passe qu'a 22h et 7h : c'est une grosse
-# machine, elle installe un navigateur. Celle-ci est legere — deux lectures et,
-# la plupart du temps, rien a ecrire — donc elle peut tourner souvent.
+# Les heures sont calees sur la journee de la guinguette : 7h avant l'ouverture,
+# 13h, 19h avant le coup de feu, 23h a la fermeture. GitHub ne connait que
+# l'UTC — en heure d'ete Paris est a UTC+2, d'ou 5h, 11h, 17h et 21h.
 #
-# GitHub ne garantit pas la minute : un passage programme peut etre retarde
-# quand ses machines sont chargees. Compter « dans le quart d'heure » en
-# general, une demi-heure les mauvais jours. Le bouton « Run workflow » sert
-# quand on ne veut pas attendre.
+# Pour ne pas attendre le prochain passage, le bouton « Run workflow » de cette
+# page declenche la synchronisation sur-le-champ.
 
 on:
   schedule:
-    - cron: '*/15 * * * *'
+    - cron: '0 5,11,17,21 * * *'
   workflow_dispatch:
 
 # Deux synchronisations en meme temps ecriraient dans le meme tableau. On n'en

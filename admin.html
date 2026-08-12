@@ -1686,7 +1686,10 @@ function dessinerPlanning() {
     </div>`;
   }).join('') || '<div class="empty">Aucun jour renseigné cette semaine.</div>';
 
-  const aVenir = concertsPlanning.filter(c => c.date >= auj).slice(0, 5);
+  /* Tous les concerts a venir, pas les cinq premiers : celui qu'on vient
+     d'ajouter tombait souvent au-dela de la coupe, et on croyait la saisie
+     perdue. */
+  const aVenir = concertsPlanning.filter(c => c.date >= auj);
   /* La carte reste affichee pour la direction meme sans concert a venir :
      c'est par la qu'on en ajoute un. */
   $('p-card-concerts').classList.toggle('hidden', !aVenir.length && !peutModifierPlanning);
