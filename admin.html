@@ -2193,14 +2193,22 @@ async function blocConsolide(jours) {
   if (premiereLecture && jourAffiche) blocJour(jourAffiche);
   const especesParJour = Object.fromEntries(releve);
 
-  let cbDocumente = 0, especesRelevees = 0, cbSansEspeces = 0, joursSansEspeces = 0;
+  /* Tout ce qui est entré dans la Caisse compte, y compris les journées que la
+     remontée Flatpay ne connaît pas encore — celle du jour, ou les journées
+     écartées parce que le tiroir est resté ouvert plusieurs jours. Le taux, lui,
+     ne se calcule que sur les journées où l'on a les deux : le cash ET la carte.
+     Sans quoi une recette isolée ferait exploser l'estimation. */
+  let especesRelevees = 0;
+  for (const v of releve.values()) especesRelevees += Number(v) || 0;
+
+  let cbDocumente = 0, especesAppariees = 0, cbSansEspeces = 0, joursSansEspeces = 0;
   for (const j of jours) {
     const cb = Number(j.ca_net) || 0;
-    if (especesParJour[j.date] !== undefined) { cbDocumente += cb; especesRelevees += especesParJour[j.date]; }
+    if (especesParJour[j.date] !== undefined) { cbDocumente += cb; especesAppariees += especesParJour[j.date]; }
     else { cbSansEspeces += cb; joursSansEspeces++; }
   }
 
-  const taux = cbDocumente > 0 ? especesRelevees / cbDocumente : 0;
+  const taux = cbDocumente > 0 ? especesAppariees / cbDocumente : 0;
   const estimees = Math.round(cbSansEspeces * taux);
   /* Le HT ne figure que sur les journées passées par les rapports de fin de
      journée. Les 51 journées du premier import venaient du journal des
@@ -2237,10 +2245,10 @@ async function blocConsolide(jours) {
     ? 'montant saisi à la main' + (especesManuel.le ? ' le ' + dateFR(new Date(Number(especesManuel.le)).toISOString().slice(0,10), { day:'numeric', month:'long' }) : '')
       + '<br><span class="estime">le calcul automatique donnait ' + eur0(especesAuto) + '</span>'
     : (estimees
-      ? eur0(especesRelevees) + ' comptés sur ' + (jours.length - joursSansEspeces) + ' journées'
+      ? eur0(especesRelevees) + ' comptés dans la Caisse sur ' + releve.size + ' journées'
         + '<br><span class="estime">+ ' + eur0(estimees) + ' estimés sur ' + joursSansEspeces
         + ' journées sans relevé, au taux de ' + (taux * 100).toFixed(1).replace('.', ',') + ' % du CB constaté</span>'
-      : 'toutes les journées relevées');
+      : eur0(especesRelevees) + ' comptés dans la Caisse — toutes les journées relevées');
 
   $('v-c-tot').textContent = eur0(htTotal + especes);
   $('v-c-tot-d').textContent = especesManuel
