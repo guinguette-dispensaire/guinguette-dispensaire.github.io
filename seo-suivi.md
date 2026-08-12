@@ -282,6 +282,12 @@ Google a déployé la **programmation native des posts en novembre 2025** (bouto
 
 **Et une correction de plus au kit** : il annonçait « 0 post publié ». **Faux** — la fiche en avait déjà deux, vieux de deux mois (concert Burning Legs, ouverture de la saison), tous deux avec photo. Le chiffre venait de l'analyse du 26 juillet et avait été repris sans vérification. C'est le quatrième constat de cette fiche repris d'une source antérieure sans contrôle direct, après la livraison, le lien de réservation et les questions/réponses. **Aucun chiffre concernant cette fiche ne doit plus être réutilisé sans avoir été revu à l'écran.**
 
+### Deuxième mail Search Console (8 août) — « échec de validation » : rien à corriger non plus
+
+Le mail « Échec de certaines corrections » porte sur le motif **« Autre page avec balise canonique correcte »** (validation lancée le 3 août, échec le 8). Les deux URL concernées, lues dans le rapport : **`https://…/index.html`** (doublon de l'accueil, dont le canonical pointe vers `/`) et **`http://…/menu.html`** (variante non sécurisée, canonical vers la version `https`). Dans les deux cas, la page canonique est **indexée** et le doublon est correctement écarté — c'est précisément ce que dit le nom du motif : « balise canonique **correcte** ».
+
+L'« échec » signifie seulement que ces statuts ne disparaîtront pas : ce ne sont pas des erreurs, la validation n'aurait pas dû être demandée sur ce motif. Aucune action. Leçon à retenir : **ne plus lancer de « valider la correction » sur les motifs sains** (canonique correcte, page avec redirection) — chaque validation relancée produira un mail d'échec anxiogène pour rien.
+
 ### Alerte Search Console du 5 août — fausse alerte, et une très bonne nouvelle (5 août)
 
 Le mail « De nouvelles raisons empêchent l'indexation » signale un nouveau motif : **« Page avec redirection », 1 page**. Vérification dans le rapport : l'URL concernée est **`http://laguinguettedudispensaire.fr/`** — la version non sécurisée de l'accueil, explorée le 5 août, qui renvoie en 301 vers `https://`. **C'est exactement le comportement attendu** : la redirection HTTP → HTTPS est celle qu'on veut, la version `https://` est indexée. Aucune correction à faire, aucune validation à lancer — ce motif restera listé tant que Google explorera l'URL http, et c'est normal.
