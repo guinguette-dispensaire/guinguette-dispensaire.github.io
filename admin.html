@@ -245,6 +245,8 @@ label.chk input { width: auto; margin: 0; }
   .pl-modif { width: 100%; margin: 0.8rem 0 0; padding: 0.62rem 0.9rem; font-size: 0.88rem; border: none; background: var(--gold); color: var(--dark-green); box-shadow: 0 1px 5px rgba(0,0,0,0.14); }
   .pl-modif:active { background: #b8933a; }
 }
+.v-esp-corr { margin-top: 0.45rem; border: 1.5px solid rgba(200,164,72,0.7); background: none; font-family: inherit; font-size: 0.7rem; font-weight: 700; color: var(--gold); border-radius: 50px; padding: 0.22rem 0.7rem; }
+.v-esp-corr:active { background: rgba(200,164,72,0.16); }
 .pl-conc-ajout { display: block; width: 100%; margin-top: 0.7rem; border: 1.5px dashed rgba(200,164,72,0.8); background: none; font-family: inherit; font-size: 0.8rem; font-weight: 700; color: var(--gold); border-radius: 50px; padding: 0.5rem 0.9rem; }
 .pl-conc-ajout:active { background: rgba(200,164,72,0.14); }
 #p-concerts .v-kv { cursor: pointer; }
@@ -394,6 +396,7 @@ label.chk input { width: auto; margin: 0; }
           <div class="l">Espèces consolidées</div>
           <div class="n" id="v-c-esp">–</div>
           <div class="d" id="v-c-esp-d"></div>
+          <button type="button" class="v-esp-corr hidden" id="v-esp-corr">corriger à la main</button>
         </div>
         <div class="v-conso-c total">
           <div class="l">Chiffre d'affaires TTC</div>
@@ -636,6 +639,22 @@ label.chk input { width: auto; margin: 0; }
 </div>
 
 <!-- ═══ MODIFIER UNE JOURNÉE DU PLANNING ═══ -->
+<!-- ═══ CORRIGER LE TOTAL DES ESPÈCES ═══ -->
+<div id="esp-modal-bg" class="modal-bg hidden">
+  <form class="modal" id="esp-form">
+    <h2>Total des espèces de la saison</h2>
+    <div class="aide" id="esp-calcule"></div>
+    <label>Montant réel encaissé en espèces (€)
+      <input type="number" id="esp-montant" min="0" max="999999" step="1" inputmode="decimal">
+    </label>
+    <div class="aide">Ce montant remplace le calcul automatique dans l'en-tête des ventes. Laisse le champ vide et enregistre pour revenir au calcul.</div>
+    <div class="modal-actions">
+      <button type="button" class="btn-min" id="esp-fermer">Fermer</button>
+      <button type="submit" class="btn-ok" id="esp-save">Enregistrer</button>
+    </div>
+  </form>
+</div>
+
 <!-- ═══ UN CONCERT ═══ -->
 <div id="conc-modal-bg" class="modal-bg hidden">
   <form class="modal" id="conc-form">
@@ -685,7 +704,7 @@ label.chk input { width: auto; margin: 0; }
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendSignInLinkToEmail, isSignInWithEmailLink, signInWithEmailLink } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getFirestore, collection, addDoc, setDoc, query, orderBy, onSnapshot, doc, updateDoc, deleteDoc, serverTimestamp, getDoc, getDocs, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, collection, addDoc, setDoc, query, orderBy, onSnapshot, doc, updateDoc, deleteDoc, deleteField, serverTimestamp, getDoc, getDocs, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { firebaseConfig } from "./firebase-config.js";
 
 /* ═══════════════════════════════════════════════════════
@@ -856,6 +875,7 @@ onAuthStateChanged(auth, user => {
     const courriel = (user.email || '').toLowerCase();
     const proprietaire = COMPTES_DIRECTION.includes(courriel);
     const administrateur = courriel === COMPTE_ADMIN;
+    estAdmin = administrateur;
 
     /* Le planning : on ne propose « mon planning » qu'aux comptes qui
        correspondent à quelqu'un du tableau. */
@@ -1767,6 +1787,47 @@ async function enregistrerConcerts(liste, message) {
   toast(message);
 }
 
+/* ─── Corriger le total des espèces (administrateur seulement) ─── */
+$('v-esp-corr').addEventListener('click', () => {
+  $('esp-calcule').textContent = especesAuto != null
+    ? 'Le calcul automatique donne ' + eur0(especesAuto) + '.'
+    : '';
+  $('esp-montant').value = especesManuel ? Number(especesManuel.total) : '';
+  $('esp-modal-bg').classList.remove('hidden');
+  $('esp-montant').focus();
+});
+$('esp-fermer').addEventListener('click', () => $('esp-modal-bg').classList.add('hidden'));
+$('esp-modal-bg').addEventListener('click', ev => { if (ev.target === $('esp-modal-bg')) $('esp-modal-bg').classList.add('hidden'); });
+
+$('esp-form').addEventListener('submit', async ev => {
+  ev.preventDefault();
+  const brut = $('esp-montant').value.trim();
+  const montant = brut === '' ? null : Number(brut);
+  if (montant !== null && !(montant >= 0)) return;
+  $('esp-save').disabled = true;
+  try {
+    if (montant === null) {
+      await setDoc(doc(db, 'ventes_meta', 'especes'),
+                   { total: deleteField(), le: Date.now(), par: (auth.currentUser || {}).email || '' },
+                   { merge: true });
+      especesManuel = null;
+      toast('Retour au calcul automatique.');
+    } else {
+      await setDoc(doc(db, 'ventes_meta', 'especes'),
+                   { total: montant, le: Date.now(), par: (auth.currentUser || {}).email || '' },
+                   { merge: true });
+      especesManuel = { total: montant, le: Date.now() };
+      toast('Total des espèces enregistré.');
+    }
+    especesManuelLu = true;
+    $('esp-modal-bg').classList.add('hidden');
+    chargerVentes();
+  } catch (e) {
+    console.error(e);
+    toast('Enregistrement impossible : ' + e.message, true);
+  } finally { $('esp-save').disabled = false; }
+});
+
 $('p-conc-ajout').addEventListener('click', () => ouvrirConcert(null));
 $('p-concerts').addEventListener('click', ev => {
   if (!peutModifierPlanning) return;
@@ -2014,6 +2075,22 @@ function tableauTop(s) {
    Le vrai cash est saisi a la main dans l'onglet Caisse. On le relit une fois
    et on s'en sert partout ou une journee montre ses encaissements. */
 let especesCaisse = null;   /* Map date -> montant encaisse en especes */
+let estAdmin = false;
+/* Correction manuelle du total des especes de la saison. Le calcul automatique
+   estime les journees non saisies ; quand Thomas connait le vrai total, il le
+   pose ici et c'est lui qui fait foi. */
+let especesManuel = null;   /* { total, le, par } ou null */
+let especesManuelLu = false;
+let especesAuto   = null;   /* ce que le calcul aurait donne, pour l'afficher */
+
+async function relireEspecesManuel() {
+  try {
+    const d = await getDoc(doc(db, 'ventes_meta', 'especes'));
+    especesManuel = (d.exists() && typeof d.data().total === 'number') ? d.data() : null;
+  } catch { especesManuel = null; }
+  especesManuelLu = true;
+  return especesManuel;
+}
 
 async function relireEspecesCaisse() {
   const m = new Map();
@@ -2147,22 +2224,28 @@ async function blocConsolide(jours) {
       htDetail = ht.n + ' journées sur ' + jours.length + ' — total partiel';
     }
   }
-  const especes = especesRelevees + estimees;
+  especesAuto = especesRelevees + estimees;
+  if (!especesManuelLu) await relireEspecesManuel();
+  const especes = especesManuel ? Number(especesManuel.total) : especesAuto;
 
   $('v-c-ht').textContent = eur0(htTotal);
   $('v-c-ht-d').textContent = htDetail;
 
+  $('v-esp-corr').classList.toggle('hidden', !estAdmin);
   $('v-c-esp').textContent = eur0(especes);
-  $('v-c-esp-d').innerHTML = estimees
-    ? eur0(especesRelevees) + ' comptés sur ' + (jours.length - joursSansEspeces) + ' journées'
-      + '<br><span class="estime">+ ' + eur0(estimees) + ' estimés sur ' + joursSansEspeces
-      + ' journées sans relevé, au taux de ' + (taux * 100).toFixed(1).replace('.', ',') + ' % du CB constaté</span>'
-    : 'toutes les journées relevées';
+  $('v-c-esp-d').innerHTML = especesManuel
+    ? 'montant saisi à la main' + (especesManuel.le ? ' le ' + dateFR(new Date(Number(especesManuel.le)).toISOString().slice(0,10), { day:'numeric', month:'long' }) : '')
+      + '<br><span class="estime">le calcul automatique donnait ' + eur0(especesAuto) + '</span>'
+    : (estimees
+      ? eur0(especesRelevees) + ' comptés sur ' + (jours.length - joursSansEspeces) + ' journées'
+        + '<br><span class="estime">+ ' + eur0(estimees) + ' estimés sur ' + joursSansEspeces
+        + ' journées sans relevé, au taux de ' + (taux * 100).toFixed(1).replace('.', ',') + ' % du CB constaté</span>'
+      : 'toutes les journées relevées');
 
   $('v-c-tot').textContent = eur0(htTotal + especes);
-  $('v-c-tot-d').textContent = estimees
-    ? 'dont ' + eur0(estimees) + ' estimés — HT + espèces TTC'
-    : 'HT + espèces';
+  $('v-c-tot-d').textContent = especesManuel
+    ? 'espèces saisies à la main — HT + espèces TTC'
+    : (estimees ? 'dont ' + eur0(estimees) + ' estimés — HT + espèces TTC' : 'HT + espèces');
 }
 
 function blocSaison(s, jours) {

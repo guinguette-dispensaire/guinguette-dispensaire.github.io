@@ -149,14 +149,37 @@ async function lireMixProduit(page) {
   }
   if (!await tableauRempli()) throw new Error("page 'ventes par produit' vide apres trois tentatives");
 
-  const lignes = await page.evaluate(() => {
+  /* Les colonnes se lisent par leur intitule. Flatpay les a deja deplacees une
+     fois — en aout 2026 le tableau est devenu
+     « Produit | Categorie | Ventes | Remise | Total », et la lecture par
+     position rangeait la remise dans les unites et laissait passer des prix de
+     carte en guise de chiffre d'affaires. Si un intitule manque, on s'arrete :
+     mieux vaut un mix perime qu'un mix faux. */
+  const lu = await page.evaluate(() => {
     const n = t => { const m = String(t||'').replace(/\s| /g,'').match(/-?\d+(?:[.,]\d+)?/); return m ? parseFloat(m[0].replace(',','.')) : 0; };
-    return [...document.querySelectorAll('tbody tr')].map(tr => {
+    const tbl = document.querySelector('table');
+    if (!tbl) return { entetes: [], lignes: [] };
+    const th = [...tbl.querySelectorAll('thead th')].map(h => h.innerText.trim().toLowerCase());
+    const col = re => th.findIndex(h => re.test(h));
+    const iNom = col(/produit|article/), iCat = col(/cat[ée]gorie/);
+    const iQte = col(/^ventes$|quantit|unit/), iCa = col(/^total$|chiffre|montant/);
+    const lignes = [...tbl.querySelectorAll('tbody tr')].map(tr => {
       const c = [...tr.querySelectorAll('td')].map(td => td.innerText.trim());
-      return c.length < 3 ? null : { nom: c[0], categorie: c[1] || '', unites: n(c[c.length-2]), ca: n(c[c.length-1]) };
+      if (c.length < 3) return null;
+      return {
+        nom: c[iNom >= 0 ? iNom : 0] || '',
+        categorie: iCat >= 0 ? (c[iCat] || '') : '',
+        unites: iQte >= 0 ? n(c[iQte]) : 0,
+        ca: iCa >= 0 ? n(c[iCa]) : 0
+      };
     }).filter(Boolean);
+    return { entetes: th, manque: { qte: iQte < 0, ca: iCa < 0 }, lignes };
   });
+  if (lu.manque && (lu.manque.qte || lu.manque.ca))
+    throw new Error(`colonnes du tableau non reconnues : ${lu.entetes.join(' | ')}`);
+  const lignes = lu.lignes;
   if (!lignes.length) throw new Error("aucune ligne de produit lue");
+  console.log(`  colonnes lues : ${lu.entetes.join(' | ')}`);
 
   const parCategorie = {};
   for (const l of lignes) {
@@ -313,6 +336,19 @@ async function lireMixProduit(page) {
     /* Mix produit — isole : son echec ne doit pas emporter les journees. */
     try {
       const mix = await lireMixProduit(page);
+
+      /* Garde-fou. Le tableau de Flatpay s'ouvre sur la journee du jour et
+         garde un filtre de categories : sans y toucher on lit une poignee
+         d'euros et on les ecrit comme s'ils etaient la saison. Si le total des
+         produits ne pese pas au moins la moitie de ce que la caisse a encaisse,
+         on refuse d'ecrire. */
+      const totalMix = (mix.categories || []).reduce((t, c) => t + (Number(c.ca) || 0), 0);
+      let caEncaisse = 0;
+      (await db.collection('ventes').get()).forEach(d => caEncaisse += Number(d.data().ca_net) || 0);
+      if (caEncaisse > 0 && totalMix < caEncaisse * 0.5)
+        throw new Error(`mix incoherent : ${Math.round(totalMix)} EUR de produits contre `
+          + `${Math.round(caEncaisse)} EUR encaisses — periode ou filtre de categories mal poses`);
+
       const { totauxLus, ...aEcrire } = mix;
       // "fin" date les MONTANTS, pas le mix. On ne l'avance que si les totaux
       // ont ete relus : sinon la page afficherait une date fraiche a cote de
