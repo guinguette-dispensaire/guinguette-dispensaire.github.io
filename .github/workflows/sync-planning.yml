@@ -1,0 +1,42 @@
+name: Synchronisation du planning
+
+# Le planning et les concerts, dans les deux sens, toutes les quinze minutes.
+#
+# La remontee des ventes, elle, ne passe qu'a 22h et 7h : c'est une grosse
+# machine, elle installe un navigateur. Celle-ci est legere — deux lectures et,
+# la plupart du temps, rien a ecrire — donc elle peut tourner souvent.
+#
+# GitHub ne garantit pas la minute : un passage programme peut etre retarde
+# quand ses machines sont chargees. Compter « dans le quart d'heure » en
+# general, une demi-heure les mauvais jours. Le bouton « Run workflow » sert
+# quand on ne veut pas attendre.
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+
+# Deux synchronisations en meme temps ecriraient dans le meme tableau. On n'en
+# laisse passer qu'une a la fois ; celle qui arrive pendant attend son tour.
+concurrency:
+  group: planning
+  cancel-in-progress: false
+
+jobs:
+  planning:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Installer les dependances
+        run: npm install --no-audit --no-fund firebase-admin googleapis
+
+      - name: Synchroniser
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: node outils/sync-planning.mjs
