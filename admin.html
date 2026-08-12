@@ -2029,7 +2029,10 @@ async function relireEspecesCaisse() {
   return m;
 }
 
+let jourAffiche = null;   /* la journee montree par la carte du bas */
+
 function blocJour(j) {
+  jourAffiche = j;
   $('v-jour-sub').textContent = dateFR(j.date) + (j.ouverture ? ` · ${j.ouverture} → ${j.fermeture||''}` : '');
   const a = Number(j.tva20_ttc) || 0, b = Number(j.tva10_ttc) || 0, tot = a + b;
   const svg = $('v-ch-tva'); svg.innerHTML = '';
@@ -2105,8 +2108,12 @@ async function blocConsolide(jours) {
   jours = jours || [];
   if (!jours.length) return;
 
+  const premiereLecture = !especesCaisse;
   const releve = especesCaisse || await relireEspecesCaisse();
   if (!releve) return;   // lecture refusée : on n'affiche rien plutôt qu'un faux
+  /* La carte du jour a ete dessinee avant qu'on connaisse le tiroir : on la
+     refait maintenant, sinon elle resterait sur « non saisies ». */
+  if (premiereLecture && jourAffiche) blocJour(jourAffiche);
   const especesParJour = Object.fromEntries(releve);
 
   let cbDocumente = 0, especesRelevees = 0, cbSansEspeces = 0, joursSansEspeces = 0;
@@ -2194,11 +2201,7 @@ function blocSaison(s, jours) {
   if (t)      bouts.push(t.toLocaleString('fr-FR') + ' tickets');
   if (t && ca) bouts.push('panier moyen ' + eur(ca / t));
   $('v-saison-sub').textContent = bouts.filter(Boolean).join(' · ');
-  if (!especesCaisse) {
-    relireEspecesCaisse().then(m => { if (m) dessinerVentes(); });
-  } else {
-    blocConsolide(jours);
-  }
+  blocConsolide(jours);
 }
 
 document.querySelectorAll('#v-bascule button').forEach(b =>
