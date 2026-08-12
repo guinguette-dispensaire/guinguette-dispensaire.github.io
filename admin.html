@@ -1907,6 +1907,26 @@ function tableauTop(s) {
          <td class="n">${pct((p.ca||0)/total*100)}</td></tr>`).join('');
 }
 
+/* ─── Le tiroir ───
+   Flatpay ne voit que la carte : sa colonne « especes » est toujours a zero.
+   Le vrai cash est saisi a la main dans l'onglet Caisse. On le relit une fois
+   et on s'en sert partout ou une journee montre ses encaissements. */
+let especesCaisse = null;   /* Map date -> montant encaisse en especes */
+
+async function relireEspecesCaisse() {
+  const m = new Map();
+  try {
+    const snap = await getDocs(collection(db, 'caisse'));
+    snap.forEach(d => {
+      const x = d.data();
+      if (x.sens === 'depense') return;
+      m.set(x.date, (m.get(x.date) || 0) + (Number(x.montant) || 0));
+    });
+  } catch { return null; }   /* lecture refusee : on n'invente pas un zero */
+  especesCaisse = m;
+  return m;
+}
+
 function blocJour(j) {
   $('v-jour-sub').textContent = dateFR(j.date) + (j.ouverture ? ` · ${j.ouverture} → ${j.fermeture||''}` : '');
   const a = Number(j.tva20_ttc) || 0, b = Number(j.tva10_ttc) || 0, tot = a + b;
@@ -1924,10 +1944,18 @@ function blocJour(j) {
     });
   }
   const kv = (l, v) => `<div class="v-kv"><span>${l}</span><b>${eur(v)}</b></div>`;
+  /* Les especes viennent du tiroir, pas de Flatpay. Si la journee n'a pas
+     encore ete saisie dans la Caisse, on le dit au lieu d'afficher 0 €. */
+  const espSaisies = especesCaisse ? especesCaisse.get(j.date) : undefined;
+  const esp = espSaisies !== undefined ? espSaisies : (Number(j.especes) || 0);
+  const ligneEsp = espSaisies !== undefined
+    ? `<div class="v-kv"><span>Espèces <span class="v-chip">tiroir</span></span><b>${eur(esp)}</b></div>`
+    : `<div class="v-kv"><span>Espèces</span><b style="color:#9a9a9a;font-weight:400">non saisies</b></div>`;
   $('v-paiements').innerHTML =
-    kv('Espèces', j.especes) + kv('Carte', j.carte) + kv('Autre', j.autre) +
+    ligneEsp + kv('Carte', j.carte) + kv('Autre', j.autre) +
     kv('Remboursements', j.remboursements) +
-    `<div class="v-kv tot"><span>CA net</span><b>${eur(j.ca_net)}</b></div>`;
+    `<div class="v-kv tot"><span>CA net carte</span><b>${eur(j.ca_net)}</b></div>` +
+    `<div class="v-kv tot"><span>Encaissé au total</span><b>${eur((Number(j.ca_net) || 0) + esp)}</b></div>`;
   $('v-tva').innerHTML =
     kv('Total hors TVA', j.ca_ht) + kv('TVA collectée', j.tva) + kv('Remises accordées', j.remises) +
     `<div class="v-kv tot"><span>Total TTC</span><b>${eur(j.ca_net)}</b></div>`;
@@ -1975,12 +2003,9 @@ async function blocConsolide(jours) {
   jours = jours || [];
   if (!jours.length) return;
 
-  const especesParJour = {};
-  try {
-    const snap = await getDocs(collection(db, 'caisse'));
-    snap.forEach(d => { const m = d.data();
-      if (m.sens !== 'depense') especesParJour[m.date] = (especesParJour[m.date] || 0) + Number(m.montant || 0); });
-  } catch { return; }   // lecture refusée : on n'affiche rien plutôt qu'un faux
+  const releve = especesCaisse || await relireEspecesCaisse();
+  if (!releve) return;   // lecture refusée : on n'affiche rien plutôt qu'un faux
+  const especesParJour = Object.fromEntries(releve);
 
   let cbDocumente = 0, especesRelevees = 0, cbSansEspeces = 0, joursSansEspeces = 0;
   for (const j of jours) {
@@ -2067,7 +2092,11 @@ function blocSaison(s, jours) {
   if (t)      bouts.push(t.toLocaleString('fr-FR') + ' tickets');
   if (t && ca) bouts.push('panier moyen ' + eur(ca / t));
   $('v-saison-sub').textContent = bouts.filter(Boolean).join(' · ');
-  blocConsolide(jours);
+  if (!especesCaisse) {
+    relireEspecesCaisse().then(m => { if (m) dessinerVentes(); });
+  } else {
+    blocConsolide(jours);
+  }
 }
 
 document.querySelectorAll('#v-bascule button').forEach(b =>
