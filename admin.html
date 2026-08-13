@@ -275,6 +275,12 @@ label.chk input { width: auto; margin: 0; }
 .ca-err { color: var(--burgundy); font-size: 0.78rem; font-weight: 700; margin-top: 0.5rem; }
 .ca-jour { background: var(--white); border-radius: 14px; padding: 0.75rem 0.9rem 0.8rem; margin-bottom: 0.55rem; box-shadow: 0 2px 10px rgba(0,0,0,0.06); border-left: 4px solid var(--sage); }
 .ca-jour.deficit { border-left-color: var(--burgundy); }
+.ca-jour.estime { border-left-style: dashed; border-left-color: var(--gold); background: rgba(200,164,72,0.05); }
+.ca-estim { display: flex; align-items: baseline; gap: 0.45rem; font-size: 0.82rem; color: #6d6d6d; margin-top: 0.15rem; }
+.ca-estim b { color: var(--dark-green); font-variant-numeric: tabular-nums; }
+.ca-etiq { font-size: 0.66rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--gold); border: 1.2px solid rgba(200,164,72,0.75); border-radius: 50px; padding: 0.06rem 0.42rem; }
+.ca-saisir { margin-top: 0.5rem; border: 1.5px solid rgba(200,164,72,0.75); background: rgba(200,164,72,0.12); font-family: inherit; font-size: 0.76rem; font-weight: 700; color: var(--gold); border-radius: 50px; padding: 0.32rem 0.85rem; }
+.ca-saisir:active { background: rgba(200,164,72,0.28); }
 .ca-tete { display: flex; align-items: baseline; gap: 0.5rem; margin-bottom: 0.45rem; }
 .ca-tete .j { font-family: 'Playfair Display','Playfair repli',serif; font-size: 0.98rem; color: var(--dark-green); }
 .ca-tete .j::first-letter { text-transform: uppercase; }
@@ -1363,8 +1369,40 @@ function dessinerCaisse() {
   graphCaisse(paquetsCaisse(mouvements, semaine), semaine);
 
   const jours = paquetsCaisse(mouvements, false).slice().reverse();
+  const saisis = new Set(jours.map(p => p.date));
+
+  /* Le taux du tiroir : ce que les journées saisies disent du rapport entre
+     les espèces et la carte. C'est lui qui sert à estimer les autres. */
+  let cbSaisi = 0, cashSaisi = 0;
+  for (const j of joursVentes) {
+    const p = jours.find(x => x.date === j.date);
+    if (p) { cbSaisi += Number(j.ca_net) || 0; cashSaisi += p.recette; }
+  }
+  const tauxTiroir = cbSaisi > 0 ? cashSaisi / cbSaisi : 0;
+
+  /* Les journées qui ont encaissé de la carte mais dont personne n'a compté le
+     tiroir. On ne les laisse pas dans le silence : on affiche l'estimation, on
+     dit que c'en est une, et on propose de la remplacer par le vrai chiffre. */
+  const aEstimer = tauxTiroir > 0
+    ? joursVentes
+        .filter(j => !saisis.has(j.date) && (Number(j.ca_net) || 0) > 0)
+        .map(j => ({ date: j.date, estime: Math.round((Number(j.ca_net) || 0) * tauxTiroir),
+                     cb: Number(j.ca_net) || 0, estimation: true }))
+    : [];
+
+  const liste = [...jours, ...aEstimer].sort((a, b) => b.date.localeCompare(a.date));
+
   const especesFlatpay = new Map(joursVentes.map(j => [j.date, Number(j.especes) || 0]));
-  $('ca-liste').innerHTML = jours.map(p => {
+  $('ca-liste').innerHTML = liste.map(p => {
+    if (p.estimation) return `<div class="ca-jour estime">
+      <div class="ca-tete">
+        <span class="j">${dateFR(p.date, { weekday:'long', day:'numeric', month:'long' })}</span>
+        <span class="s" style="color:var(--gold)">≈ ${eur(p.estime)}</span>
+      </div>
+      <div class="ca-estim"><span class="ca-etiq">estimé</span>
+        <span>tiroir non compté — <b>${eur(p.cb)}</b> encaissés en carte, au taux de ${(tauxTiroir * 100).toFixed(1).replace('.', ',')} % constaté sur les journées comptées</span></div>
+      <button type="button" class="ca-saisir" data-estim="${p.date}" data-montant="${p.estime}">Saisir le montant réel</button>
+    </div>`;
     const solde = p.recette - p.depense;
     const flat = especesFlatpay.get(p.date);
     return `<div class="ca-jour ${solde < 0 ? 'deficit' : ''}">
@@ -1381,6 +1419,22 @@ function dessinerCaisse() {
     </div>`;
   }).join('');
 }
+
+/* « Saisir le montant réel » ne fait que préparer le formulaire : la date et
+   le montant estimé, à corriger puis valider. Rien ne s'écrit sans un clic sur
+   Enregistrer — une estimation ne doit jamais devenir un chiffre comptable
+   sans que quelqu'un l'ait regardée. */
+$('ca-liste').addEventListener('click', ev => {
+  const b = ev.target.closest('button[data-estim]');
+  if (!b) return;
+  document.querySelector('#ca-sens button[data-sens="recette"]').click();
+  $('ca-date').value = b.dataset.estim;
+  $('ca-montant').value = b.dataset.montant;
+  $('ca-libelle').value = 'Recette du soir';
+  $('ca-form-bloc').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  $('ca-montant').focus();
+  $('ca-montant').select();
+});
 
 async function chargerCaisse() {
   try {

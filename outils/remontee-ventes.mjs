@@ -361,11 +361,20 @@ async function lireMixProduit(page) {
       dire(totauxLus ? `  totaux de periode relus : ${mix.ca_ttc} TTC / ${mix.ca_ht} HT`
                      : `  totaux de periode NON relus : les montants de saison restent ceux du dernier relevé`);
     } catch (e) {
+      /* Le mix produit est une piece a part. Depuis qu'il refuse d'ecrire des
+         chiffres aberrants, il echoue tous les soirs — la page « Apercu des
+         ventes » de Flatpay s'ouvre sur la journee du jour, avec un filtre de
+         categories, et il n'y a pas encore de quoi la piloter. Ce n'est pas une
+         panne : les journees, elles, sont remontees. On le dit dans le journal
+         sans faire echouer le passage, sinon l'alerte devient du bruit et plus
+         personne ne la lit — y compris le jour ou elle voudra dire quelque
+         chose. La saisie manuelle du recapitulatif prend le relais en attendant.
+         Passe une semaine sans rafraichissement, la, on alerte. */
       dire(`Mix produit NON mis a jour : ${e.message}`);
       const doc = await db.collection('ventes_meta').doc('saison').get();
       const vieux = doc.exists && doc.data().maj ? (Date.now() - Number(doc.data().maj)) / 86400000 : 999;
-      if (vieux > 3) anomalies.push(`Mix produit pas rafraichi depuis ${Math.floor(vieux)} jours.`);
-      else dire(`  (dernier rafraichissement il y a ${vieux.toFixed(1)} jour(s) — on laisse passer)`);
+      if (vieux > 7) anomalies.push(`Mix produit pas rafraichi depuis ${Math.floor(vieux)} jours — il faut reprendre l'export.`);
+      else dire(`  (dernier rafraichissement il y a ${vieux.toFixed(1)} jour(s) — le reste de la remontee est bon)`);
     }
   } finally {
     await navigateur.close();
