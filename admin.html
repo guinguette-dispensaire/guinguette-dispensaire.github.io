@@ -260,6 +260,17 @@ label.chk input { width: auto; margin: 0; }
 .pl-resa .d { color: #9a9a9a; font-weight: 400; }
 
 /* ─── Caisse ─── */
+.ca-vite { background: var(--dark-green); color: var(--white); border-radius: 14px; padding: 0.95rem 1.05rem 1.05rem; margin-bottom: 0.8rem; box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
+.ca-vite h2 { font-family: 'Playfair Display','Playfair repli',serif; font-size: 1.02rem; color: var(--white); margin-bottom: 0.1rem; }
+.ca-vite .j { font-size: 0.74rem; color: rgba(255,255,255,0.72); margin-bottom: 0.7rem; }
+.ca-vite .j b { color: var(--gold); font-weight: 700; }
+.ca-vite .rangee { display: flex; gap: 0.5rem; align-items: stretch; }
+.ca-vite input { flex: 1; min-width: 0; font-size: 1.15rem; font-weight: 700; padding: 0.55rem 0.75rem; border: none; border-radius: 10px; background: rgba(255,255,255,0.95); color: var(--dark-green); font-family: inherit; font-variant-numeric: tabular-nums; }
+.ca-vite input:focus { outline: 2px solid var(--gold); }
+.ca-vite button { flex: none; border: none; border-radius: 10px; background: var(--gold); color: var(--dark-green); font-family: inherit; font-size: 0.86rem; font-weight: 700; padding: 0 1.1rem; }
+.ca-vite button:active { background: #b8933a; }
+.ca-vite button:disabled { opacity: 0.5; }
+.ca-vite .deja { font-size: 0.76rem; color: var(--gold); margin-top: 0.55rem; }
 .ca-form { background: var(--white); border-radius: 14px; padding: 0.9rem 1rem 1rem; margin-bottom: 0.8rem; box-shadow: 0 2px 10px rgba(0,0,0,0.06); }
 .ca-form h2 { font-family: 'Playfair Display','Playfair repli',serif; font-size: 1.02rem; color: var(--dark-green); margin-bottom: 0.6rem; }
 .ca-bascule { display: flex; gap: 0.3rem; margin-bottom: 0.7rem; }
@@ -468,6 +479,18 @@ label.chk input { width: auto; margin: 0; }
       <div class="n" id="ca-solde">–</div>
       <div class="sub" id="ca-sous">—</div>
       <button type="button" class="v-esp-corr hidden" id="ca-corr">corriger à la main</button>
+    </div>
+
+    <!-- La saisie du soir : une case, un bouton. Le formulaire complet reste
+         en dessous pour les dépenses et les journées oubliées. -->
+    <div class="ca-vite" id="ca-vite">
+      <h2>Espèces du jour</h2>
+      <div class="j" id="ca-vite-jour">—</div>
+      <div class="rangee">
+        <input type="number" id="ca-vite-montant" step="0.01" min="0" inputmode="decimal" placeholder="Montant en € compté au tiroir">
+        <button type="button" id="ca-vite-btn">Enregistrer</button>
+      </div>
+      <div class="deja hidden" id="ca-vite-deja"></div>
     </div>
 
     <div class="ca-form" id="ca-form-bloc">
@@ -1287,6 +1310,51 @@ $('ca-pas').addEventListener('click', e => {
   dessinerCaisse();
 });
 
+/* ─── L'encart du soir ───
+   Le geste le plus fréquent de la caisse, c'est « j'ai compté le tiroir, voilà
+   le montant ». Il ne devrait pas demander de choisir une date ni d'écrire un
+   libellé. L'encart s'occupe du jour en cours ; le formulaire complet, en
+   dessous, reste là pour les dépenses et pour rattraper une journée passée. */
+function rafraichirEncartJour() {
+  const auj = todayStr();
+  const deja = mouvements
+    .filter(m => m.date === auj && m.sens !== 'depense')
+    .reduce((t, m) => t + (Number(m.montant) || 0), 0);
+  const vente = joursVentes.find(j => j.date === auj);
+
+  const bouts = [dateFR(auj, { weekday: 'long', day: 'numeric', month: 'long' })];
+  if (vente && Number(vente.ca_net)) bouts.push(`carte du jour <b>${eur(vente.ca_net)}</b>`);
+  $('ca-vite-jour').innerHTML = bouts.join(' · ');
+
+  $('ca-vite-deja').classList.toggle('hidden', !deja);
+  if (deja) $('ca-vite-deja').textContent =
+    `${eur(deja)} déjà saisis aujourd'hui — un nouveau montant s'ajoute.`;
+  $('ca-vite-btn').textContent = deja ? 'Ajouter' : 'Enregistrer';
+}
+
+$('ca-vite-btn').addEventListener('click', async () => {
+  const champ = $('ca-vite-montant'), btn = $('ca-vite-btn');
+  const montant = Math.round(Number(champ.value) * 100) / 100;
+  if (!(montant > 0)) { champ.focus(); return; }
+  btn.disabled = true;
+  try {
+    const m = { date: todayStr(), sens: 'recette', montant,
+                libelle: 'Espèces du jour', maj: Date.now(), source: 'saisie-manuelle' };
+    await setDoc(doc(db, 'caisse', idMouvement(m)), m);
+    champ.value = '';
+    await chargerCaisse();
+    toast(`${eur(montant)} d'espèces enregistrés ✓`);
+  } catch (ex) {
+    console.error(ex);
+    toast('Enregistrement impossible : ' + (ex?.message || ex), true);
+  }
+  btn.disabled = false;
+});
+
+$('ca-vite-montant').addEventListener('keydown', e => {
+  if (e.key === 'Enter') { e.preventDefault(); $('ca-vite-btn').click(); }
+});
+
 $('ca-form').addEventListener('submit', async e => {
   e.preventDefault();
   const err = $('ca-err'), btn = $('ca-btn');
@@ -1468,6 +1536,7 @@ async function chargerCaisse() {
     /* Les ventes servent de repère : si elles ne sont pas encore chargées,
        on les charge en silence pour pouvoir afficher les espèces du tiroir. */
     if (!joursVentes.length && !ventesChargees) { ventesChargees = true; await chargerVentes(); }
+    rafraichirEncartJour();
     if (mouvements.length) dessinerCaisse();
   } catch (ex) {
     console.error(ex);
