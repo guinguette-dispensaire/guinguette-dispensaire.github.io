@@ -181,6 +181,14 @@ label.chk input { width: auto; margin: 0; }
 .v-bascule button { background: none; border: 1.5px solid rgba(0,0,0,0.16); color: var(--dark); font-size: 0.74rem; font-weight: 700; padding: 0.28rem 0.8rem; border-radius: 50px; }
 .v-bascule button.on { background: var(--dark-green); border-color: var(--dark-green); color: var(--white); }
 .v-maj { font-size: 0.72rem; color: #9a9a9a; margin: -0.35rem 0 0.9rem; }
+/* Les points a regarder vivent ici, plus dans la boite mail. */
+.v-anos { border: 1px solid rgba(200,164,72,0.35); background: rgba(200,164,72,0.07);
+          border-radius: 10px; padding: 0.7rem 0.9rem; margin: 0 0 1rem; }
+.v-anos .t { font-size: 0.7rem; letter-spacing: 0.09em; text-transform: uppercase;
+             color: var(--gold); font-weight: 700; margin-bottom: 0.35rem; }
+.v-anos ul { margin: 0; padding-left: 1.05rem; }
+.v-anos li { font-size: 0.82rem; line-height: 1.45; margin: 0.15rem 0; }
+.v-anos .q { font-size: 0.68rem; color: #9a9a9a; margin-top: 0.4rem; }
 
 /* ═══ VENTES ═══ */
 .v-card { background: var(--white); border-radius: 14px; padding: 0.95rem 1.05rem 1.05rem; margin-bottom: 0.8rem; box-shadow: 0 2px 10px rgba(0,0,0,0.06); }
@@ -390,6 +398,12 @@ label.chk input { width: auto; margin: 0; }
 
     <div id="v-contenu" class="hidden">
       <div class="v-maj" id="v-maj"></div>
+
+      <div class="v-anos hidden" id="v-anos">
+        <div class="t">À regarder</div>
+        <ul id="v-anos-liste"></ul>
+        <div class="q" id="v-anos-quand"></div>
+      </div>
 
       <div class="v-relance">
         <button type="button" id="v-relancer">Lancer la remontée maintenant</button>
@@ -2104,11 +2118,31 @@ function dessinerVentes() {
   graphJours(semaine ? parSemaine(joursVentes) : joursVentes, semaine);
 }
 
+/* Ce que la remontee n'a pas su faire, dit ici plutot que par mail.
+   Une action rouge chaque nuit finit par ne plus rien vouloir dire. */
+function afficherAnomalies(a) {
+  const bloc = $('v-anos'), liste = $('v-anos-liste');
+  const points = (a && Array.isArray(a.liste)) ? a.liste : [];
+  if (!points.length) { bloc.classList.add('hidden'); return; }
+  liste.innerHTML = '';
+  for (const p of points) {
+    const li = document.createElement('li');
+    li.textContent = String(p);
+    liste.appendChild(li);
+  }
+  $('v-anos-quand').textContent = a.le ? 'Constaté le ' +
+    new Date(Number(a.le)).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' }) +
+    ' à ' + new Date(Number(a.le)).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) : '';
+  bloc.classList.remove('hidden');
+}
+
 async function chargerVentes() {
   try {
-    const [snapJours, docSaison] = await Promise.all([
+    const [snapJours, docSaison, docAnos, docAnosPl] = await Promise.all([
       getDocs(query(collection(db, 'ventes'), orderBy('date', 'desc'), limit(400))),
-      getDoc(doc(db, 'ventes_meta', 'saison'))
+      getDoc(doc(db, 'ventes_meta', 'saison')),
+      getDoc(doc(db, 'ventes_meta', 'anomalies')).catch(() => null),
+      getDoc(doc(db, 'planning_meta', 'anomalies')).catch(() => null)
     ]);
     const jours  = snapJours.docs.map(d => ({ id: d.id, ...d.data() })).sort((a,b) => String(a.date).localeCompare(String(b.date)));
     const saison = docSaison.exists() ? docSaison.data() : null;
@@ -2116,6 +2150,15 @@ async function chargerVentes() {
     if (!jours.length && !saison) { $('v-vide').classList.remove('hidden'); return; }
     $('v-vide').classList.add('hidden');
     $('v-contenu').classList.remove('hidden');
+
+    /* Un seul endroit pour tout ce qui cloche, ventes comme planning. */
+    const aV = docAnos   && docAnos.exists()   ? docAnos.data()   : null;
+    const aP = docAnosPl && docAnosPl.exists() ? docAnosPl.data() : null;
+    afficherAnomalies({
+      liste: [...((aV && aV.liste) || []),
+              ...(((aP && aP.liste) || []).map(x => 'Planning : ' + x))],
+      le: Math.max(Number((aV || {}).le) || 0, Number((aP || {}).le) || 0) || null
+    });
 
     const dernier = jours.length ? jours[jours.length - 1] : null;
     $('v-maj').textContent = dernier ? texteMaj(dernier.date, dernier.maj)

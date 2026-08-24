@@ -569,17 +569,8 @@ async function lireMixProduit(page) {
       dire(`Mix produit NON mis a jour : ${e.message}`);
       const doc = await db.collection('ventes_meta').doc('saison').get();
       const vieux = doc.exists && doc.data().maj ? (Date.now() - Number(doc.data().maj)) / 86400000 : 999;
-      /* Une alerte qui part a chaque passage n'est plus une alerte. Celle-ci
-         ne repart qu'une fois par semaine, tant que le probleme dure. */
-      const derniere = doc.exists ? Number(doc.data().mix_alerte_le || 0) : 0;
-      if (vieux > 7 && (Date.now() - derniere) > 7 * 86400000) {
-        anomalies.push(`Mix produit pas rafraichi depuis ${Math.floor(vieux)} jours — il faut reprendre l'export.`);
-        await db.collection('ventes_meta').doc('saison').set({ mix_alerte_le: Date.now() }, { merge: true });
-      } else if (vieux > 7) {
-        dire(`  (perime depuis ${Math.floor(vieux)} jours — alerte deja envoyee cette semaine)`);
-      } else {
-        dire(`  (dernier rafraichissement il y a ${vieux.toFixed(1)} jour(s) — le reste de la remontee est bon)`);
-      }
+      if (vieux > 7) anomalies.push(`Mix produit pas rafraichi depuis ${Math.floor(vieux)} jours — il faut reprendre l'export.`);
+      else dire(`  (dernier rafraichissement il y a ${vieux.toFixed(1)} jour(s) — le reste de la remontee est bon)`);
     }
   } finally {
     await navigateur.close();
@@ -591,10 +582,22 @@ async function lireMixProduit(page) {
     await db.collection('commandes').doc('remontee').set({ traitee: Date.now() }, { merge: true });
   } catch (e) { dire('Marquage de la demande impossible : ' + e.message); }
 
+  /* Les points a regarder ne sont pas des pannes.
+     Faire echouer l'action pour un ecart de caisse ou un mix perime envoyait
+     un mail « Run failed » chaque jour : au bout d'une semaine plus personne
+     ne l'ouvre, y compris le jour ou il voudrait dire quelque chose. Ils
+     s'affichent maintenant dans l'outil, la ou le travail se fait.
+     L'action ne rougit plus que si la machinerie est reellement cassee —
+     connexion refusee, page qui a change de forme, base injoignable — ce qui
+     merite un mail parce que plus rien ne remonte. */
+  try {
+    await db.collection('ventes_meta').doc('anomalies').set(
+      { liste: anomalies, le: Date.now(), passage: new Date().toISOString() }, { merge: false });
+  } catch (e) { dire('Anomalies non enregistrees : ' + e.message); }
+
   if (anomalies.length) {
-    console.log('\n--- A REGARDER ---');
+    console.log('\n--- A REGARDER (visible dans l outil, pas d alerte par mail) ---');
     anomalies.forEach(a => console.log('  ' + a));
-    process.exitCode = 1;   // fait echouer l'action : GitHub envoie un mail
   } else {
     dire('Termine sans anomalie.');
   }

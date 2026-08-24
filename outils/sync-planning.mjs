@@ -352,6 +352,7 @@ if (conflits.length) {
    L'onglet « concerts » : colonne C le groupe, D le style, E la date,
    F le cachet. Les lignes sans vraie date (« Option jeudi 17 ou 24 ») sont
    conservees telles quelles, on ne fait que les recopier plus bas. */
+let incident = null;
 try {
   const repC = await feuilles.spreadsheets.values.get({
     spreadsheetId: CLASSEUR, range: 'concerts!A1:F200', valueRenderOption: 'UNFORMATTED_VALUE'
@@ -447,8 +448,17 @@ try {
     console.log(`Concerts accroches aux journees : ${poses} pose(s), ${retires} retire(s).`);
   }
 } catch (e) {
+  /* Meme principe que la remontee des ventes : un onglet illisible se signale
+     dans l'outil, il ne declenche pas un mail « Run failed » quotidien. */
   console.log('Concerts : onglet illisible ou refus d ecriture, ignore. ' + e.message);
-  process.exitCode = 1;
+  incident = 'Onglet « concerts » illisible : ' + e.message;
 }
+
+/* L'ardoise du passage : vide si tout s'est bien passe, pour que l'outil
+   n'affiche pas un avertissement perime. */
+try {
+  await db.collection('planning_meta').doc('anomalies')
+    .set({ liste: incident ? [incident] : [], le: Date.now() });
+} catch (_) { /* tant pis */ }
 
 console.log('Synchronisation terminee.');
