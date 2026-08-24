@@ -89,10 +89,17 @@ function lireCase(brut) {
   if (bas === 'absent')                     return { absence: 'absent' };
 
   const creneaux = [], notes = [];
-  for (let bout of texte.split(/[\n;+]/)) {
+  /* « 15h-17h30 18h-22h » : deux services dans la meme case, separes par une
+     simple espace. Sans cette coupe, on lisait un seul creneau de 15h a 22h et
+     la personne apparaissait presente pendant sa coupure. */
+  const morceaux = [];
+  for (const gros of texte.split(/[\n;+]/))
+    for (const bout of gros.split(/\s+(?=\d{1,2}\s*h\d*\s*[-–—/])/)) morceaux.push(bout);
+  for (let bout of morceaux) {
     bout = bout.trim().replace(/\?+$/, '').trim();
     if (!bout) continue;
-    const t = bout.replace(/[–—]/g, '-');
+    /* « 16h/22h » : entre deux chiffres, la barre oblique vaut un tiret. */
+    const t = bout.replace(/[–—]/g, '-').replace(/(\d\s*h?)\s*\/\s*(?=\d)/g, '$1-');
     let paire = null;
     if (t.includes('-')) {
       const p = t.split('-');
@@ -208,6 +215,7 @@ const maintenant = Date.now();
 const versBase = [];    /* journees a (re)ecrire dans la base */
 const versDrive = [];   /* journees a reecrire dans le tableau */
 const conflits = [];
+const statuts = [];     /* journees dont seule la colonne « Statut » a bouge */
 
 for (const [date, { j, ligne }] of cote) {
   const a = enBase.get(date);
@@ -229,6 +237,16 @@ for (const [date, { j, ligne }] of cote) {
     versBase.push({ date, j, emp, motif: jamais ? 'premiere synchronisation' : 'modifie dans le tableau' });
   } else if (outilBouge) {
     versDrive.push({ date, ligne, a });
+  } else if ((j.statut_source || '') !== (a.statut_source || '')
+          || (j.duree_source || '') !== (a.duree_source || '')) {
+    /* La colonne « Statut » et la duree sont des formules du tableau : elles ne
+       font pas partie de l'empreinte, sinon chaque recalcul passerait pour une
+       modification. Mais quand l'outil vient d'ecrire dans le tableau, elles se
+       recalculent et la base garde l'ancienne valeur — l'outil affichait alors
+       « le tableau dit ❌, le recalcul dit ✅ » indefiniment. On les rafraichit
+       a part, sans toucher au reste et sans declencher de conflit. */
+    statuts.push({ date, statut_source: j.statut_source || null,
+                   duree_source: j.duree_source || null, duree: j.duree ?? null });
   }
 }
 
@@ -284,8 +302,38 @@ if (SENS !== 'drive-vers-outil' && versDrive.length) {
   await lot.commit();
   console.log(`Tableau mis a jour : ${versDrive.length} journees.`);
   versDrive.slice(0, 20).forEach(x => console.log(`  ${x.date} — ligne ${x.ligne}`));
+
+  /* Le tableau vient de recalculer sa colonne « Statut » et sa duree. On les
+     relit tout de suite : sans cela la base garderait l'ancien statut pour
+     toujours, puisque l'empreinte ne le regarde pas. */
+  const relu = await feuilles.spreadsheets.values.get({
+    spreadsheetId: CLASSEUR, range: `${FEUILLE}!A1:K600`, valueRenderOption: 'FORMATTED_VALUE'
+  });
+  const frais = new Map();
+  (relu.data.values || []).forEach(l => { const x = lireLigne(l); if (x) frais.set(x.date, x); });
+  for (const { date } of versDrive) {
+    const x = frais.get(date);
+    if (x) statuts.push({ date, statut_source: x.statut_source || null,
+                          duree_source: x.duree_source || null, duree: x.duree ?? null });
+  }
 } else {
   console.log('Tableau : rien a mettre a jour.');
+}
+
+/* ── Le statut recalcule par le tableau ───────────────────────────── */
+if (statuts.length) {
+  let lot = db.batch(), n = 0;
+  for (const st of statuts) {
+    lot.set(db.collection('planning').doc(st.date),
+            { statut_source: st.statut_source, duree_source: st.duree_source, duree: st.duree },
+            { merge: true });
+    if (++n % 400 === 0) { await lot.commit(); lot = db.batch(); }
+  }
+  await lot.commit();
+  console.log(`Statut rafraichi depuis le tableau : ${statuts.length} journees.`);
+  statuts.slice(0, 20).forEach(x => console.log(`  ${x.date} — « ${x.statut_source || '(vide)'} »`));
+} else {
+  console.log('Statut : rien a rafraichir.');
 }
 
 /* ── Les conflits, gardes en clair ────────────────────────────────── */

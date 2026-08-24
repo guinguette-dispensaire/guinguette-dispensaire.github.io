@@ -1603,10 +1603,16 @@ function lireCasePl(brut) {
   if (bas === 'vac' || bas === 'vacances' || bas === 'conges') return { absence: 'congés' };
   if (bas === 'absent') return { absence: 'absent' };
   const creneaux = [], notes = [];
-  for (let bout of texte.split(/[\n;+]/)) {
+  /* « 15h-17h30 18h-22h » : deux services dans la meme case, separes par une
+     simple espace. Meme lecture que le script de synchronisation. */
+  const morceaux = [];
+  for (const gros of texte.split(/[\n;+]/))
+    for (const bout of gros.split(/\s+(?=\d{1,2}\s*h\d*\s*[-–—/])/)) morceaux.push(bout);
+  for (let bout of morceaux) {
     bout = bout.trim().replace(/\?+$/, '').trim();
     if (!bout) continue;
-    const t = bout.replace(/[–—]/g, '-');
+    /* « 16h/22h » : entre deux chiffres, la barre oblique vaut un tiret. */
+    const t = bout.replace(/[–—]/g, '-').replace(/(\d\s*h?)\s*\/\s*(?=\d)/g, '$1-');
     let paire = null;
     if (t.includes('-')) {
       const q = t.split('-');

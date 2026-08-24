@@ -15,7 +15,7 @@
 import { chromium } from 'playwright';
 import admin from 'firebase-admin';
 
-const JOURS_EN_ARRIERE = 10;
+const JOURS_EN_ARRIERE = 21;
 const CAISSES_CONNUES = ['1854318182', '1854318183'];
 
 /* Journees dont le tiroir est reste ouvert plusieurs jours d'affilee : aucun
@@ -123,6 +123,141 @@ async function lireRapport(page, sessionId, caisseId) {
   };
 }
 
+/* ─── Le journal des commandes ───
+   La source de secours, et la vraie reponse au probleme : les rapports de fin
+   de journee n'existent que si le tiroir a ete cloture. Le journal des
+   commandes, lui, existe toujours — chaque encaissement y figure des qu'il est
+   passe. Quand une seule caisse sur deux a ete clôturee (ou aucune), on
+   reconstitue la journee ici plutot que de la jeter.
+   Ce qu'on n'a pas par cette voie : la ventilation de TVA et le HT. L'outil
+   sait deja estimer le HT des journees qui en manquent. */
+
+/** Le decalage de Paris sur l'UTC, en minutes, a une date donnee. */
+function decalageParis(d) {
+  const s = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'Europe/Paris', timeZoneName: 'longOffset'
+  }).format(d);
+  const m = s.match(/GMT([+-])(\d{2}):(\d{2})/);
+  if (!m) return 120;
+  const signe = m[1] === '-' ? -1 : 1;
+  return signe * (Number(m[2]) * 60 + Number(m[3]));
+}
+
+/** Minuit a minuit, heure de Paris, exprime en UTC. */
+function bornesDuJour(jour) {
+  const dec = decalageParis(new Date(`${jour}T12:00:00Z`));
+  const debut = new Date(Date.parse(`${jour}T00:00:00Z`) - dec * 60000);
+  return { debut, fin: new Date(debut.getTime() + 86400000 - 1000) };
+}
+
+const SANS_ACCENT = t => String(t || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+
+async function lireJournal(page, jour) {
+  const { debut, fin } = bornesDuJour(jour);
+  await page.goto('https://portal.flatpay.com/pos/orders?pageIndex=0&status=all'
+    + `&fromDate=${debut.toISOString()}&toDate=${fin.toISOString()}&sorting=orderId-desc`,
+    { waitUntil: 'networkidle' });
+  await page.waitForTimeout(3000);
+
+  /* La page affiche vingt commandes a la fois et ne se defile pas : la suite
+     est derriere le bouton « Suivant », en bas. Les parametres de date de
+     l'URL, eux, sont bien respectes — contrairement a la page des produits. */
+  const moisson = await page.evaluate(async () => {
+    const nombre = t => {
+      const m = String(t || '').replace(/\s|\u00a0/g, '').match(/-?\d+(?:[.,]\d+)?/);
+      return m ? parseFloat(m[0].replace(',', '.')) : null;
+    };
+    /* Les colonnes se lisent par leur intitule, jamais par leur position :
+       « Commande N° | Date | Statut | Paiement | Personnel | Remise | Total ».
+       Flatpay a deja deplace des colonnes une fois cet ete. */
+    const reperes = () => {
+      const tbl = document.querySelector('table');
+      if (!tbl) return null;
+      const th = [...tbl.querySelectorAll('thead th')].map(h => h.innerText.trim().toLowerCase());
+      const col = re => th.findIndex(h => re.test(h));
+      return { th, iNum: col(/commande|n°|order/), iStatut: col(/statut|status/),
+               iPaie: col(/paiement|payment/), iTotal: col(/^total$|montant/) };
+    };
+    const lire = () => {
+      const c = reperes();
+      if (!c || c.iTotal < 0) return [];
+      const out = [];
+      document.querySelectorAll('tbody tr').forEach(tr => {
+        const td = [...tr.querySelectorAll('td')].map(x => x.innerText.trim());
+        if (td.length < 3) return;
+        out.push({
+          num: c.iNum >= 0 ? td[c.iNum] : td[0],
+          statut: c.iStatut >= 0 ? td[c.iStatut] : '',
+          paiement: c.iPaie >= 0 ? td[c.iPaie] : '',
+          total: nombre(td[c.iTotal])
+        });
+      });
+      return out;
+    };
+    const bouton = mot => [...document.querySelectorAll('button, [role="button"], a')]
+      .find(b => new RegExp(`^${mot}$`, 'i').test((b.textContent || '').trim()) && !b.disabled);
+
+    const vu = new Map();
+    lire().forEach(r => vu.set(r.num, r));
+    let pages = 1;
+    for (let i = 0; i < 60; i++) {
+      const b = bouton('suivant') || bouton('next');
+      if (!b) break;
+      const avant = vu.size;
+      b.click();
+      await new Promise(r => setTimeout(r, 1800));
+      lire().forEach(r => vu.set(r.num, r));
+      if (vu.size === avant) break;
+      pages++;
+    }
+    return { entetes: (reperes() || {}).th || [], pages, lignes: [...vu.values()] };
+  });
+
+  if (!moisson.entetes.length) throw new Error("journal des commandes illisible (pas d'en-tetes)");
+  const lignes = moisson.lignes;
+  if (!lignes.length) return null;
+
+  /* Les numeros de commande se suivent. S'il en manque un entre le premier et
+     le dernier lu, c'est qu'une page nous a echappe — et un total ampute
+     ressemble a un vrai total, ce qui est pire que pas de total du tout. */
+  const nums = lignes.map(l => Number(String(l.num).replace(/\D/g, ''))).filter(n => n > 0);
+  if (nums.length === lignes.length) {
+    const attendu = Math.max(...nums) - Math.min(...nums) + 1;
+    if (attendu !== nums.length)
+      throw new Error(`lecture trouee : ${nums.length} commandes lues, `
+        + `mais les numeros vont de ${Math.min(...nums)} a ${Math.max(...nums)} (${attendu} attendues)`);
+  }
+
+  const utiles = lignes.filter(l => l.total != null && !/annul/.test(SANS_ACCENT(l.statut)));
+  if (!utiles.length) return null;
+
+  /* Un encaissement peut etre partage — « Carte, Espèces ». Le journal ne dit
+     pas comment. Plutot que d'inventer une repartition, on ne publie la
+     ventilation que si toutes les commandes ont un moyen unique. */
+  let total = 0, mixtes = 0;
+  const sacs = { especes: 0, carte: 0, autre: 0 };
+  for (const l of utiles) {
+    const p = SANS_ACCENT(l.paiement);
+    const m = Number(l.total) || 0;
+    total += m;
+    const esp = /espece|cash/.test(p), cb = /carte|card/.test(p);
+    if (esp && cb) { mixtes++; sacs.autre += m; }
+    else if (esp)  sacs.especes += m;
+    else if (cb)   sacs.carte += m;
+    else           sacs.autre += m;
+  }
+  const rond = x => +x.toFixed(2);
+  const j = {
+    date: jour, ca_net: rond(total), tickets: utiles.length,
+    remboursements: 0, remises: 0, ecart_caisse: 0,
+    pages_lues: moisson.pages,
+    source: 'flatpay-journal-commandes', complet: false, maj: Date.now()
+  };
+  if (mixtes) j.paiements_mixtes = mixtes;
+  else { j.especes = rond(sacs.especes); j.carte = rond(sacs.carte); j.autre = rond(sacs.autre); }
+  return j;
+}
+
 /* ─── Mix produit (ce qui a ete vendu) ───
    Compartiment separe : cette page est nettement plus capricieuse que les
    rapports de fin de journee. Elle ignore les parametres d'URL, il faut passer
@@ -218,13 +353,27 @@ async function lireMixProduit(page) {
   dire(`Fenetre examinee : ${jours[0]} -> ${jours[jours.length - 1]}`);
 
   const db = firestore();
-  const deja = new Set();
+  const deja = new Map();
   const snap = await db.collection('ventes').get();
-  snap.forEach(d => deja.add(d.id));
-  const manquantes = (RECONSOLIDER ? jours.slice() : jours.filter(j => !deja.has(j)))
+  snap.forEach(d => deja.set(d.id, d.data()));
+
+  /* Une journee reconstituee depuis le journal des commandes n'est qu'un
+     depannage : elle n'a ni TVA ni HT. On la repasse tant que les caisses
+     peuvent encore etre clôturees, pour la remplacer par le vrai rapport. */
+  const partielle = d => (deja.get(d) || {}).source === 'flatpay-journal-commandes';
+  const manquantes = (RECONSOLIDER ? jours.slice()
+                                   : jours.filter(j => !deja.has(j) || partielle(j)))
     .filter(j => { if (JOURNEES_INTOUCHABLES.includes(j)) { dire(`${j} : ecartee — tiroir reste ouvert plusieurs jours, pas de rapport journalier.`); return false; } return true; });
   if (RECONSOLIDER) dire('MODE RECONSOLIDATION : les journees deja en base seront relues et reecrites.');
-  dire(`${deja.size} journees deja en base. Manquantes sur la fenetre : ${manquantes.length ? manquantes.join(', ') : 'aucune'}`);
+  dire(`${deja.size} journees deja en base. A traiter sur la fenetre : ${manquantes.length ? manquantes.join(', ') : 'aucune'}`);
+
+  /* Le planning dit quels jours la guinguette etait ouverte. Sans lui, une
+     journee sans aucun rapport de caisse serait indistinguable d'un lundi de
+     fermeture — et on irait interroger le journal pour rien. */
+  const ouvert = new Map();
+  try {
+    (await db.collection('planning').get()).forEach(d => ouvert.set(d.id, !d.data().ferme));
+  } catch (e) { dire('Planning illisible, on continue sans : ' + e.message); }
   if (!manquantes.length) { dire('Rien a faire.'); return; }
 
   const navigateur = await chromium.launch();
@@ -287,14 +436,53 @@ async function lireMixProduit(page) {
       (parJour[jour] = parJour[jour] || []).push(s);
     }
 
+    /* Le depannage : reconstituer la journee depuis le journal des commandes.
+       Ne remplace jamais un vrai rapport, ne s'ecrit que faute de mieux. */
+    const parLeJournal = async (jour, raison, plancher = 0) => {
+      if (partielle(jour)) { dire(`${jour} : ${raison} — deja reconstituee, on attend la clôture.`); return; }
+      try {
+        const j = await lireJournal(page, jour);
+        if (!j) { dire(`${jour} : ${raison}, et aucune commande ce jour-la. Rien a ecrire.`); return; }
+        /* La caisse qui a ete clôturee, elle, a declare un montant. Le journal
+           couvre les deux caisses : il ne peut pas etre plus petit. S'il l'est,
+           c'est qu'on n'a pas tout lu — on ne l'ecrit pas. */
+        if (plancher > 0 && j.ca_net < plancher - 0.01) {
+          anomalies.push(`${jour} : ${raison}. Le journal ne donne que ${j.ca_net} EUR alors qu'une caisse `
+            + `en declare deja ${plancher.toFixed(2)}. Lecture incomplete, journee non ecrite.`);
+          return;
+        }
+        await db.collection('ventes').doc(jour).set(j, { merge: true });
+        dire(`${jour} : ${raison} -> reconstituee depuis le journal des commandes. `
+           + `CA ${j.ca_net} EUR, ${j.tickets} commandes sur ${j.pages_lues} page(s)`
+           + (j.paiements_mixtes ? `, ${j.paiements_mixtes} encaissement(s) partage(s) : ventilation non publiee.`
+                                 : `, espèces ${j.especes} / carte ${j.carte}.`));
+      } catch (e) {
+        anomalies.push(`${jour} : ${raison}, et le journal des commandes n'a pas pu etre lu (${e.message}).`);
+      }
+    };
+
     for (const jour of manquantes) {
       const lot = parJour[jour];
-      if (!lot || !lot.length) { dire(`${jour} : aucun rapport de caisse -> journee fermee, rien a ecrire.`); continue; }
+      if (!lot || !lot.length) {
+        if (ouvert.get(jour) === false) { dire(`${jour} : guinguette fermee, rien a ecrire.`); continue; }
+        await parLeJournal(jour, 'aucun rapport de caisse');
+        continue;
+      }
 
       const caisses = new Set(lot.map(s => String(s.caisse)));
       const attendues = CAISSES_CONNUES.filter(c => caisses.has(c));
       if (attendues.length < CAISSES_CONNUES.length) {
-        anomalies.push(`${jour} : ${caisses.size} caisse(s) au lieu de ${CAISSES_CONNUES.length}. Journee ignoree pour ne pas diviser le chiffre d'affaires.`);
+        /* C'etait la cause des trous : une seule caisse clôturee sur deux et la
+           journee entiere partait a la poubelle. On ne devine toujours pas la
+           moitie manquante — on va la chercher dans le journal. */
+        let plancher = 0;
+        try {
+          for (const sess of lot) {
+            const p = await lireRapport(page, sess.id, sess.caisse);
+            plancher += Number(p.ca_net) || 0;
+          }
+        } catch (e) { dire(`${jour} : rapport partiel illisible (${e.message}), on continue sans plancher.`); plancher = 0; }
+        await parLeJournal(jour, `${caisses.size} caisse(s) clôturee(s) sur ${CAISSES_CONNUES.length}`, plancher);
         continue;
       }
 
@@ -317,7 +505,7 @@ async function lireMixProduit(page) {
         tva20_ttc: somme('tva20_ttc'), tva10_ttc: somme('tva10_ttc'),
         ecart_caisse: somme('ecart_caisse'),
         ouverture: heures[0] || null, fermeture: fins[fins.length - 1] || null,
-        source: 'flatpay-fin-de-journee', maj: Date.now()
+        source: 'flatpay-fin-de-journee', complet: true, maj: Date.now()
       };
 
       const ecart1 = Math.abs((j.tva20_ttc + j.tva10_ttc) - j.ca_net);
@@ -373,8 +561,17 @@ async function lireMixProduit(page) {
       dire(`Mix produit NON mis a jour : ${e.message}`);
       const doc = await db.collection('ventes_meta').doc('saison').get();
       const vieux = doc.exists && doc.data().maj ? (Date.now() - Number(doc.data().maj)) / 86400000 : 999;
-      if (vieux > 7) anomalies.push(`Mix produit pas rafraichi depuis ${Math.floor(vieux)} jours — il faut reprendre l'export.`);
-      else dire(`  (dernier rafraichissement il y a ${vieux.toFixed(1)} jour(s) — le reste de la remontee est bon)`);
+      /* Une alerte qui part a chaque passage n'est plus une alerte. Celle-ci
+         ne repart qu'une fois par semaine, tant que le probleme dure. */
+      const derniere = doc.exists ? Number(doc.data().mix_alerte_le || 0) : 0;
+      if (vieux > 7 && (Date.now() - derniere) > 7 * 86400000) {
+        anomalies.push(`Mix produit pas rafraichi depuis ${Math.floor(vieux)} jours — il faut reprendre l'export.`);
+        await db.collection('ventes_meta').doc('saison').set({ mix_alerte_le: Date.now() }, { merge: true });
+      } else if (vieux > 7) {
+        dire(`  (perime depuis ${Math.floor(vieux)} jours — alerte deja envoyee cette semaine)`);
+      } else {
+        dire(`  (dernier rafraichissement il y a ${vieux.toFixed(1)} jour(s) — le reste de la remontee est bon)`);
+      }
     }
   } finally {
     await navigateur.close();
