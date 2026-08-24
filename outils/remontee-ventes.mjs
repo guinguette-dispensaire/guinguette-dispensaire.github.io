@@ -199,10 +199,14 @@ async function lireJournal(page, jour) {
 
     const vu = new Map();
     lire().forEach(r => vu.set(r.num, r));
-    let pages = 1;
+    /* « fini » ne vaut vrai que si on est alle jusqu'au bout : le bouton
+       « Suivant » grise. S'arreter parce que la boucle a atteint sa limite ou
+       parce qu'une page n'a rien apporte de neuf, ce n'est pas la meme chose —
+       et un total ampute ressemble a un vrai total. */
+    let pages = 1, fini = false;
     for (let i = 0; i < 60; i++) {
       const b = bouton('suivant') || bouton('next');
-      if (!b) break;
+      if (!b) { fini = true; break; }
       const avant = vu.size;
       b.click();
       await new Promise(r => setTimeout(r, 1800));
@@ -210,22 +214,26 @@ async function lireJournal(page, jour) {
       if (vu.size === avant) break;
       pages++;
     }
-    return { entetes: (reperes() || {}).th || [], pages, lignes: [...vu.values()] };
+    return { entetes: (reperes() || {}).th || [], pages, fini, lignes: [...vu.values()] };
   });
 
   if (!moisson.entetes.length) throw new Error("journal des commandes illisible (pas d'en-tetes)");
   const lignes = moisson.lignes;
   if (!lignes.length) return null;
 
-  /* Les numeros de commande se suivent. S'il en manque un entre le premier et
-     le dernier lu, c'est qu'une page nous a echappe — et un total ampute
-     ressemble a un vrai total, ce qui est pire que pas de total du tout. */
+  if (!moisson.fini)
+    throw new Error(`la pagination ne s'est pas terminee proprement apres ${moisson.pages} page(s) `
+      + `et ${lignes.length} commandes — on n'ecrit pas un total peut-etre ampute`);
+
+  /* Les numeros de commande ne se suivent pas toujours : le 20 aout, trente
+     commandes s'etalaient sur trente-six numeros. On le note, on n'en fait pas
+     un motif de refus. */
   const nums = lignes.map(l => Number(String(l.num).replace(/\D/g, ''))).filter(n => n > 0);
-  if (nums.length === lignes.length) {
-    const attendu = Math.max(...nums) - Math.min(...nums) + 1;
-    if (attendu !== nums.length)
-      throw new Error(`lecture trouee : ${nums.length} commandes lues, `
-        + `mais les numeros vont de ${Math.min(...nums)} a ${Math.max(...nums)} (${attendu} attendues)`);
+  if (nums.length === lignes.length && nums.length > 1) {
+    const etendue = Math.max(...nums) - Math.min(...nums) + 1;
+    if (etendue !== nums.length)
+      console.log(`  ${jour} : ${nums.length} commandes sur ${etendue} numeros `
+        + `(${Math.min(...nums)}-${Math.max(...nums)}) — des numeros non utilises, c'est normal.`);
   }
 
   const utiles = lignes.filter(l => l.total != null && !/annul/.test(SANS_ACCENT(l.statut)));
