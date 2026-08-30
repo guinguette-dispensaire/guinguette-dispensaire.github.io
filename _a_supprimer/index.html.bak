@@ -1,0 +1,1322 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guinguette du Dispensaire — bar restaurant terrasse Sartrouville</title>
+    <meta name="description" content="Bar, restaurant et guinguette au Parc du Dispensaire à Sartrouville : terrasse ombragée, planches, bières, menu enfant et aire de jeux à deux pas.">
+    <link rel="canonical" href="https://laguinguettedudispensaire.fr">
+<link rel="alternate" type="application/rss+xml" title="Le journal de La Guinguette du Dispensaire" href="https://laguinguettedudispensaire.fr/flux.xml">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <meta name="author" content="La Guinguette du Dispensaire">
+    <meta name="geo.region" content="FR-78">
+    <meta name="geo.placename" content="Sartrouville">
+    <meta name="geo.position" content="48.9397;2.1608">
+    <meta name="ICBM" content="48.9397, 2.1608">
+    <meta name="theme-color" content="#2a4e14">
+    <link rel="icon" href="logo.webp" type="image/webp">
+    <link rel="apple-touch-icon" href="logo.png">
+    <!-- Préchargement de l'image LCP (fond du hero) -->
+    <link rel="preload" as="image" href="photo3-960.webp" type="image/webp" media="(max-width: 999px)" fetchpriority="high">
+    <link rel="preload" as="image" href="photo3.webp" type="image/webp" media="(min-width: 1000px)" fetchpriority="high">
+
+    <!-- Open Graph -->
+    <meta property="og:type"        content="restaurant">
+    <meta property="og:title"       content="Guinguette du Dispensaire — bar restaurant terrasse Sartrouville">
+    <meta property="og:description" content="Bar, restaurant et guinguette au Parc du Dispensaire à Sartrouville : terrasse ombragée, planches, bières, menu enfant et aire de jeux à deux pas.">
+    <meta property="og:url"         content="https://laguinguettedudispensaire.fr">
+    <meta property="og:image"       content="https://laguinguettedudispensaire.fr/photo1.jpg">
+    <meta property="og:image:width"  content="1280">
+    <meta property="og:image:height" content="960">
+    <meta property="og:image:alt"   content="La Guinguette du Dispensaire, bar terrasse au Parc du Dispensaire à Sartrouville">
+    <meta property="og:locale"      content="fr_FR">
+    <meta property="og:site_name"   content="La Guinguette du Dispensaire">
+
+    <!-- JSON-LD WebSite (nom du site dans Google) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "La Guinguette du Dispensaire",
+      "alternateName": "Guinguette du Dispensaire Sartrouville",
+      "url": "https://laguinguettedudispensaire.fr/"
+    }
+    </script>
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card"        content="summary_large_image">
+    <meta name="twitter:title"       content="La Guinguette du Dispensaire — Sartrouville">
+    <meta name="twitter:description" content="Bar, restaurant et guinguette au Parc du Dispensaire à Sartrouville : terrasse ombragée, planches, bières, menu enfant et aire de jeux à deux pas.">
+    <meta name="twitter:image"       content="https://laguinguettedudispensaire.fr/photo1.jpg">
+
+    <!-- JSON-LD Local Business -->
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": [
+    "Restaurant",
+    "BarOrPub"
+  ],
+  "@id": "https://laguinguettedudispensaire.fr/#guinguette",
+  "name": "La Guinguette du Dispensaire",
+  "alternateName": "Guinguette du Dispensaire Sartrouville",
+  "description": "Guinguette saisonnière en plein air au cœur du Parc du Dispensaire à Sartrouville (78) : bar et restaurant en terrasse ombragée sous les arbres, bières pression, vins sélectionnés, planches, frites maison, concerts et animations gratuites. Parc public en accès libre. Ouverte de juin à octobre 2026. Réservation de grandes tablées pour vos anniversaires, afterworks et fêtes.",
+  "slogan": "On s'y retrouve, on s'y attarde, et on y revient.",
+  "sameAs": [
+    "https://www.facebook.com/profile.php?id=61590190707357",
+    "https://www.instagram.com/guinguette.du.dispensaire/",
+    "https://maps.google.com/?cid=5422210577195196381"
+  ],
+  "url": "https://laguinguettedudispensaire.fr",
+  "telephone": "+33667426565",
+  "email": "laguinguettedudispensaire@gmail.com",
+  "image": [
+    "https://laguinguettedudispensaire.fr/photo3.jpg",
+    "https://laguinguettedudispensaire.fr/photo1.jpg",
+    "https://laguinguettedudispensaire.fr/photo13.jpg",
+    "https://laguinguettedudispensaire.fr/photo16.jpg",
+    "https://laguinguettedudispensaire.fr/photo12.jpg"
+  ],
+  "logo": "https://laguinguettedudispensaire.fr/logo.png",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Parc du Dispensaire, 1 Avenue Maurice Berteaux",
+    "addressLocality": "Sartrouville",
+    "postalCode": "78500",
+    "addressRegion": "Île-de-France",
+    "addressCountry": "FR"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": 48.9397,
+    "longitude": 2.1608
+  },
+  "hasMap": "https://maps.google.com/?cid=5422210577195196381",
+  "areaServed": [
+    {
+      "@type": "City",
+      "name": "Sartrouville"
+    },
+    {
+      "@type": "City",
+      "name": "Houilles"
+    },
+    {
+      "@type": "City",
+      "name": "Maisons-Laffitte"
+    },
+    {
+      "@type": "City",
+      "name": "Le Mesnil-le-Roi"
+    },
+    {
+      "@type": "City",
+      "name": "Montesson"
+    },
+    {
+      "@type": "AdministrativeArea",
+      "name": "Yvelines"
+    }
+  ],
+  "openingHoursSpecification": [
+    {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": [
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday"
+      ],
+      "opens": "16:00",
+      "closes": "22:00",
+      "validFrom": "2026-06-01",
+      "validThrough": "2026-10-31"
+    },
+    {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": [
+        "Saturday",
+        "Sunday"
+      ],
+      "opens": "11:00",
+      "closes": "22:00",
+      "validFrom": "2026-06-01",
+      "validThrough": "2026-10-31"
+    }
+  ],
+  "priceRange": "€€",
+  "currenciesAccepted": "EUR",
+  "paymentAccepted": "Espèces, Carte bancaire",
+  "servesCuisine": [
+    "Française",
+    "Tapas",
+    "Bar à vin"
+  ],
+  "acceptsReservations": "https://laguinguettedudispensaire.fr/#reservation",
+  "potentialAction": {
+    "@type": "ReserveAction",
+    "target": {
+      "@type": "EntryPoint",
+      "urlTemplate": "https://laguinguettedudispensaire.fr/#reservation",
+      "inLanguage": "fr",
+      "actionPlatform": [
+        "http://schema.org/DesktopWebPlatform",
+        "http://schema.org/MobileWebPlatform"
+      ]
+    },
+    "result": {
+      "@type": "Reservation",
+      "name": "Réservation de table à La Guinguette du Dispensaire"
+    }
+  },
+  "publicAccess": true,
+  "isAccessibleForFree": true,
+  "smokingAllowed": false,
+  "hasMenu": "https://laguinguettedudispensaire.fr/menu.html",
+  "menu": "https://laguinguettedudispensaire.fr/menu.html",
+  "keywords": "guinguette Sartrouville, bar terrasse Sartrouville, restaurant Sartrouville, guinguette Yvelines, Parc du Dispensaire, terrasse ombragée Sartrouville, guinguette dans un parc, bar en plein air Yvelines, concert Sartrouville, afterwork Yvelines, anniversaire Sartrouville",
+  "amenityFeature": [
+    {
+      "@type": "LocationFeatureSpecification",
+      "name": "Terrasse ombragée sous les arbres",
+      "value": true
+    },
+    {
+      "@type": "LocationFeatureSpecification",
+      "name": "Jeux de plein air (babyfoot, jeux en bois)",
+      "value": true
+    },
+    {
+      "@type": "LocationFeatureSpecification",
+      "name": "Menu enfant",
+      "value": true
+    },
+    {
+      "@type": "LocationFeatureSpecification",
+      "name": "Adapté aux familles",
+      "value": true
+    },
+    {
+      "@type": "LocationFeatureSpecification",
+      "name": "Enfants bienvenus",
+      "value": true
+    },
+    {
+      "@type": "LocationFeatureSpecification",
+      "name": "Animaux acceptés (chiens)",
+      "value": true
+    },
+    {
+      "@type": "LocationFeatureSpecification",
+      "name": "Parking gratuit à proximité",
+      "value": true
+    },
+    {
+      "@type": "LocationFeatureSpecification",
+      "name": "Accès libre et gratuit au parc",
+      "value": true
+    },
+    {
+      "@type": "LocationFeatureSpecification",
+      "name": "Concerts et animations",
+      "value": true
+    },
+    {
+      "@type": "LocationFeatureSpecification",
+      "name": "Réservation de grande tablée pour un événement",
+      "value": true
+    },
+    {
+      "@type": "LocationFeatureSpecification",
+      "name": "Accessible en RER A (gare de Sartrouville)",
+      "value": true
+    },
+    {
+      "@type": "LocationFeatureSpecification",
+      "name": "Chaises hautes pour enfants",
+      "value": true
+    },
+    {
+      "@type": "LocationFeatureSpecification",
+      "name": "Toilettes",
+      "value": true
+    },
+    {
+      "@type": "LocationFeatureSpecification",
+      "name": "Accès de plain-pied (poussette et fauteuil)",
+      "value": true
+    },
+    {
+      "@type": "LocationFeatureSpecification",
+      "name": "Aire de jeux du parc à deux pas",
+      "value": true
+    }
+  ],
+  "additionalType": "https://www.wikidata.org/wiki/Q3120167",
+  "knowsLanguage": "fr",
+  "containedInPlace": {
+    "@type": "Park",
+    "name": "Parc du Dispensaire",
+    "description": "Parc public boisé de 2,75 hectares en centre-ville de Sartrouville, dans la boucle de Seine. Accès libre et gratuit.",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "1 Avenue Maurice Berteaux",
+      "addressLocality": "Sartrouville",
+      "postalCode": "78500",
+      "addressCountry": "FR"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": 48.9397,
+      "longitude": 2.1608
+    },
+    "isAccessibleForFree": true,
+    "publicAccess": true
+  }
+}
+</script>
+
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap"></noscript>
+    <style>
+/* --- Polices de repli calees sur les metriques de Playfair Display et Lato ---
+   Les polices web sont chargees en asynchrone (gain de vitesse). Sans ces regles,
+   le texte s'affiche d'abord dans Times/Arial, plus etroit, puis se recompose quand
+   la vraie police arrive : c'est ce saut qui faisait grimper le CLS a 0,133.
+   size-adjust / ascent-override ont ete mesures dans le navigateur (ecart residuel < 0,05 %). */
+@font-face{font-family:'Playfair repli';src:local('Times New Roman'),local('Liberation Serif'),local('Tinos');font-weight:400;font-style:normal;size-adjust:107.3%;ascent-override:100.7%;descent-override:23.3%;line-gap-override:0%}
+@font-face{font-family:'Playfair repli';src:local('Times New Roman Bold'),local('TimesNewRomanPS-BoldMT'),local('Liberation Serif Bold'),local('Tinos Bold');font-weight:700;font-style:normal;size-adjust:104.6%;ascent-override:103.2%;descent-override:23.9%;line-gap-override:0%}
+@font-face{font-family:'Playfair repli';src:local('Times New Roman Italic'),local('TimesNewRomanPS-ItalicMT'),local('Liberation Serif Italic'),local('Tinos Italic');font-weight:400;font-style:italic;size-adjust:104.4%;ascent-override:103.4%;descent-override:23.9%;line-gap-override:0%}
+@font-face{font-family:'Lato repli';src:local('Arial'),local('Liberation Sans'),local('Helvetica Neue'),local('Arimo');font-weight:400;font-style:normal;size-adjust:97.3%;ascent-override:101.7%;descent-override:21.6%;line-gap-override:0%}
+@font-face{font-family:'Lato repli';src:local('Arial Bold'),local('Arial-BoldMT'),local('Liberation Sans Bold'),local('Arimo Bold');font-weight:700;font-style:normal;size-adjust:93.7%;ascent-override:105.6%;descent-override:22.4%;line-gap-override:0%}
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --cream: #f5f0e6;
+            --terracotta: #c4634a;
+            --dark-green: #2a4e14;
+            --sage: #5e7f42;
+            --burgundy: #742939;
+            --gold: #c8a448;
+            --dark: #1a1a1a;
+            --white: #fff;
+        }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Lato','Lato repli',sans-serif; background: var(--cream); color: var(--dark); line-height: 1.6; }
+
+        /* NAV */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            background: rgba(26,26,26,0.93); backdrop-filter: blur(10px);
+            padding: 0.7rem 2.5rem;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .nav-logo { height: 48px; width: 48px; object-fit: contain; border-radius: 50%; background: rgba(255,255,255,0.08); }
+        .nav-brand {
+            color: var(--gold); font-family: 'Playfair Display','Playfair repli',serif;
+            font-size: 1.05rem; text-decoration: none; letter-spacing: 0.04em;
+            display: flex; align-items: center; gap: 0.75rem;
+        }
+        .nav-links { display: flex; gap: 2rem; list-style: none; }
+        .nav-links a {
+            color: rgba(255,255,255,0.75); text-decoration: none;
+            font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; transition: color 0.2s;
+        }
+        .nav-links a:hover { color: var(--gold); }
+
+        /* HERO */
+        .hero {
+            min-height: 100vh;
+            background: url('photo3-960.jpg') center/cover no-repeat;
+            background-image: image-set(url('photo3-960.webp') type('image/webp'), url('photo3-960.jpg') type('image/jpeg'));
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            text-align: center; padding: 7rem 2rem 5rem; position: relative; overflow: hidden;
+        }
+        @media (min-width: 1000px) {
+            .hero { background-image: url('photo3.jpg'); }
+            .hero { background-image: image-set(url('photo3.webp') type('image/webp'), url('photo3.jpg') type('image/jpeg')); }
+        }
+        .hero::before {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(155deg, rgba(42,78,20,0.82) 0%, rgba(116,41,57,0.72) 45%, rgba(30,20,10,0.75) 100%);
+        }
+        .hero-content { position: relative; z-index: 1; }
+        .hero-logo { width: 110px; height: 110px; object-fit: contain; margin-bottom: 1.5rem; filter: drop-shadow(0 4px 16px rgba(0,0,0,0.5)); }
+        .hero-eyebrow { color: var(--gold); font-size: 0.72rem; letter-spacing: 0.35em; text-transform: uppercase; margin-bottom: 1.25rem; }
+        .hero h1 { font-family: 'Playfair Display','Playfair repli',serif; font-size: clamp(2.8rem, 9vw, 6rem); color: var(--white); line-height: 1.05; margin-bottom: 0.3rem; }
+        .hero h1 em { display: block; font-style: italic; color: var(--gold); }
+        .hero-tagline {
+            font-family: 'Playfair Display','Playfair repli',serif; font-size: clamp(1rem, 2.5vw, 1.3rem);
+            color: rgba(255,255,255,0.85); font-style: italic;
+            margin: 1.5rem auto 2.2rem; max-width: 580px; line-height: 1.5;
+        }
+        .hero-pills { display: flex; flex-wrap: wrap; gap: 0.6rem; justify-content: center; margin-bottom: 2.5rem; }
+        .pill { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.22); color: rgba(255,255,255,0.92); padding: 0.38rem 1.1rem; border-radius: 50px; font-size: 0.78rem; }
+        .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; margin-bottom: 4.5rem; }
+        .btn { display: inline-block; background: var(--gold); color: var(--dark); padding: 0.85rem 2.2rem; border-radius: 50px; font-weight: 700; text-decoration: none; font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; transition: transform 0.2s, box-shadow 0.2s; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.25); }
+        .btn-outline { background: transparent; border: 1.5px solid rgba(255,255,255,0.45); color: var(--white); }
+        .btn-outline:hover { background: rgba(255,255,255,0.1); }
+        .hero-scroll { position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%); color: rgba(255,255,255,0.4); font-size: 0.65rem; letter-spacing: 0.25em; text-transform: uppercase; display: flex; flex-direction: column; align-items: center; gap: 0.6rem; z-index: 1; }
+        .hero-scroll::after { content: ''; width: 1px; height: 44px; background: linear-gradient(to bottom, rgba(255,255,255,0.4), transparent); animation: scrollDown 1.8s ease-in-out infinite; }
+        @keyframes scrollDown { 0%,100%{opacity:.3;transform:scaleY(.5) translateY(-5px)} 50%{opacity:1;transform:scaleY(1) translateY(0)} }
+
+        /* SECTIONS */
+        section { padding: 5.5rem 2rem; }
+        .container { max-width: 1080px; margin: 0 auto; }
+        .section-label { color: var(--sage); font-size: 0.72rem; letter-spacing: 0.32em; text-transform: uppercase; margin-bottom: 0.75rem; }
+        .section-title { font-family: 'Playfair Display','Playfair repli',serif; font-size: clamp(2rem, 5vw, 3rem); line-height: 1.15; margin-bottom: 1.75rem; }
+
+        /* CONCEPT */
+        .concept { background: var(--dark-green); color: var(--cream); }
+        .concept .section-label { color: var(--gold); }
+        .concept-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+        .concept-text p { font-size: 1.05rem; line-height: 1.85; color: rgba(245,240,230,0.82); margin-bottom: 1.4rem; }
+        .concept-text p strong { color: var(--gold); }
+        .concept-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .concept-card { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; padding: 1.5rem 1.25rem; text-align: center; transition: background 0.2s; }
+        .concept-card:nth-child(even) { transform: translateY(1.25rem); }
+        .concept-card:hover { background: rgba(255,255,255,0.1); }
+        .cc-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+        .cc-title { font-family: 'Playfair Display','Playfair repli',serif; font-size: 0.95rem; color: var(--gold); margin-bottom: 0.4rem; }
+        .cc-text { font-size: 0.82rem; color: rgba(245,240,230,0.65); line-height: 1.5; }
+
+        /* GALLERY */
+        .gallery { background: var(--cream); }
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.75rem;
+        }
+        .gallery-grid .g-item { overflow: hidden; border-radius: 12px; aspect-ratio: 4/3; }
+        .gallery-grid .g-item.g-wide { grid-column: span 2; aspect-ratio: 16/9; }
+        .gallery-grid .g-item.g-portrait { aspect-ratio: 3/4; }
+        .gallery-grid .g-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; display: block; }
+        .gallery-grid .g-item:hover img { transform: scale(1.05); }
+
+        /* CARTE */
+        .carte { background: var(--cream); }
+        .carte-tabs { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2.5rem; }
+        .tab-btn { background: none; border: 1.5px solid rgba(0,0,0,0.14); padding: 0.48rem 1.15rem; border-radius: 50px; font-family: 'Lato','Lato repli',sans-serif; font-size: 0.78rem; letter-spacing: 0.04em; cursor: pointer; transition: all 0.2s; color: var(--dark); }
+        .tab-btn.active, .tab-btn:hover { background: var(--terracotta); border-color: var(--terracotta); color: var(--white); }
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+        .menu-section-title { font-family: 'Playfair Display','Playfair repli',serif; font-size: 1.25rem; color: var(--burgundy); margin: 2rem 0 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid rgba(0,0,0,0.1); }
+        .menu-section-title:first-child { margin-top: 0; }
+        .menu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 0.85rem; }
+        .menu-item { background: var(--white); border-radius: 12px; padding: 1.15rem 1.35rem; box-shadow: 0 2px 10px rgba(0,0,0,0.06); display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; transition: transform 0.18s, box-shadow 0.18s; }
+        .menu-item:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.09); }
+        .mi-info { flex: 1; }
+        .mi-name { font-family: 'Playfair Display','Playfair repli',serif; font-size: 0.97rem; margin-bottom: 0.22rem; }
+        .mi-desc { font-size: 0.78rem; color: #777; line-height: 1.4; }
+        .mi-price { font-weight: 700; color: var(--terracotta); font-size: 0.97rem; white-space: nowrap; text-align: right; }
+        .mi-price small { display: block; font-size: 0.68rem; color: #aaa; font-weight: 400; }
+        .beer-prices { display: flex; align-items: baseline; gap: 0.5rem; justify-content: flex-end; flex-wrap: wrap; }
+        .beer-prices span { font-weight: 700; color: var(--terracotta); font-size: 0.93rem; white-space: nowrap; }
+        .beer-prices small { font-size: 0.65rem; color: #aaa; font-weight: 400; }
+        .beer-sep { color: #ccc !important; font-weight: 400 !important; }
+        .wi-bottle { width: 42px; height: 78px; object-fit: contain; object-position: center; flex-shrink: 0; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.18)); align-self: center; }
+        .formules-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; }
+        .formule-card { background: var(--white); border-radius: 18px; padding: 2rem 1.5rem; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.06); position: relative; overflow: hidden; transition: transform 0.2s, box-shadow 0.2s; }
+        .formule-card:hover { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(0,0,0,0.1); }
+        .formule-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, var(--terracotta), var(--gold)); }
+        .f-price { font-family: 'Playfair Display','Playfair repli',serif; font-size: 2.8rem; color: var(--terracotta); font-weight: 700; line-height: 1; }
+        .f-price span { font-size: 1.3rem; }
+        .f-name { font-family: 'Playfair Display','Playfair repli',serif; font-size: 1.05rem; margin: 0.8rem 0 0.5rem; }
+        .f-desc { font-size: 0.8rem; color: #666; line-height: 1.5; }
+        .enfant-card { max-width: 380px; margin: 0 auto; background: var(--white); border-radius: 22px; padding: 2.5rem; text-align: center; box-shadow: 0 4px 24px rgba(0,0,0,0.08); }
+        .enfant-card .big-icon { font-size: 3.5rem; margin-bottom: 1rem; }
+        .enfant-card .e-title { font-family: 'Playfair Display','Playfair repli',serif; font-size: 1.5rem; margin-bottom: 0.5rem; }
+        .enfant-card .e-price { color: var(--terracotta); font-size: 2.2rem; font-weight: 700; font-family: 'Playfair Display','Playfair repli',serif; }
+        .enfant-card .e-sub { font-size: 0.7rem; color: #aaa; letter-spacing: 0.15em; text-transform: uppercase; margin: 0.5rem 0 1.5rem; }
+        .enfant-card ul { list-style: none; text-align: left; font-size: 0.97rem; color: #555; line-height: 2.2; }
+
+        /* EVENTS */
+        .events { background: linear-gradient(140deg, var(--burgundy) 0%, #3a1020 100%); color: var(--cream); }
+        .events .section-label { color: var(--gold); }
+        .events-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+        .events-lead { font-size: 1.05rem; line-height: 1.85; color: rgba(245,240,230,0.82); margin-bottom: 2rem; }
+        .events-chips { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+        .event-chip { background: rgba(255,255,255,0.09); border: 1px solid rgba(255,255,255,0.18); border-radius: 50px; padding: 0.6rem 1.4rem; font-size: 0.83rem; color: var(--cream); transition: background 0.2s; }
+        .event-chip:hover { background: rgba(255,255,255,0.16); }
+        .events-photo { border-radius: 18px; overflow: hidden; aspect-ratio: 4/3; }
+        .events-photo img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* INFOS */
+        .infos { background: var(--white); }
+        .infos-grid { display: grid; grid-template-columns: repeat(3, 1fr); }
+        .info-block { padding: 2.25rem 2rem; border-left: 3px solid var(--gold); }
+        .info-block:not(:first-child) { border-left-color: rgba(200,164,72,0.35); }
+        .ib-icon { font-size: 1.6rem; margin-bottom: 1rem; }
+        .ib-title { font-family: 'Playfair Display','Playfair repli',serif; font-size: 1.1rem; color: var(--dark-green); margin-bottom: 0.8rem; }
+        .ib-body { font-size: 0.88rem; line-height: 1.75; color: #555; }
+        .ib-body strong { color: var(--dark); }
+        .ib-body a { color: var(--sage); text-decoration: none; }
+        .ib-body a:hover { text-decoration: underline; }
+        .map-wrap { margin-top: 3rem; border-radius: 18px; overflow: hidden; height: 360px; box-shadow: 0 4px 24px rgba(0,0,0,0.1); }
+        .map-wrap iframe { width: 100%; height: 100%; border: none; }
+
+        /* PRESSE */
+        .presse { background: var(--cream); }
+        .presse-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.75rem; margin-top: 3rem; }
+        .press-card { background: #fff; border-radius: 16px; padding: 2rem 1.75rem; box-shadow: 0 2px 18px rgba(0,0,0,0.07); display: flex; flex-direction: column; gap: 0.9rem; transition: transform 0.2s, box-shadow 0.2s; text-decoration: none; color: inherit; }
+        .press-card:hover { transform: translateY(-4px); box-shadow: 0 8px 32px rgba(0,0,0,0.13); }
+        .press-source { display: flex; align-items: center; gap: 0.55rem; font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; color: var(--terracotta); }
+        .press-source::before { content: ''; display: inline-block; width: 28px; height: 2px; background: var(--terracotta); border-radius: 2px; }
+        .press-title { font-family: 'Playfair Display','Playfair repli',serif; font-size: 1.05rem; line-height: 1.45; color: var(--dark); }
+        .press-excerpt { font-size: 0.82rem; line-height: 1.65; color: #666; flex: 1; }
+        .press-cta { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--terracotta); display: flex; align-items: center; gap: 0.4rem; }
+        .press-cta::after { content: '→'; }
+
+        /* FOOTER */
+        footer { background: var(--dark); color: rgba(255,255,255,0.6); padding: 3.5rem 2rem; text-align: center; }
+        .footer-logo { height: 60px; width: 60px; object-fit: contain; border-radius: 50%; opacity: 0.85; margin-bottom: 1rem; }
+        .footer-brand { font-family: 'Playfair Display','Playfair repli',serif; font-size: 1.6rem; color: var(--gold); margin-bottom: 0.4rem; }
+        .footer-sub { font-size: 0.75rem; letter-spacing: 0.12em; color: rgba(255,255,255,0.6); margin-bottom: 2.25rem; }
+        .footer-nav { display: flex; justify-content: center; flex-wrap: wrap; gap: 1.75rem; list-style: none; margin-bottom: 2rem; }
+        .footer-nav a { color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; transition: color 0.2s; }
+        .footer-nav a:hover { color: var(--gold); }
+        .footer-copy { font-size: 0.72rem; color: rgba(255,255,255,0.55); }
+
+        /* REVEAL */
+        [data-reveal] { opacity: 0; transform: translateY(22px); transition: opacity 0.65s ease, transform 0.65s ease; }
+        [data-reveal].visible { opacity: 1; transform: none; }
+
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
+            .concept-grid, .events-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+            .concept-card:nth-child(even) { transform: none; }
+            .infos-grid { grid-template-columns: 1fr; }
+            .info-block { border-left: none; border-top: 3px solid var(--gold); }
+            .info-block:not(:first-child) { border-top-color: rgba(200,164,72,0.35); }
+            .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+            .gallery-grid .g-item.g-wide { grid-column: span 2; }
+            .gallery-grid .g-item.g-portrait { aspect-ratio: 4/3; }
+            .nav-links { display: none; }
+        }
+        @media (max-width: 520px) {
+            .btn-outline { display: none; }
+            .gallery-grid { grid-template-columns: 1fr; }
+            .gallery-grid .g-item.g-wide, .gallery-grid .g-item.g-portrait { grid-column: span 1; aspect-ratio: 4/3; }
+        }
+    
+        /* Réservation + FAQ + nav CTA */
+        .nav-cta { background: var(--gold); color: var(--dark) !important; padding: 0.4rem 1rem; border-radius: 50px; }
+        .reservation { background: var(--cream); }
+        .resa-intro { max-width: 640px; margin: 0 auto 2.25rem; text-align: center; color: #555; }
+        .resa-form { max-width: 680px; margin: 0 auto; display: flex; flex-direction: column; gap: 1.1rem; background: var(--white); padding: 2.25rem; border-radius: 18px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); }
+        .resa-form label { display: flex; flex-direction: column; gap: 0.4rem; font-size: 0.82rem; font-weight: 700; color: var(--dark-green); flex: 1; }
+        .resa-row { display: flex; gap: 1.1rem; flex-wrap: wrap; }
+        .resa-form input, .resa-form textarea { font-family: 'Lato','Lato repli',sans-serif; font-size: 0.95rem; padding: 0.7rem 0.85rem; border: 1.5px solid rgba(0,0,0,0.15); border-radius: 10px; background: var(--cream); color: var(--dark); font-weight: 400; width: 100%; }
+        .resa-form input:focus, .resa-form textarea:focus { outline: none; border-color: var(--gold); }
+        .resa-btn { border: none; cursor: pointer; align-self: center; margin-top: 0.5rem; }
+        .resa-note { font-size: 0.78rem; color: #999; text-align: center; }
+        .resa-result { text-align: center; font-weight: 700; font-size: 0.9rem; min-height: 1.2em; }
+        .resa-result.ok { color: var(--dark-green); }
+        .resa-result.err { color: var(--burgundy); }
+        .faq { background: var(--white); }
+        .faq-list { max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 0.75rem; }
+        .faq-list details { border: 1px solid rgba(0,0,0,0.1); border-radius: 12px; padding: 0 1.25rem; background: var(--cream); }
+        .faq-list summary { cursor: pointer; font-weight: 700; color: var(--dark-green); padding: 1.05rem 0; list-style: none; font-size: 0.98rem; }
+        .faq-list summary::-webkit-details-marker { display: none; }
+        .faq-list summary::after { content: '+'; float: right; color: var(--gold); font-size: 1.3rem; line-height: 1; }
+        .faq-list details[open] summary::after { content: '\2013'; }
+        .faq-list details p { padding: 0 0 1.1rem; color: #555; font-size: 0.92rem; line-height: 1.7; }
+        @media (max-width: 600px) { .resa-form { padding: 1.5rem; } }
+    
+        /* Le journal — bloc de maillage vers les articles */
+        .journal { padding: 4.5rem 0; background: #f0ebe0; }
+        .journal-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; margin-top: 1.75rem; }
+        .journal-grid a { display: block; background: var(--white); border-radius: 14px; padding: 1.1rem 1.25rem; text-decoration: none; color: inherit; border: 1px solid rgba(0,0,0,.07); transition: transform .18s ease, box-shadow .18s ease; }
+        .journal-grid a:hover, .journal-grid a:focus-visible { transform: translateY(-3px); box-shadow: 0 10px 26px rgba(0,0,0,.09); }
+        .journal-grid strong { display: block; font-family: 'Playfair Display','Playfair repli',serif; font-size: 1.02rem; line-height: 1.3; color: var(--dark-green); margin-bottom: .35rem; }
+        .journal-grid span { display: block; font-size: .87rem; line-height: 1.5; color: #5b5b5b; }
+        .journal-more { margin-top: 1.75rem; }
+</style>
+
+  <!-- SEO: concerts / evenements (ajoute 2026-07-16) -->
+  <script type="application/ld+json">
+[
+  {
+    "@context": "https://schema.org",
+    "@type": "Event",
+    "name": "Concert : Yipikiyay à La Guinguette du Dispensaire",
+    "startDate": "2026-09-10T19:00:00+02:00",
+    "endDate": "2026-09-10T21:30:00+02:00",
+    "eventStatus": "https://schema.org/EventScheduled",
+    "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+    "location": {
+      "@type": "Place",
+      "name": "La Guinguette du Dispensaire",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Parc du Dispensaire, 1 Avenue Maurice Berteaux",
+        "addressLocality": "Sartrouville",
+        "postalCode": "78500",
+        "addressRegion": "Île-de-France",
+        "addressCountry": "FR"
+      }
+    },
+    "image": [
+      "https://laguinguettedudispensaire.fr/photo10.jpg"
+    ],
+    "performer": {
+      "@type": "MusicGroup",
+      "name": "Yipikiyay"
+    },
+    "organizer": {
+      "@type": "Organization",
+      "name": "La Guinguette du Dispensaire",
+      "url": "https://laguinguettedudispensaire.fr"
+    },
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "EUR",
+      "availability": "https://schema.org/InStock",
+      "validFrom": "2026-09-10",
+      "url": "https://laguinguettedudispensaire.fr/#animations"
+    },
+    "description": "Concert live de Yipikiyay à La Guinguette du Dispensaire, bar terrasse au Parc du Dispensaire à Sartrouville. Entrée libre, de 19h à 21h30."
+  }
+]
+  </script>
+<script defer src="https://cloud.umami.is/script.js" data-website-id="e2122b5d-7b90-4b67-b0ce-9c8d22844d19"></script>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+    <a href="#" class="nav-brand">
+        <img src="logo.webp" alt="Logo La Guinguette du Dispensaire" class="nav-logo" width="256" height="256">
+        La Guinguette du Dispensaire
+    </a>
+    <ul class="nav-links">
+        <li><a href="#concept">Le lieu</a></li>
+        <li><a href="#galerie">Photos</a></li>
+        <li><a href="#carte">La carte</a></li>
+        <li><a href="#animations">Animations</a></li>
+        <li><a href="#presse">Presse</a></li>
+        <li><a href="#infos">Infos &amp; accès</a></li>
+        <li><a href="agenda.html">Agenda</a></li>
+    <li><a href="blog.html">Le journal</a></li>
+        <li><a href="#reservation" class="nav-cta">Réserver</a></li>
+    </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-content">
+        <img src="logo.webp" alt="Logo La Guinguette du Dispensaire à Sartrouville" class="hero-logo" width="256" height="256" fetchpriority="high">
+        <p class="hero-eyebrow">Sartrouville · Parc du Dispensaire · Saison 2026</p>
+        <h1>La Guinguette<br><em>du Dispensaire</em></h1>
+        <p class="hero-tagline">
+            « On s'y retrouve, on s'y attarde,<br>
+            et on y revient. »
+        </p>
+        <div class="hero-pills">
+            <span class="pill">🍺 Bières pression</span>
+            <span class="pill">🍷 Vins sélectionnés</span>
+            <span class="pill">🧀 Planches &amp; grignotages</span>
+            <span class="pill">🎵 Concerts &amp; animations</span>
+            <span class="pill">🍦 Glaces maison</span>
+            <span class="pill">👧 Menu enfant 9€</span>
+            <span class="pill">👨‍👩‍👧 Familles bienvenues</span>
+        </div>
+        <div class="hero-btns">
+            <a href="#reservation" class="btn">Réserver une table</a>
+            <a href="#carte" class="btn btn-outline">Voir la carte</a>
+            <a href="#infos" class="btn btn-outline">Nous trouver</a>
+        </div>
+    </div>
+    <div class="hero-scroll">Découvrir</div>
+</section>
+
+<!-- CONCEPT -->
+<section id="concept" class="concept">
+    <div class="container">
+        <div class="concept-grid">
+            <div class="concept-text" data-reveal>
+                <p class="section-label">Notre histoire</p>
+                <h2 class="section-title">Un lieu de vie au cœur du parc</h2>
+                <p>Nichée dans les <strong>anciennes écuries du Parc du Dispensaire</strong>, La Guinguette du Dispensaire est un espace ouvert à toutes et tous, dans l'esprit des guinguettes d'antan : convivial, familial, festif.</p>
+                <p>Bières pression fraîches, vins soigneusement sélectionnés par <strong>Pépites de Vin</strong>, planches généreuses et frites maison… tout est pensé pour que vous passiez un bon moment en famille ou entre amis.</p>
+                <p>Ouverte de <strong>juin à octobre 2026</strong>, avec concerts et animations tout au long de la saison. <em>On s'y retrouve, on s'y attarde, et on y revient.</em></p>
+            </div>
+            <div class="concept-cards" data-reveal>
+                <div class="concept-card">
+                    <div class="cc-icon">🌿</div>
+                    <div class="cc-title">Cadre naturel</div>
+                    <div class="cc-text">En plein cœur d'un parc arboré en centre-ville de Sartrouville</div>
+                </div>
+                <div class="concept-card">
+                    <div class="cc-icon">🍺</div>
+                    <div class="cc-title">Bons produits</div>
+                    <div class="cc-text">Vins sélectionnés par Pépites de Vin, bières pression de qualité</div>
+                </div>
+                <div class="concept-card">
+                    <div class="cc-icon">🎵</div>
+                    <div class="cc-title">Animations</div>
+                    <div class="cc-text">Concerts live, événements festifs et culturels toute la saison</div>
+                </div>
+                <div class="concept-card">
+                    <div class="cc-icon">👨‍👩‍👧</div>
+                    <div class="cc-title">Pour tous</div>
+                    <div class="cc-text">Espace familial, jeux pour tous (Molkky, palet breton, pétanque…), menu enfant, terrasse ombragée</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- GALERIE -->
+<section id="galerie" class="gallery">
+    <div class="container">
+        <p class="section-label" data-reveal>En images</p>
+        <h2 class="section-title" data-reveal>La guinguette en vrai</h2>
+        <div class="gallery-grid" data-reveal>
+            <div class="g-item g-portrait"><picture><source srcset="photo7-640.webp 640w, photo7-960.webp 960w, photo7.webp 1050w" sizes="(max-width:520px) 100vw, (max-width:900px) 50vw, 700px" type="image/webp"><img src="photo7.jpg" srcset="photo7-640.jpg 640w, photo7-960.jpg 960w, photo7.jpg 1050w" sizes="(max-width:520px) 100vw, (max-width:900px) 50vw, 700px" alt="Ambiance conviviale à la Guinguette du Dispensaire, Sartrouville" width="1050" height="1400" loading="lazy" decoding="async"></picture></div>
+            <div class="g-item g-portrait"><picture><source srcset="photo4-640.webp 640w, photo4-960.webp 960w, photo4.webp 1280w" sizes="(max-width:520px) 100vw, (max-width:900px) 50vw, 700px" type="image/webp"><img src="photo4.jpg" srcset="photo4-640.jpg 640w, photo4-960.jpg 960w, photo4.jpg 1280w" sizes="(max-width:520px) 100vw, (max-width:900px) 50vw, 700px" alt="Terrasse de la guinguette au Parc du Dispensaire à Sartrouville" width="1280" height="1706" loading="lazy" decoding="async"></picture></div>
+            <div class="g-item"><picture><source srcset="photo9-640.webp 640w, photo9-960.webp 960w, photo9.webp 1280w" sizes="(max-width:520px) 100vw, (max-width:900px) 50vw, 700px" type="image/webp"><img src="photo9.jpg" srcset="photo9-640.jpg 640w, photo9-960.jpg 960w, photo9.jpg 1280w" sizes="(max-width:520px) 100vw, (max-width:900px) 50vw, 700px" alt="Le Parc du Dispensaire à Sartrouville" width="1280" height="960" loading="lazy" decoding="async"></picture></div>
+            <div class="g-item g-wide"><picture><source srcset="photo1-640.webp 640w, photo1-960.webp 960w, photo1.webp 1280w" sizes="(max-width:520px) 100vw, (max-width:900px) 50vw, 700px" type="image/webp"><img src="photo1.jpg" srcset="photo1-640.jpg 640w, photo1-960.jpg 960w, photo1.jpg 1280w" sizes="(max-width:520px) 100vw, (max-width:900px) 50vw, 700px" alt="Le bar de la Guinguette du Dispensaire à Sartrouville" width="1280" height="960" loading="lazy" decoding="async"></picture></div>
+            <div class="g-item g-portrait"><picture><source srcset="photo10-640.webp 640w, photo10-960.webp 960w, photo10.webp 1280w" sizes="(max-width:520px) 100vw, (max-width:900px) 50vw, 700px" type="image/webp"><img src="photo10.jpg" srcset="photo10-640.jpg 640w, photo10-960.jpg 960w, photo10.jpg 1280w" sizes="(max-width:520px) 100vw, (max-width:900px) 50vw, 700px" alt="Terrasse animée de la guinguette à Sartrouville (Yvelines)" width="1280" height="960" loading="lazy" decoding="async"></picture></div>
+            <div class="g-item g-wide"><picture><source srcset="photo11-640.webp 640w, photo11-960.webp 960w, photo11.webp 1280w" sizes="(max-width:520px) 100vw, (max-width:900px) 50vw, 700px" type="image/webp"><img src="photo11.jpg" srcset="photo11-640.jpg 640w, photo11-960.jpg 960w, photo11.jpg 1280w" sizes="(max-width:520px) 100vw, (max-width:900px) 50vw, 700px" alt="Le comptoir de la Guinguette du Dispensaire, bar terrasse à Sartrouville" width="1280" height="720" loading="lazy" decoding="async"></picture></div>
+            <div class="g-item g-wide"><picture><source srcset="photo13-640.webp 640w, photo13-960.webp 960w, photo13.webp 1600w" sizes="(max-width:520px) 100vw, (max-width:900px) 50vw, 700px" type="image/webp"><img src="photo13.jpg" srcset="photo13-640.jpg 640w, photo13-960.jpg 960w, photo13.jpg 1600w" sizes="(max-width:520px) 100vw, (max-width:900px) 50vw, 700px" alt="Terrasse ombragée de la Guinguette du Dispensaire dans le Parc du Dispensaire à Sartrouville" width="1600" height="1066" loading="lazy" decoding="async"></picture></div>
+            <div class="g-item g-portrait"><picture><source srcset="photo18-640.webp 640w, photo18-960.webp 960w, photo18.webp 1066w" sizes="(max-width:520px) 100vw, (max-width:900px) 50vw, 700px" type="image/webp"><img src="photo18.jpg" srcset="photo18-640.jpg 640w, photo18-960.jpg 960w, photo18.jpg 1066w" sizes="(max-width:520px) 100vw, (max-width:900px) 50vw, 700px" alt="Planche charcuterie-fromage, fruits frais et spritz à la Guinguette du Dispensaire, Sartrouville" width="1066" height="1600" loading="lazy" decoding="async"></picture></div>
+            <div class="g-item g-portrait"><picture><source srcset="photo15-640.webp 640w, photo15-960.webp 960w, photo15.webp 1066w" sizes="(max-width:520px) 100vw, (max-width:900px) 50vw, 700px" type="image/webp"><img src="photo15.jpg" srcset="photo15-640.jpg 640w, photo15-960.jpg 960w, photo15.jpg 1066w" sizes="(max-width:520px) 100vw, (max-width:900px) 50vw, 700px" alt="L'équipe de la Guinguette du Dispensaire à Sartrouville" width="1066" height="1600" loading="lazy" decoding="async"></picture></div>
+            <div class="g-item g-portrait"><picture><source srcset="photo16-640.webp 640w, photo16-960.webp 960w, photo16.webp 1066w" sizes="(max-width:520px) 100vw, (max-width:900px) 50vw, 700px" type="image/webp"><img src="photo16.jpg" srcset="photo16-640.jpg 640w, photo16-960.jpg 960w, photo16.jpg 1066w" sizes="(max-width:520px) 100vw, (max-width:900px) 50vw, 700px" alt="Babyfoot et jeux en plein air à la Guinguette du Dispensaire, Sartrouville" width="1066" height="1600" loading="lazy" decoding="async"></picture></div>
+            <div class="g-item g-portrait"><picture><source srcset="photo22-640.webp 640w, photo22-960.webp 960w, photo22.webp 1066w" sizes="(max-width:520px) 100vw, (max-width:900px) 50vw, 700px" type="image/webp"><img src="photo22.jpg" srcset="photo22-640.jpg 640w, photo22-960.jpg 960w, photo22.jpg 1066w" sizes="(max-width:520px) 100vw, (max-width:900px) 50vw, 700px" alt="Cocktails maison, spritz et citronnade, à la Guinguette du Dispensaire à Sartrouville" width="1066" height="1600" loading="lazy" decoding="async"></picture></div>
+            <div class="g-item g-portrait"><picture><source srcset="photo17-640.webp 640w, photo17-960.webp 960w, photo17.webp 1066w" sizes="(max-width:520px) 100vw, (max-width:900px) 50vw, 700px" type="image/webp"><img src="photo17.jpg" srcset="photo17-640.jpg 640w, photo17-960.jpg 960w, photo17.jpg 1066w" sizes="(max-width:520px) 100vw, (max-width:900px) 50vw, 700px" alt="Ardoise des formules de la Guinguette du Dispensaire, Sartrouville" width="1066" height="1600" loading="lazy" decoding="async"></picture></div>
+            <div class="g-item g-portrait"><picture><source srcset="photo12-640.webp 640w, photo12-960.webp 960w, photo12.webp 1066w" sizes="(max-width:520px) 100vw, (max-width:900px) 50vw, 700px" type="image/webp"><img src="photo12.jpg" srcset="photo12-640.jpg 640w, photo12-960.jpg 960w, photo12.jpg 1066w" sizes="(max-width:520px) 100vw, (max-width:900px) 50vw, 700px" alt="Façade de la Guinguette du Dispensaire au Parc du Dispensaire, Sartrouville" width="1066" height="1600" loading="lazy" decoding="async"></picture></div>
+            <div class="g-item g-portrait"><picture><source srcset="photo21-640.webp 640w, photo21-960.webp 960w, photo21.webp 1066w" sizes="(max-width:520px) 100vw, (max-width:900px) 50vw, 700px" type="image/webp"><img src="photo21.jpg" srcset="photo21-640.jpg 640w, photo21-960.jpg 960w, photo21.jpg 1066w" sizes="(max-width:520px) 100vw, (max-width:900px) 50vw, 700px" alt="Verres de vin en terrasse à la Guinguette du Dispensaire, Sartrouville" width="1066" height="1600" loading="lazy" decoding="async"></picture></div>
+        </div>
+    </div>
+</section>
+
+<!-- CARTE -->
+<section id="carte" class="carte" style="background: #f0ebe0;">
+    <div class="container">
+        <p class="section-label" data-reveal>Ce qu'on vous sert</p>
+        <h2 class="section-title" data-reveal>La carte</h2>
+        <p data-reveal style="margin:-0.75rem 0 1.75rem;font-size:0.9rem;color:#777">Retrouvez aussi notre <a href="menu.html" style="color:var(--terracotta);font-weight:700;text-decoration:underline">menu complet en version imprimable</a> (idéal pour le QR code à table).</p>
+
+        <div class="carte-tabs" data-reveal>
+            <button class="tab-btn active"  onclick="switchTab(this,'formules')">🎯 Formules</button>
+            <button class="tab-btn"         onclick="switchTab(this,'enfant')">👧 Menu enfant</button>
+            <button class="tab-btn"         onclick="switchTab(this,'matin')">☕ Matin &amp; douceurs</button>
+            <button class="tab-btn"         onclick="switchTab(this,'grignoter')">🧀 À grignoter</button>
+            <button class="tab-btn"         onclick="switchTab(this,'bieres')">🍺 Bières</button>
+            <button class="tab-btn"         onclick="switchTab(this,'vins')">🍷 Vins</button>
+            <button class="tab-btn"         onclick="switchTab(this,'cocktails')">🍹 Cocktails</button>
+            <button class="tab-btn"         onclick="switchTab(this,'softs')">🥤 Softs &amp; Chauds</button>
+        </div>
+
+        <!-- FORMULES -->
+        <div id="tab-formules" class="tab-panel active">
+            <div class="formules-grid">
+                <div class="formule-card"><div class="f-price">25<span>€</span></div><div class="f-name">Planche &amp; Vins</div><div class="f-desc">Planche 2 personnes + 2 verres de vin</div></div>
+                <div class="formule-card"><div class="f-price">45<span>€</span></div><div class="f-name">Grande Tablée</div><div class="f-desc">Planche 4 personnes + 1 bouteille de vin</div></div>
+                <div class="formule-card"><div class="f-price">12<span>€</span></div><div class="f-name">Frite &amp; Pinte</div><div class="f-desc">Grande frite maison + une pinte de votre choix</div></div>
+            </div>
+        </div>
+
+        <!-- MENU ENFANT -->
+        <div id="tab-enfant" class="tab-panel">
+            <div class="enfant-card">
+                <div class="big-icon">👧</div>
+                <div class="e-title">Menu Enfant</div>
+                <div class="e-price">9 €</div>
+                <div class="e-sub">— 12 ans et moins —</div>
+                <ul>
+                    <li>🧃 &nbsp;1 jus, soda ou sirop</li>
+                    <li>🍟 &nbsp;Nuggets avec frites</li>
+                    <li>🍦 &nbsp;1 glace</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- MATIN & DOUCEURS -->
+        <div id="tab-matin" class="tab-panel">
+            <p class="menu-section-title">Petit-déjeuner</p>
+            <p style="font-size:.83rem;color:#888;font-style:italic;margin-bottom:1rem">Servi le matin, jusqu'à 11 h</p>
+            <div class="menu-grid">
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Formule matin</div><div class="mi-desc">Café + croissant</div></div><div class="mi-price">3 €</div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Formule matin gourmande</div><div class="mi-desc">Café + pain au chocolat</div></div><div class="mi-price">3,50 €</div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Formule petit déj</div><div class="mi-desc">Café + viennoiserie + jus frais</div></div><div class="mi-price">5 €</div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Croissant</div></div><div class="mi-price">1,70 €</div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Pain au chocolat</div></div><div class="mi-price">2 €</div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Jus de clémentine</div><div class="mi-desc">Pressé frais</div></div><div class="mi-price">2,50 €</div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Chocolat chaud</div></div><div class="mi-price">2,50 €</div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Macchiato</div></div><div class="mi-price">2,50 €</div></div>
+            </div>
+            <p class="menu-section-title">Douceurs</p>
+            <div class="menu-grid">
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Crêpe nature</div></div><div class="mi-price">2 €</div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Crêpe sucre</div></div><div class="mi-price">2,50 €</div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Crêpe sucre &amp; citron</div></div><div class="mi-price">3 €</div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Crêpe Nutella</div></div><div class="mi-price">3,50 €</div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Crêpe confiture</div></div><div class="mi-price">3,50 €</div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Cookie</div></div><div class="mi-price">2,50 €</div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Brownie</div></div><div class="mi-price">2,50 €</div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Muffin</div></div><div class="mi-price">2,50 €</div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Pompote</div></div><div class="mi-price">1,50 €</div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Sachet de bonbons</div></div><div class="mi-price">1 €</div></div>
+            </div>
+        </div>
+        <!-- À GRIGNOTER -->
+        <div id="tab-grignoter" class="tab-panel">
+            <p class="menu-section-title">À picorer</p>
+            <div class="menu-grid">
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Aiguillettes de poulet</div><div class="mi-desc">6 pièces · sauce maison</div></div><div class="mi-price">7 €</div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Nuggets de poulet</div><div class="mi-desc">6 pièces · sauce maison</div></div><div class="mi-price">6 €</div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Sticks Mozzarella</div><div class="mi-desc">6 pièces · panés et dorés</div></div><div class="mi-price">6 €</div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Onion rings</div><div class="mi-desc">6 pièces · panés et dorés</div></div><div class="mi-price">6 €</div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Frite maison</div><div class="mi-desc">Faites maison · petite portion</div></div><div class="mi-price">4 €</div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Grande frite maison</div><div class="mi-desc">Faites maison · portion généreuse</div></div><div class="mi-price">6 €</div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Chips</div></div><div class="mi-price">2 €</div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Melon</div></div><div class="mi-price">7 €</div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Pastèque</div></div><div class="mi-price">7 €</div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Guacamole &amp; Doritos</div></div><div class="mi-price">7 €</div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Donut fromage</div></div><div class="mi-price">8 €</div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Accras</div><div class="mi-desc">Morue · 6 pièces</div></div><div class="mi-price">5 €</div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Bouchées camembert</div><div class="mi-desc">Panées et dorées</div></div><div class="mi-price">7 €</div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Jalapeños</div><div class="mi-desc">Farcis au fromage · panés</div></div><div class="mi-price">7,50 €</div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Salade César</div><div class="mi-desc">Poulet · parmesan · croutons</div></div><div class="mi-price">10 €</div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Bol de fruits frais</div></div><div class="mi-price">4 €</div></div>
+            </div>
+            <p class="menu-section-title">Nos planches</p>
+            <div class="menu-grid">
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Planche Charcuterie ou Fromage</div><div class="mi-desc">2 ou 4 personnes</div></div><div class="mi-price">15 €<small>2 pers.</small>&nbsp;/&nbsp;25 €<small>4 pers.</small></div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Planche Charcuterie &amp; Fromage</div><div class="mi-desc">2 ou 4 personnes</div></div><div class="mi-price">15 €<small>2 pers.</small>&nbsp;/&nbsp;25 €<small>4 pers.</small></div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Planche Antipasti</div><div class="mi-desc">2 personnes</div></div><div class="mi-price">15 €</div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Assiette fraîcheur</div></div><div class="mi-price">12 €</div></div>
+            </div>
+            <p class="menu-section-title">La Conserverie de la Guinguette</p>
+            <p style="font-size:.83rem;color:#888;font-style:italic;margin-bottom:1rem">Commande au bar</p>
+            <div class="menu-grid">
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Pâté de campagne</div></div><div class="mi-price">8 €</div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Rillette</div></div><div class="mi-price">8 €</div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Saucisson entier</div></div><div class="mi-price">8 €</div></div>
+            </div>
+        </div>
+
+        <!-- BIÈRES -->
+        <div id="tab-bieres" class="tab-panel">
+            <p class="menu-section-title">Bières pression</p>
+            <div class="menu-grid">
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">La Buchette Blonde</div><div class="mi-desc">Blonde · pression</div></div><div class="beer-prices"><span>4 € <small>demi 25cl</small></span><span class="beer-sep">·</span><span>7 € <small>pinte 50cl</small></span></div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">IPA</div><div class="mi-desc">India Pale Ale · pression</div></div><div class="beer-prices"><span>5 € <small>demi 25cl</small></span><span class="beer-sep">·</span><span>9 € <small>pinte 50cl</small></span></div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Picon Blonde</div><div class="mi-desc">Blonde · Picon · pression</div></div><div class="beer-prices"><span>4,50 € <small>demi 25cl</small></span><span class="beer-sep">·</span><span>8 € <small>pinte 50cl</small></span></div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Picon IPA</div><div class="mi-desc">IPA · Picon · pression</div></div><div class="beer-prices"><span>6 € <small>demi 25cl</small></span><span class="beer-sep">·</span><span>10 € <small>pinte 50cl</small></span></div></div>
+            </div>
+            <p class="menu-section-title">Bouteilles &amp; spécialités</p>
+            <div class="menu-grid">
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Monaco</div><div class="mi-desc">Bière · grenadine · limonade</div></div><div class="beer-prices"><span>5 € <small>demi 25cl</small></span><span class="beer-sep">·</span><span>8 € <small>pinte 50cl</small></span></div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Tango</div><div class="mi-desc">Bière · sirop grenadine</div></div><div class="mi-price">8 €</div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Corona</div></div><div class="mi-price">7,50 €</div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Corona 0%</div><div class="mi-desc">Sans alcool</div></div><div class="mi-price">7 €</div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">La Mordue</div><div class="mi-desc">Bière artisanale</div></div><div class="mi-price">7 €</div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Otcho</div><div class="mi-desc">Bière artisanale</div></div><div class="mi-price">7 €</div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Ginger beer</div><div class="mi-desc">Sans alcool</div></div><div class="mi-price">4,50 €</div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Val de Rance</div><div class="mi-desc">Cidre doux</div></div><div class="mi-price">7 €</div></div>
+            </div>
+        </div>
+
+        <!-- VINS -->
+        <div id="tab-vins" class="tab-panel">
+            <p style="font-size:.83rem;color:#888;font-style:italic;margin-bottom:1.75rem">Vins sélectionnés par <strong style="color:#555">Pépites de Vin</strong> — servis au verre (12,5 cl) ou à la bouteille (75 cl)</p>
+            <p class="menu-section-title">Rosé</p>
+            <div class="menu-grid">
+                <div class="menu-item"><picture><source srcset="wine-rose.webp" type="image/webp"><img src="wine-rose.png" class="wi-bottle" alt="Vin rosé Sainte Philomène, Coteaux d'Aix-en-Provence" width="180" height="320" loading="lazy" decoding="async"></picture><div class="mi-info"><div class="mi-name">Sainte Philomène</div><div class="mi-desc">Rosé · Coteaux d'Aix-en-Provence AOP</div></div><div class="mi-price">5 € / 20 €<small>verre / bouteille</small></div></div>
+            </div>
+            <p class="menu-section-title">Bulles</p>
+            <div class="menu-grid">
+                <div class="menu-item"><picture><source srcset="wine-prosecco.webp" type="image/webp"><img src="wine-prosecco.png" class="wi-bottle" alt="Prosecco Corvezzo BIO, DOC Prosecco Italie" width="180" height="320" loading="lazy" decoding="async"></picture><div class="mi-info"><div class="mi-name">Prosecco Corvezzo BIO</div><div class="mi-desc">Bulles · DOC Prosecco · Italie</div></div><div class="mi-price">9 € / 29 €<small>verre / bouteille</small></div></div>
+            </div>
+            <p class="menu-section-title">Blancs</p>
+            <div class="menu-grid">
+                <div class="menu-item"><picture><source srcset="wine-blanc1.webp" type="image/webp"><img src="wine-blanc1.png" class="wi-bottle" alt="Vin blanc Domaine Laffitte, Côtes de Gascogne" width="180" height="320" loading="lazy" decoding="async"></picture><div class="mi-info"><div class="mi-name">Domaine Laffitte</div><div class="mi-desc">Blanc · Colombard-Sauvignon · Côtes de Gascogne AOP</div></div><div class="mi-price">6 € / 20 €<small>verre / bouteille</small></div></div>
+                <div class="menu-item"><picture><source srcset="wine-blanc2.webp" type="image/webp"><img src="wine-blanc2.png" class="wi-bottle" alt="Vin blanc Mâcon-Villages, Bourgogne" width="180" height="320" loading="lazy" decoding="async"></picture><div class="mi-info"><div class="mi-name">Mâcon-Villages</div><div class="mi-desc">Blanc · Bourgogne AOP</div></div><div class="mi-price">8 € / 29 €<small>verre / bouteille</small></div></div>
+            </div>
+            <p class="menu-section-title">Rouges</p>
+            <div class="menu-grid">
+                <div class="menu-item"><picture><source srcset="wine-rouge1.webp" type="image/webp"><img src="wine-rouge1.png" class="wi-bottle" alt="Vin rouge Ferraton La Tournée, Vallée du Rhône" width="180" height="320" loading="lazy" decoding="async"></picture><div class="mi-info"><div class="mi-name">Ferraton La Tournée</div><div class="mi-desc">Rouge · Vallée du Rhône AOP</div></div><div class="mi-price">6 € / 20 €<small>verre / bouteille</small></div></div>
+                <div class="menu-item"><picture><source srcset="wine-rouge2.webp" type="image/webp"><img src="wine-rouge2.png" class="wi-bottle" alt="Vin rouge Costeplane 1850 BIO, Languedoc" width="180" height="320" loading="lazy" decoding="async"></picture><div class="mi-info"><div class="mi-name">Costeplane 1850 BIO</div><div class="mi-desc">Rouge · Languedoc AOP</div></div><div class="mi-price">8 € / 26 €<small>verre / bouteille</small></div></div>
+            </div>
+        </div>
+
+        <!-- COCKTAILS -->
+        <div id="tab-cocktails" class="tab-panel">
+            <p style="font-size:.83rem;color:#888;font-style:italic;margin-bottom:1.75rem">Cocktails préparés à la minute avec des produits de qualité</p>
+            <p class="menu-section-title">Cocktails</p>
+            <div class="menu-grid">
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Spritz</div><div class="mi-desc">Prosecco · Aperol · eau gazeuse · tranche d'orange</div></div><div class="mi-price">9 €</div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Moscow Mule</div><div class="mi-desc">Vodka · ginger beer · citron vert · menthe</div></div><div class="mi-price">9 €</div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Mojito</div><div class="mi-desc">Rhum blanc · menthe fraîche · citron vert · sucre de canne</div></div><div class="mi-price">9 €</div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">St Germain</div><div class="mi-desc">Liqueur de sureau · prosecco · eau gazeuse</div></div><div class="mi-price">10 €</div></div>
+            </div>
+        </div>
+
+        <!-- SOFTS -->
+        <div id="tab-softs" class="tab-panel">
+            <p class="menu-section-title">Softs &amp; Eaux</p>
+            <div class="menu-grid">
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Soda</div><div class="mi-desc">Coca-Cola, Zéro, Orangina, Limonade</div></div><div class="mi-price">2,5 €</div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Jus de fruit</div><div class="mi-desc">Orange, pomme, passion, mangue</div></div><div class="mi-price">3,50 €</div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Eau plate ou gazeuse</div><div class="mi-desc">50 cl bouteille</div></div><div class="mi-price">1,5 €</div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Sirop</div><div class="mi-desc">À l'eau</div></div><div class="mi-price">2 €</div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Diabolo</div><div class="mi-desc">Limonade · sirop</div></div><div class="mi-price">2,5 €</div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Citronnade maison</div></div><div class="mi-price">2 €</div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Redbull</div></div><div class="mi-price">3 €</div></div>
+                <div class="menu-item"><div class="mi-info"><div class="mi-name">Café / Thé</div></div><div class="mi-price">1,50 €</div></div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- ANIMATIONS -->
+<section id="animations" class="events">
+    <div class="container">
+        <div class="events-inner" data-reveal>
+            <div>
+                <p class="section-label">Toute la saison</p>
+                <h2 class="section-title" style="color:var(--cream)">Animations &amp; événements</h2>
+                <p class="events-lead">La Guinguette du Dispensaire, c'est aussi une programmation festive tout l'été : concerts live, soirées thématiques, jeux de plein air et surprises… Suivez-nous sur les réseaux pour ne rien manquer ! <a href="agenda.html" style="color:#c8a448;font-weight:700;text-decoration:underline">Voir l'agenda complet des concerts</a></p>
+                <div class="events-chips">
+                    <span class="event-chip">🎵 Concerts live</span>
+                    <span class="event-chip">🌅 Soirées estivales</span>
+                    <span class="event-chip">🎮 Jeux en plein air</span>
+                    <span class="event-chip">🎉 Événements festifs</span>
+                    <span class="event-chip">👨‍👩‍👧 Animations familles</span>
+                </div>
+            </div>
+            <div class="events-photo">
+                <picture><source srcset="photo10-640.webp 640w, photo10-960.webp 960w, photo10.webp 1280w" sizes="(max-width:520px) 100vw, (max-width:900px) 50vw, 700px" type="image/webp"><img src="photo10.jpg" srcset="photo10-640.jpg 640w, photo10-960.jpg 960w, photo10.jpg 1280w" sizes="(max-width:520px) 100vw, (max-width:900px) 50vw, 700px" alt="Concerts et animations à la Guinguette du Dispensaire, Sartrouville" width="1280" height="960" loading="lazy" decoding="async"></picture>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- PRESSE -->
+<section id="presse" class="presse">
+    <div class="container">
+        <p class="section-label" data-reveal>Ils parlent de nous</p>
+        <h2 class="section-title" data-reveal>Revue de presse</h2>
+        <div class="presse-grid" data-reveal>
+
+            <a class="press-card" href="https://www.infosyvelines.fr/articles/sartrouville-guinguette-parc-dispensaire-ete-2026" target="_blank" rel="noopener">
+                <div class="press-source">Infos Yvelines</div>
+                <div class="press-title">À Sartrouville, une guinguette et un food truck s'installent tout l'été au parc du Dispensaire</div>
+                <div class="press-excerpt">Du 3 juin au 30 septembre 2026, La Guinguette du Dispensaire s'installe au parc du Dispensaire à Sartrouville. Accès au parc libre et gratuit, planches, vins et bières en plein air.</div>
+                <div class="press-cta">Lire l'article</div>
+            </a>
+
+            <a class="press-card" href="https://www.sortiraparis.com/en/where-to-eat-in-paris/food-events/articles/346786-the-dispensary-s-guinguette-and-the-stables-food-truck-settle-in-this-park-in-sartrouville-yvelines" target="_blank" rel="noopener">
+                <div class="press-source">Sortir à Paris</div>
+                <div class="press-title">La guinguette et le food truck du Café des Écuries s'installent dans ce parc de Sartrouville cet été</div>
+                <div class="press-excerpt">Sortiraparis présente la Guinguette du Dispensaire et le Café des Écuries au Parc du Dispensaire à Sartrouville, l'adresse incontournable de l'été 2026 en Île-de-France.</div>
+                <div class="press-cta">Lire l'article</div>
+            </a>
+
+        </div>
+    </div>
+</section>
+
+<!-- INFOS & ACCÈS -->
+<!-- ═══ RÉSERVATION ═══ -->
+<section id="reservation" class="reservation">
+    <div class="container">
+        <p class="section-label" data-reveal>Réservez votre table</p>
+        <h2 class="section-title" data-reveal>Réserver une table</h2>
+        <p class="resa-intro" data-reveal>Un anniversaire, une tablée d'amis ou simplement l'envie d'être sûr d'avoir votre place dans le parc ? Réservez en quelques secondes — on vous confirme par téléphone ou par email.</p>
+        <form id="resa-form" class="resa-form" data-reveal action="https://api.web3forms.com/submit" method="POST">
+            <input type="hidden" name="access_key" value="ad7c2fd6-e8eb-4f74-8b9b-88a34d14fdc2">
+            <input type="hidden" name="subject" value="Nouvelle demande de réservation — Guinguette du Dispensaire">
+            <input type="hidden" name="from_name" value="Site La Guinguette du Dispensaire">
+            <input type="checkbox" name="botcheck" style="display:none" tabindex="-1" autocomplete="off">
+            <div class="resa-row">
+                <label>Nom et prénom*<input type="text" name="Nom" required autocomplete="name"></label>
+                <label>Téléphone*<input type="tel" name="Téléphone" required autocomplete="tel"></label>
+            </div>
+            <div class="resa-row">
+                <label>Date*<input type="date" name="Date" required></label>
+                <label>Heure*<input type="time" name="Heure" required></label>
+                <label>Personnes*<input type="number" name="Nombre de personnes" min="1" max="50" value="2" required></label>
+            </div>
+            <label>Email (pour la confirmation)<input type="email" name="email" autocomplete="email"></label>
+            <label>Message (optionnel)<textarea name="Message" rows="3" placeholder="Occasion, emplacement souhaité, allergies…"></textarea></label>
+            <button type="submit" class="btn resa-btn">Envoyer ma demande</button>
+            <p class="resa-note">Demande envoyée à l'équipe — la réservation est confirmée après notre réponse. Ouverture selon météo. Vous pouvez aussi appeler le <a href="tel:+33667426565">06 67 42 65 65</a>.</p>
+<p class="resa-note" style="font-size:.78rem">En envoyant ce formulaire, vous acceptez que vos coordonnées soient utilisées <strong>uniquement pour traiter votre réservation</strong>. Elles ne sont ni revendues ni utilisées pour vous démarcher. <a href="confidentialite.html">Politique de confidentialité</a>.</p>
+            <p id="resa-result" class="resa-result" role="status" aria-live="polite"></p>
+        </form>
+    </div>
+</section>
+
+<!-- ═══ FAQ ═══ -->
+<section id="faq" class="faq">
+    <div class="container">
+        <p class="section-label" data-reveal>Bon à savoir</p>
+        <h2 class="section-title" data-reveal>Questions fréquentes</h2>
+        <div class="faq-list" data-reveal>
+            <details><summary>Peut-on prendre un verre pendant que les enfants jouent ?</summary><p>Oui, c'est même l'usage ici. La guinguette est installée au cœur du Parc du Dispensaire, à deux pas de l'aire de jeux : les enfants jouent à côté, vous restez à table, à l'ombre des arbres.</p></details>
+            <details><summary>Y a-t-il des chaises hautes pour les enfants ?</summary><p>Oui, nous avons des chaises hautes. Signalez-le en réservant si vous venez avec plusieurs tout-petits, c'est plus simple à préparer.</p></details>
+            <details><summary>Proposez-vous un menu enfant ?</summary><p>Oui, un menu enfant à 9 € (nuggets, frites, boisson et glace). Les familles sont les bienvenues.</p></details>
+            <details><summary>Y a-t-il des jeux sur place ?</summary><p>Oui, et ils sont prêtés gratuitement : un babyfoot, du Mölkky, de la pétanque et du palet breton. L'aire de jeux du parc est juste à côté pour les plus jeunes.</p></details>
+            <details><summary>Les tables sont-elles à l'ombre ?</summary><p>Oui. La guinguette est installée sous les arbres du parc, ce qui rend la terrasse vivable même les jours de forte chaleur.</p></details>
+            <details><summary>Quels sont les horaires d'ouverture ?</summary><p>La guinguette est ouverte de juin à octobre 2026, fermée le lundi. Mardi, mercredi, jeudi et vendredi de 16h à 22h ; samedi et dimanche de 11h à 22h. L'ouverture dépend de la météo — pensez à consulter nos réseaux.</p></details>
+            <details><summary>Où se trouve La Guinguette du Dispensaire ?</summary><p>Au Parc du Dispensaire, 1 Avenue Maurice Berteaux, 78500 Sartrouville (Yvelines). Accès en RER A (station Sartrouville), bus 73 arrêt Dispensaire, parking gratuit sur place.</p></details>
+            <details><summary>Y a-t-il des toilettes, et l'accès est-il de plain-pied ?</summary><p>Oui, des toilettes sont accessibles sur place, et on rejoint la terrasse de plain-pied — sans marche ni escalier, poussette et fauteuil compris.</p></details>
+            <details><summary>Faut-il réserver une table ?</summary><p>Ce n'est pas obligatoire, mais c'est conseillé pour les groupes et le week-end. Réservez via le formulaire en ligne, par téléphone au 06 67 42 65 65, ou par message sur Facebook / Instagram.</p></details>
+            <details><summary>Peut-on réserver pour un événement ?</summary><p>Oui, nous pouvons vous réserver une grande tablée pour vos événements (anniversaires, pots, associations…). La guinguette reste ouverte aux autres clients pendant votre soirée.</p></details>
+            <details><summary>Quels moyens de paiement acceptez-vous ?</summary><p>Espèces et carte bancaire.</p></details>
+            <details><summary>Sert-on du vin et de la bière ?</summary><p>Oui, c'est même le cœur de la carte : six vins servis au verre (12,5 cl) ou à la bouteille, et dix bières dont quatre à la pression — blonde, IPA, et les deux versions Picon. Il y a aussi des cocktails, un prosecco bio et des softs pour ceux qui ne boivent pas d'alcool.</p></details>
+            <details><summary>D'où viennent les vins ?</summary><p>La sélection est signée Pépites de Vin : un rosé des Coteaux d'Aix-en-Provence, un blanc des Côtes de Gascogne et un Mâcon-Villages de Bourgogne, un rouge de la Vallée du Rhône et un Languedoc bio, plus un prosecco bio italien. Verre à partir de 5 €, bouteille à partir de 20 €.</p></details>
+            <details><summary>Quelles bières servez-vous ?</summary><p>Quatre pressions : La Buchette blonde, une IPA, et les deux au Picon (blonde et IPA). Demi à partir de 4 €, pinte à partir de 7 €. En bouteille, des artisanales — La Mordue, Otcho — ainsi que Corona et sa version sans alcool.</p></details>
+        </div>
+    </div>
+</section>
+
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "FAQPage",
+ "mainEntity": [
+  {
+   "@type": "Question",
+   "name": "Peut-on prendre un verre pendant que les enfants jouent ?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Oui, c'est même l'usage ici. La guinguette est installée au cœur du Parc du Dispensaire, à deux pas de l'aire de jeux : les enfants jouent à côté, vous restez à table, à l'ombre des arbres."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Y a-t-il des chaises hautes pour les enfants ?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Oui, nous avons des chaises hautes. Signalez-le en réservant si vous venez avec plusieurs tout-petits, c'est plus simple à préparer."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Proposez-vous un menu enfant ?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Oui, un menu enfant à 9 € (nuggets, frites, boisson et glace). Les familles sont les bienvenues."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Y a-t-il des jeux sur place ?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Oui, et ils sont prêtés gratuitement : un babyfoot, du Mölkky, de la pétanque et du palet breton. L'aire de jeux du parc est juste à côté pour les plus jeunes."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Les tables sont-elles à l'ombre ?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Oui. La guinguette est installée sous les arbres du parc, ce qui rend la terrasse vivable même les jours de forte chaleur."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Quels sont les horaires d'ouverture ?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "La guinguette est ouverte de juin à octobre 2026, fermée le lundi. Mardi, mercredi, jeudi et vendredi de 16h à 22h ; samedi et dimanche de 11h à 22h. L'ouverture dépend de la météo — pensez à consulter nos réseaux."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Où se trouve La Guinguette du Dispensaire ?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Au Parc du Dispensaire, 1 Avenue Maurice Berteaux, 78500 Sartrouville (Yvelines). Accès en RER A (station Sartrouville), bus 73 arrêt Dispensaire, parking gratuit sur place."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Y a-t-il des toilettes, et l'accès est-il de plain-pied ?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Oui, des toilettes sont accessibles sur place, et on rejoint la terrasse de plain-pied — sans marche ni escalier, poussette et fauteuil compris."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Faut-il réserver une table ?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Ce n'est pas obligatoire, mais c'est conseillé pour les groupes et le week-end. Réservez via le formulaire en ligne, par téléphone au 06 67 42 65 65, ou par message sur Facebook / Instagram."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Peut-on réserver pour un événement ?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Oui, nous pouvons vous réserver une grande tablée pour vos événements (anniversaires, pots, associations…). La guinguette reste ouverte aux autres clients pendant votre soirée."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Quels moyens de paiement acceptez-vous ?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Espèces et carte bancaire."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Sert-on du vin et de la bière ?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Oui, c'est même le cœur de la carte : six vins servis au verre (12,5 cl) ou à la bouteille, et dix bières dont quatre à la pression — blonde, IPA, et les deux versions Picon. Il y a aussi des cocktails, un prosecco bio et des softs pour ceux qui ne boivent pas d'alcool."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "D'où viennent les vins ?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "La sélection est signée Pépites de Vin : un rosé des Coteaux d'Aix-en-Provence, un blanc des Côtes de Gascogne et un Mâcon-Villages de Bourgogne, un rouge de la Vallée du Rhône et un Languedoc bio, plus un prosecco bio italien. Verre à partir de 5 €, bouteille à partir de 20 €."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Quelles bières servez-vous ?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Quatre pressions : La Buchette blonde, une IPA, et les deux au Picon (blonde et IPA). Demi à partir de 4 €, pinte à partir de 7 €. En bouteille, des artisanales — La Mordue, Otcho — ainsi que Corona et sa version sans alcool."
+   }
+  }
+ ]
+}
+</script>
+
+
+<section id="journal" class="journal">
+    <div class="container">
+        <p class="section-label" data-reveal>Le journal de la guinguette</p>
+        <h2 class="section-title" data-reveal>Pour préparer votre venue</h2>
+        <div class="journal-grid" data-reveal>
+            <a href="guinguette-sartrouville-terrasse-bord-de-seine.html"><strong>Guinguette à Sartrouville : la terrasse au Parc du Dispensaire</strong><span>Le bar en plein air du Parc du Dispensaire : bières, vins, planches, concerts.</span></a>
+            <a href="ou-boire-un-verre-terrasse-sartrouville.html"><strong>Où boire un verre en terrasse à Sartrouville ?</strong><span>Une terrasse ombragée sous les arbres, bières pression, vins et planches.</span></a>
+            <a href="venir-guinguette-sartrouville-acces-rer-parking.html"><strong>Comment venir à la guinguette de Sartrouville</strong><span>RER A, bus 73, parking gratuit et horaires : tout pour nous trouver.</span></a>
+            <a href="evenement-anniversaire-guinguette-sartrouville.html"><strong>Réserver pour votre événement</strong><span>Anniversaires, afterworks, fêtes : une grande tablée en plein air au parc.</span></a>
+            <a href="sortie-famille-sartrouville-bord-de-seine.html"><strong>Sortir en famille à Sartrouville</strong><span>Parc gratuit, jeux en plein air et menu enfant au cœur du parc.</span></a>
+            <a href="afterwork-sartrouville.html"><strong>Afterwork à Sartrouville</strong><span>Une terrasse dans un parc, ouverte dès 16h du mardi au vendredi.</span></a>
+            <a href="guinguette-pres-de-paris-rer-a.html"><strong>Une guinguette près de Paris, en RER A</strong><span>20 min de La Défense, 30 min de Châtelet, puis 10 min à pied.</span></a>
+            <a href="que-faire-boucle-de-seine-sartrouville.html"><strong>Que faire dans la boucle de Seine ?</strong><span>Idées de sorties autour de Sartrouville, Houilles, Maisons-Laffitte et Montesson.</span></a>
+            <a href="bar-terrasse-houilles-montesson-maisons-laffitte.html"><strong>Un bar en terrasse près de Houilles et Montesson</strong><span>À quelques minutes des communes voisines, dans la boucle de Seine.</span></a>
+            <a href="afterwork-boucle-de-seine.html"><strong>Afterwork dans la boucle de Seine</strong><span>Sartrouville, Houilles, Montesson, Maisons-Laffitte : les temps de trajet.</span></a>
+            <a href="saison-2027-guinguette-sartrouville.html"><strong>Saison 2027 : ce qu'on sait déjà</strong><span>Réouverture prévue en juin 2027, concerts, carte et comment être prévenu.</span></a>
+            <a href="agenda.html"><strong>L'agenda des concerts</strong><span>Toutes les dates de la saison, les concerts passés et à venir.</span></a>
+        </div>
+        <p class="journal-more" data-reveal><a class="btn" href="blog.html">Tous les articles du journal</a></p>
+    </div>
+</section>
+
+<section id="infos" class="infos">
+    <div class="container">
+        <p class="section-label" data-reveal>Venir nous voir</p>
+        <h2 class="section-title" data-reveal>Infos &amp; accès</h2>
+        <div class="infos-grid" data-reveal>
+            <div class="info-block">
+                <div class="ib-icon">📍</div>
+                <div class="ib-title">Adresse</div>
+                <div class="ib-body">
+                    <strong>Parc du Dispensaire</strong><br>
+                    1 Avenue Maurice Berteaux<br>
+                    78500 Sartrouville<br><br>
+                    RER A — Sartrouville<br>
+                    Bus 73 — arrêt Dispensaire<br>
+                    Parking gratuit sur place
+                </div>
+            </div>
+            <div class="info-block">
+                <div class="ib-icon">🕐</div>
+                <div class="ib-title">Horaires</div>
+                <div class="ib-body">
+                    <strong>Juin à Octobre 2026</strong><br><br>
+                    <table style="width:100%;border-collapse:collapse;font-size:0.88rem;line-height:1.8">
+                      <tr><td>Lundi</td><td style="text-align:right;color:#aaa">Fermé</td></tr>
+                      <tr><td>Mardi</td><td style="text-align:right">16h–22h</td></tr>
+                      <tr><td>Mercredi</td><td style="text-align:right">16h–22h</td></tr>
+                      <tr><td>Jeudi</td><td style="text-align:right">16h–22h</td></tr>
+                      <tr><td>Vendredi</td><td style="text-align:right">16h–22h</td></tr>
+                      <tr><td>Samedi</td><td style="text-align:right">11h–22h</td></tr>
+                      <tr><td>Dimanche</td><td style="text-align:right">11h–22h</td></tr>
+                    </table>
+                    <br><em style="font-size:0.78rem;color:#aaa">Ouverture selon météo —<br>consultez nos réseaux</em>
+                </div>
+            </div>
+            <div class="info-block">
+                <div class="ib-icon">✉️</div>
+                <div class="ib-title">Contact</div>
+                <div class="ib-body">
+                    <a href="tel:+33667426565" style="font-weight:700">06 67 42 65 65</a><br><br>
+                    <a href="mailto:laguinguettedudispensaire@gmail.com">laguinguettedudispensaire<br>@gmail.com</a><br><br>
+                    <a href="https://www.facebook.com/profile.php?id=61590190707357" target="_blank" rel="noopener" style="display:inline-block;margin-bottom:0.4rem;color:inherit">📘 Facebook</a><br>
+                    <a href="https://www.instagram.com/guinguette.du.dispensaire/" target="_blank" rel="noopener" style="display:inline-block;margin-bottom:0.4rem;color:inherit">📷 Instagram</a><br><br>
+                    Programmation et événements<br>à venir sur nos réseaux.
+                </div>
+            </div>
+        </div>
+        <div class="map-wrap">
+            <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2621.3!2d2.1627!3d48.9380!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47e6668a6f3c6b5d%3A0x1234!2sParc+du+Dispensaire%2C+Sartrouville!5e0!3m2!1sfr!2sfr"
+                allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+                title="Carte Parc du Dispensaire, Sartrouville">
+            </iframe>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <img src="logo.webp" alt="Logo La Guinguette du Dispensaire" class="footer-logo" width="256" height="256" loading="lazy">
+    <div class="footer-brand">La Guinguette du Dispensaire</div>
+    <div class="footer-sub">Sartrouville · Parc du Dispensaire · Saison 2026</div>
+    <ul class="footer-nav">
+        <li><a href="#concept">Le lieu</a></li>
+        <li><a href="#galerie">Photos</a></li>
+        <li><a href="#carte">La carte</a></li>
+        <li><a href="#animations">Animations</a></li>
+        <li><a href="#presse">Presse</a></li>
+        <li><a href="#infos">Infos &amp; accès</a></li>
+        <li><a href="agenda.html">Agenda</a></li>
+    <li><a href="blog.html">Le journal</a></li>
+        <li><a href="#reservation" class="nav-cta">Réserver</a></li>
+        <li><a href="guinguette-sartrouville-terrasse-bord-de-seine.html">Guinguette à Sartrouville</a></li>
+        <li><a href="que-faire-boucle-de-seine-sartrouville.html">Que faire dans la boucle de Seine</a></li>
+        <li><a href="evenement-anniversaire-guinguette-sartrouville.html">Réserver pour un événement</a></li>
+        <li><a href="menu.html">Menu imprimable</a></li>
+    </ul>
+    <div class="footer-legal" style="font-size:.72rem;margin-bottom:.6rem"><a href="mentions-legales.html">Mentions légales</a> &nbsp;·&nbsp; <a href="confidentialite.html">Politique de confidentialité</a></div>
+  <div class="footer-copy">© 2026 La Guinguette du Dispensaire — Tous droits réservés</div>
+</footer>
+
+<script>
+/* ---- Tabs carte ---- */
+function switchTab(btn, id) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + id).classList.add('active');
+}
+
+/* ---- Scroll reveal ---- */
+const revealEls = document.querySelectorAll('[data-reveal]');
+if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.12 });
+    revealEls.forEach(el => observer.observe(el));
+} else {
+    revealEls.forEach(el => el.classList.add('visible'));
+}
+</script>
+
+<script type="module">
+  /* Réservations : enregistrement dans Firestore (suivi via admin.html)
+     + notification email à l'équipe via Web3Forms (comportement historique conservé). */
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { firebaseConfig } from "./firebase-config.js";
+
+  let db = null;
+  try {
+    if (!String(firebaseConfig.apiKey).startsWith("COLLER_ICI")) {
+      db = getFirestore(initializeApp(firebaseConfig));
+    }
+  } catch (e) { console.warn("Firebase non initialisé :", e); }
+
+  const f = document.getElementById('resa-form');
+  if (f) {
+    f.addEventListener('submit', async function(e){
+      e.preventDefault();
+      const result = document.getElementById('resa-result');
+      const btn = f.querySelector('.resa-btn');
+      const data = new FormData(f);
+      result.textContent = 'Envoi en cours…'; result.className = 'resa-result';
+      btn.disabled = true;
+
+      /* 1) Enregistrement de la demande dans Firestore */
+      let stored = false;
+      if (db) {
+        try {
+          await addDoc(collection(db, 'reservations'), {
+            nom:        (data.get('Nom') || '').trim(),
+            telephone:  (data.get('Téléphone') || '').trim(),
+            date:       data.get('Date') || '',
+            heure:      data.get('Heure') || '',
+            personnes:  parseInt(data.get('Nombre de personnes'), 10) || 1,
+            email:      (data.get('email') || '').trim(),
+            message:    (data.get('Message') || '').trim(),
+            statut:     'en_attente',
+            emailEnvoye: false,
+            creeLe:     serverTimestamp()
+          });
+          stored = true;
+        } catch (err) { console.warn('Firestore indisponible :', err); }
+      }
+
+      /* 2) Notification email à l'équipe (Web3Forms) */
+      let notified = false;
+      try {
+        const r = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: data, headers: { 'Accept': 'application/json' } });
+        const j = await r.json();
+        notified = !!j.success;
+      } catch (err) { /* non bloquant si Firestore a réussi */ }
+
+      if (stored || notified) {
+        result.textContent = '✓ Merci ! Votre demande est bien reçue. On vous recontacte vite pour confirmer.';
+        result.className = 'resa-result ok';
+        if (window.guingTrack) window.guingTrack('reservation-envoyee', { personnes: String(data.get('Nombre de personnes') || ''), page: 'index.html' });
+        f.reset();
+      } else {
+        result.textContent = 'Connexion impossible. Appelez-nous au 06 67 42 65 65.';
+        result.className = 'resa-result err';
+        if (window.guingTrack) window.guingTrack('reservation-echec', { page: 'index.html' });
+      }
+      btn.disabled = false;
+    });
+  }
+</script>
+<script>
+/* Suivi des conversions — Umami (sans cookie, aucun consentement requis) */
+(function () {
+  function t(n, d) { try { if (window.umami && window.umami.track) window.umami.track(n, d || {}); } catch (e) {} }
+  window.guingTrack = t;
+  document.addEventListener('click', function (e) {
+    var el = e.target && e.target.closest ? e.target.closest('a,button') : null;
+    if (!el) return;
+    var href = (el.getAttribute('href') || '').toLowerCase();
+    var txt = (el.textContent || '').trim().toLowerCase();
+    var p = { page: location.pathname.split('/').pop() || 'index.html' };
+    if (href.indexOf('tel:') === 0) t('clic-telephone', p);
+    else if (href.indexOf('mailto:') === 0) t('clic-email', p);
+    else if (href.indexOf('instagram.com') > -1) t('clic-instagram', p);
+    else if (href.indexOf('facebook.com') > -1) t('clic-facebook', p);
+    else if (href.indexOf('maps.google') > -1 || href.indexOf('google.com/maps') > -1 || href.indexOf('goo.gl/maps') > -1) t('clic-itineraire-avis-google', p);
+    else if (/menu\.html/.test(href)) t('ouverture-menu', p);
+    else if (href.indexOf('#reservation') > -1 || txt.indexOf('r\u00e9server') > -1) t('clic-reserver', p);
+  }, true);
+})();
+</script>
+</body>
+</html>
