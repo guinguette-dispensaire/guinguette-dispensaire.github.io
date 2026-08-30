@@ -431,7 +431,7 @@ label.chk input { width: auto; margin: 0; }
         <div class="v-conso-c total">
           <div class="l">Chiffre d'affaires TTC</div>
           <div class="n" id="v-s-ca">–</div>
-          <div class="d" id="v-s-ca-d">encaissé par la caisse — carte et espèces au tiroir</div>
+          <div class="d" id="v-s-ca-d">encaissé par la caisse Flatpay</div>
         </div>
       </div>
 
@@ -1308,8 +1308,13 @@ function empreinte(txt) {
   for (let i = 0; i < txt.length; i++) h = ((h * 33) ^ txt.charCodeAt(i)) >>> 0;
   return h.toString(36);
 }
+/* L'identifiant ne portait que la date, le sens, le libelle et le montant :
+   deux encaissements identiques le meme jour — « Especes du jour », 50 € deux
+   fois — retombaient sur le meme document et le second effacait le premier, en
+   silence. L'horodatage de saisie les distingue. */
 const idMouvement = m =>
-  `${m.date}-${m.sens === 'depense' ? 'd' : 'r'}-${empreinte(m.libelle + '|' + m.montant)}`;
+  `${m.date}-${m.sens === 'depense' ? 'd' : 'r'}-${empreinte(m.libelle + '|' + m.montant)}`
+  + `-${Number(m.maj || Date.now()).toString(36)}`;
 
 $('ca-sens').addEventListener('click', e => {
   const b = e.target.closest('button[data-sens]'); if (!b) return;
@@ -1531,7 +1536,20 @@ async function chargerCaisse() {
     const calcule = rec - dep;
     if (!soldeSaisiLu) await relireSoldeSaisi();
     $('ca-corr').classList.toggle('hidden', !estAdmin);
-    $('ca-solde').textContent = eur(soldeSaisi ? Number(soldeSaisi.total) : calcule);
+
+    /* Le comptage manuel est un POINT DE DEPART, pas un plafond. Tout mouvement
+       enregistre APRES lui s'y ajoute ou s'en retranche. Avant, le bandeau
+       restait sur le dernier montant compte : on pouvait saisir dix
+       encaissements sans voir le chiffre bouger d'un centime. */
+    const depuisComptage = soldeSaisi
+      ? mouvements.reduce((t, m) => {
+          if (Number(m.maj || 0) <= Number(soldeSaisi.le || 0)) return t;
+          const x = Number(m.montant) || 0;
+          return t + (m.sens === 'depense' ? -x : x);
+        }, 0)
+      : 0;
+    const affiche = soldeSaisi ? Number(soldeSaisi.total) + depuisComptage : calcule;
+    $('ca-solde').textContent = eur(affiche);
     soldeCalculeCaisse = calcule;
     $('ca-recettes').textContent = eur0(rec);
     $('ca-depenses').textContent = eur0(dep);
@@ -1540,16 +1558,30 @@ async function chargerCaisse() {
     const resume = dates.length
       ? `du ${dateFR(dates[0], { day:'numeric', month:'long' })} au ${dateFR(dates[dates.length-1], { day:'numeric', month:'long' })} · ${eur0(rec)} encaissés, ${eur0(dep)} dépensés`
       : 'Rien de saisi pour l’instant';
+    const jourComptage = soldeSaisi && soldeSaisi.le
+      ? new Date(Number(soldeSaisi.le)).toISOString().slice(0, 10) : null;
     $('ca-sous').textContent = soldeSaisi
-      ? `montant saisi à la main — les mouvements donnent ${eur(calcule)} · ${resume}`
+      ? `${eur(soldeSaisi.total)} comptés au tiroir`
+        + (jourComptage ? ` le ${dateFR(jourComptage, { day:'numeric', month:'long' })}` : '')
+        + (depuisComptage
+            ? `, ${depuisComptage > 0 ? '+' : '−'} ${eur(Math.abs(depuisComptage))} de mouvements depuis`
+            : ', aucun mouvement depuis')
+        + ` · les mouvements seuls donneraient ${eur(calcule)} · ${resume}`
       : resume;
 
     $('ca-vide').classList.toggle('hidden', mouvements.length > 0);
     $('ca-contenu').classList.toggle('hidden', mouvements.length === 0);
 
+    /* Les especes remontent aussi dans l'onglet Ventes, case « especes
+       consolidees ». Le releve y etait garde en memoire depuis le chargement de
+       la page : une saisie faite ici ne le bougeait qu'apres un rechargement
+       complet. On jette le cache a chaque passage, et on refait le calcul. */
+    especesCaisse = null;
+
     /* Les ventes servent de repère : si elles ne sont pas encore chargées,
        on les charge en silence pour pouvoir afficher les espèces du tiroir. */
     if (!joursVentes.length && !ventesChargees) { ventesChargees = true; await chargerVentes(); }
+    else if (joursVentes.length) await blocConsolide(joursVentes);
     rafraichirEncartJour();
     if (mouvements.length) dessinerCaisse();
   } catch (ex) {
@@ -1974,10 +2006,7 @@ $('esp-form').addEventListener('submit', async ev => {
     }
     soldeSaisiLu = true;
     $('esp-modal-bg').classList.add('hidden');
-    dessinerCaisse();
-    if (soldeCalculeCaisse != null) {
-      $('ca-solde').textContent = eur(soldeSaisi ? Number(soldeSaisi.total) : soldeCalculeCaisse);
-    }
+    await chargerCaisse();   /* tout se recalcule : bandeau, sous-titre, ventes */
   } catch (e) {
     console.error(e);
     toast('Enregistrement impossible : ' + e.message, true);
@@ -2435,9 +2464,11 @@ async function blocConsolide(jours) {
       : eur0(especesRelevees) + ' comptés dans la Caisse — toutes les journées relevées');
 
   $('v-c-tot').textContent = eur0(htTotal + especes);
-  $('v-c-tot-d').textContent = estimees
-    ? 'dont ' + eur0(estimees) + ' estimés — HT + espèces TTC'
-    : 'HT + espèces';
+  /* Ce total n'est pas le chiffre d'affaires TTC : c'est la base declarable —
+     le hors-taxe de la carte, plus les especes. Les deux tuiles cherchaient la
+     meme chose sans le dire et ne tombaient jamais d'accord. */
+  $('v-c-tot-d').textContent = 'hors-taxe de la carte + espèces'
+    + (estimees ? `, dont ${eur0(estimees)} d'espèces estimées` : '');
 }
 
 function blocSaison(s, jours) {
@@ -2448,6 +2479,18 @@ function blocSaison(s, jours) {
   const reprises = [];   // ce qui vient du mix produit, arrêté plus tôt
 
   $('v-s-ca').textContent      = eur0(ouvert ? c.ca_ttc : (s && s.ca_ttc));
+
+  /* Ce total est celui de la caisse Flatpay : la carte, plus les rares especes
+     passees au tiroir electronique. Les especes comptees a la main dans l'onglet
+     Caisse n'y sont PAS — elles ont leur propre tuile. Le sous-titre promettait
+     « carte et especes au tiroir », ce qui laissait croire qu'une saisie
+     d'especes devait faire bouger ce chiffre. */
+  if (ouvert) {
+    const espDedans = somme(jours, 'especes').total;
+    $('v-s-ca-d').textContent = `carte encaissée sur ${jours.length} journées`
+      + (espDedans ? `, plus ${eur0(espDedans)} d'espèces passées au tiroir électronique` : '')
+      + ' · les espèces comptées à la main sont dans « Espèces consolidées »';
+  }
   $('v-s-tickets').textContent = c.tickets ? c.tickets.toLocaleString('fr-FR')
                                : (s && s.tickets ? Number(s.tickets).toLocaleString('fr-FR') : '–');
 
