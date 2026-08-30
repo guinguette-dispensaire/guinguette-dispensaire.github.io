@@ -2416,6 +2416,19 @@ async function blocConsolide(jours) {
   let especesRelevees = 0;
   for (const v of releve.values()) especesRelevees += Number(v) || 0;
 
+  /* Une partie des especes est passee par la caisse Flatpay : elle figure donc
+     deja dans le ca_net de la journee, et donc dans le hors-taxe calcule plus
+     bas. Le comptage du tiroir, lui, contient tout ce qui etait physiquement
+     dedans, y compris ces euros-la. Les additionner sans precaution les
+     comptait deux fois — 315 € sur neuf journees au 30 aout. */
+  let dejaChezFlatpay = 0;
+  for (const j of jours) {
+    const e = Number(j.especes) || 0;
+    const compte = especesParJour[j.date];
+    if (e > 0 && compte !== undefined) dejaChezFlatpay += Math.min(e, compte);
+  }
+  const especesEnPlus = Math.max(0, especesRelevees - dejaChezFlatpay);
+
   let cbDocumente = 0, especesAppariees = 0, cbSansEspeces = 0, joursSansEspeces = 0;
   for (const j of jours) {
     const cb = Number(j.ca_net) || 0;
@@ -2476,17 +2489,21 @@ async function blocConsolide(jours) {
      manque est dit juste en dessous, avec son ordre de grandeur — mais une
      estimation n'a rien a faire dans un chiffre qu'on lit comme un fait. */
   $('v-c-esp').textContent = eur0(especesRelevees);
-  $('v-c-esp-d').innerHTML = (estimees
-      ? 'comptées dans la Caisse sur ' + releve.size + ' journées'
-        + '<br><span class="estime">' + joursSansEspeces + ' journées sans comptage — environ '
-        + eur0(estimees) + ' de plus, au taux médian de '
-        + (taux * 100).toFixed(1).replace('.', ',') + ' % du CB</span>'
-      : 'comptées dans la Caisse — toutes les journées relevées');
+  $('v-c-esp-d').innerHTML = 'comptées dans la Caisse sur ' + releve.size + ' journées'
+      + (dejaChezFlatpay
+          ? '<br><span class="estime">dont ' + eur0(dejaChezFlatpay)
+            + ' déjà passés en caisse Flatpay — comptés une seule fois dans le total</span>'
+          : '')
+      + (estimees
+          ? '<br><span class="estime">' + joursSansEspeces + ' journées sans comptage — environ '
+            + eur0(estimees) + ' de plus, au taux médian de '
+            + (taux * 100).toFixed(1).replace('.', ',') + ' % du CB</span>'
+          : '');
 
   /* Meme regle pour le total : il n'additionne que du compte et du releve.
      Les journees sans comptage sont signalees a cote, pas fondues dedans. */
-  $('v-c-tot').textContent = eur0(htTotal + especesRelevees);
-  $('v-c-tot-d').textContent = 'hors-taxe de la carte + espèces comptées'
+  $('v-c-tot').textContent = eur0(htTotal + especesEnPlus);
+  $('v-c-tot-d').textContent = 'hors-taxe encaissé + espèces comptées hors caisse Flatpay'
     + (estimees ? ` · ${eur0(estimees)} d'espèces non comptées ne sont pas incluses` : '');
 }
 
