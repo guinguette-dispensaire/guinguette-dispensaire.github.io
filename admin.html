@@ -2423,7 +2423,24 @@ async function blocConsolide(jours) {
     else { cbSansEspeces += cb; joursSansEspeces++; }
   }
 
-  const taux = cbDocumente > 0 ? especesAppariees / cbDocumente : 0;
+  /* Le taux du tiroir se prend sur la MEDIANE des journees, pas sur le rapport
+     des sommes. Avec la somme, une seule grosse saisie faisait bondir le taux et
+     re-estimait toutes les journees non comptees : saisir 1 000 € faisait monter
+     le total de 1 500 €, ce que personne ne pouvait suivre.
+     On ecarte aussi les journees dont la carte est trop faible pour donner un
+     rapport qui veuille dire quelque chose — une journee a 10 € de carte et
+     600 € d'especes donnait un taux de 6 000 %. */
+  const ratios = [];
+  for (const j of jours) {
+    const cb = Number(j.ca_net) || 0;
+    const c = especesParJour[j.date];
+    if (c !== undefined && cb >= 50) ratios.push(c / cb);
+  }
+  ratios.sort((a, b) => a - b);
+  const taux = ratios.length
+    ? (ratios.length % 2 ? ratios[(ratios.length - 1) / 2]
+                         : (ratios[ratios.length / 2 - 1] + ratios[ratios.length / 2]) / 2)
+    : 0;
   const estimees = Math.round(cbSansEspeces * taux);
   /* Le HT ne figure que sur les journées passées par les rapports de fin de
      journée. Les 51 journées du premier import venaient du journal des
@@ -2451,24 +2468,26 @@ async function blocConsolide(jours) {
       + '<br><span class="estime">+ ' + eur0(htEstime) + ' estimés sur ' + joursEstimes
       + ' journées sans détail de TVA, au taux de ' + (tauxHT * 100).toFixed(1).replace('.', ',') + ' % du net</span>'
     : jours.length + ' journées relevées';
-  const especes = especesRelevees + estimees;
-
   $('v-c-ht').textContent = eur0(htTotal);
   $('v-c-ht-d').innerHTML = htDetail;
 
-  $('v-c-esp').textContent = eur0(especes);
+  /* Le grand chiffre ne montre plus que ce qui a ete REELLEMENT COMPTE. Il
+     bouge donc exactement du montant qu'on saisit, ni plus ni moins. Ce qui
+     manque est dit juste en dessous, avec son ordre de grandeur — mais une
+     estimation n'a rien a faire dans un chiffre qu'on lit comme un fait. */
+  $('v-c-esp').textContent = eur0(especesRelevees);
   $('v-c-esp-d').innerHTML = (estimees
-      ? eur0(especesRelevees) + ' comptés dans la Caisse sur ' + releve.size + ' journées'
-        + '<br><span class="estime">+ ' + eur0(estimees) + ' estimés sur ' + joursSansEspeces
-        + ' journées sans relevé, au taux de ' + (taux * 100).toFixed(1).replace('.', ',') + ' % du CB constaté</span>'
-      : eur0(especesRelevees) + ' comptés dans la Caisse — toutes les journées relevées');
+      ? 'comptées dans la Caisse sur ' + releve.size + ' journées'
+        + '<br><span class="estime">' + joursSansEspeces + ' journées sans comptage — environ '
+        + eur0(estimees) + ' de plus, au taux médian de '
+        + (taux * 100).toFixed(1).replace('.', ',') + ' % du CB</span>'
+      : 'comptées dans la Caisse — toutes les journées relevées');
 
-  $('v-c-tot').textContent = eur0(htTotal + especes);
-  /* Ce total n'est pas le chiffre d'affaires TTC : c'est la base declarable —
-     le hors-taxe de la carte, plus les especes. Les deux tuiles cherchaient la
-     meme chose sans le dire et ne tombaient jamais d'accord. */
-  $('v-c-tot-d').textContent = 'hors-taxe de la carte + espèces'
-    + (estimees ? `, dont ${eur0(estimees)} d'espèces estimées` : '');
+  /* Meme regle pour le total : il n'additionne que du compte et du releve.
+     Les journees sans comptage sont signalees a cote, pas fondues dedans. */
+  $('v-c-tot').textContent = eur0(htTotal + especesRelevees);
+  $('v-c-tot-d').textContent = 'hors-taxe de la carte + espèces comptées'
+    + (estimees ? ` · ${eur0(estimees)} d'espèces non comptées ne sont pas incluses` : '');
 }
 
 function blocSaison(s, jours) {
