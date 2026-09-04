@@ -517,6 +517,10 @@
         .resa-result { text-align: center; font-weight: 700; font-size: 0.9rem; min-height: 1.2em; }
         .resa-result.ok { color: var(--dark-green); }
         .resa-result.err { color: var(--burgundy); }
+        .resa-alert { text-align: center; font-size: 0.85rem; font-weight: 700; line-height: 1.45; color: var(--burgundy); background: rgba(116,41,57,0.07); border: 1.5px solid rgba(116,41,57,0.25); border-radius: 10px; padding: 0.7rem 0.9rem; }
+        .resa-alert.info { color: var(--dark-green); background: rgba(42,78,20,0.06); border-color: rgba(42,78,20,0.2); }
+        .resa-alert.hidden { display: none; }
+        .resa-btn[disabled] { opacity: 0.45; cursor: not-allowed; }
         .faq { background: var(--white); }
         .faq-list { max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 0.75rem; }
         .faq-list details { border: 1px solid rgba(0,0,0,0.1); border-radius: 12px; padding: 0 1.25rem; background: var(--cream); }
@@ -947,6 +951,7 @@
                 <label>Heure*<input type="time" name="Heure" required></label>
                 <label>Personnes*<input type="number" name="Nombre de personnes" min="1" max="50" value="2" required></label>
             </div>
+            <p id="resa-fermeture" class="resa-alert hidden" role="status" aria-live="polite"></p>
             <label>Email (pour la confirmation)<input type="email" name="email" autocomplete="email"></label>
             <label>Message (optionnel)<textarea name="Message" rows="3" placeholder="Occasion, emplacement souhaité, allergies…"></textarea></label>
             <button type="submit" class="btn resa-btn">Envoyer ma demande</button>
@@ -1233,9 +1238,16 @@ if ('IntersectionObserver' in window) {
 
 <script type="module">
   /* Réservations : enregistrement dans Firestore (suivi via admin.html)
-     + notification email à l'équipe via Web3Forms (comportement historique conservé). */
+     + notification email à l'équipe via Web3Forms (comportement historique conservé).
+
+     Ajout du 04/09/2026 — le formulaire refuse une demande quand la guinguette
+     est fermée : hors saison, jour de fermeture hebdomadaire, date de fermeture
+     exceptionnelle, ou heure en dehors du service. Les paramètres sont dans la
+     base (config/reservations + collection fermetures) et se règlent depuis
+     admin.html, module « Fermetures ». Si la base est injoignable, on retombe
+     sur les valeurs de repli ci-dessous et le formulaire reste utilisable. */
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getFirestore, collection, addDoc, doc, getDoc, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
   import { firebaseConfig } from "./firebase-config.js";
 
   let db = null;
@@ -1245,13 +1257,126 @@ if ('IntersectionObserver' in window) {
     }
   } catch (e) { console.warn("Firebase non initialisé :", e); }
 
-  const f = document.getElementById('resa-form');
+  /* ── Paramètres d'ouverture ────────────────────────────────────────── */
+  const JOURS = ['dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi'];
+  const PARAMS = {
+    saisonDebut: '2026-06-01',
+    saisonFin:   '2026-10-31',
+    horaires: [
+      { ouvert: true,  debut: '11:00', fin: '22:00' },   /* dimanche */
+      { ouvert: false, debut: '16:00', fin: '22:00' },   /* lundi    */
+      { ouvert: true,  debut: '16:00', fin: '22:00' },   /* mardi    */
+      { ouvert: true,  debut: '16:00', fin: '22:00' },   /* mercredi */
+      { ouvert: true,  debut: '16:00', fin: '22:00' },   /* jeudi    */
+      { ouvert: true,  debut: '16:00', fin: '22:00' },   /* vendredi */
+      { ouvert: true,  debut: '11:00', fin: '22:00' }    /* samedi   */
+    ]
+  };
+  const fermetures = new Map();   /* '2026-09-15' -> motif */
+
+  async function chargerParametres() {
+    if (!db) return;
+    try {
+      const s = await getDoc(doc(db, 'config', 'reservations'));
+      if (s.exists()) {
+        const d = s.data();
+        if (d.saisonDebut) PARAMS.saisonDebut = d.saisonDebut;
+        if (d.saisonFin)   PARAMS.saisonFin   = d.saisonFin;
+        if (Array.isArray(d.horaires) && d.horaires.length === 7) PARAMS.horaires = d.horaires;
+      }
+    } catch (e) { console.warn('Paramètres de réservation indisponibles :', e); }
+    try {
+      const q = await getDocs(collection(db, 'fermetures'));
+      q.forEach(x => { const d = x.data(); if (d && d.date) fermetures.set(d.date, String(d.motif || '').trim()); });
+    } catch (e) { console.warn('Jours de fermeture indisponibles :', e); }
+  }
+
+  const jjmmaaaa = iso => { const p = String(iso).split('-'); return p[2] + '/' + p[1] + '/' + p[0]; };
+  const jourDe   = iso => new Date(iso + 'T12:00:00').getDay();
+  const hFR      = h   => String(h || '').replace(':', 'h');
+
+  /* { ouvert, message, debut, fin } pour une date AAAA-MM-JJ */
+  function etatDuJour(iso) {
+    if (!iso) return { ouvert: true, message: '' };
+    if (PARAMS.saisonDebut && iso < PARAMS.saisonDebut)
+      return { ouvert: false, message: 'La guinguette rouvre le ' + jjmmaaaa(PARAMS.saisonDebut) + '. Choisissez une date à partir de ce jour-là.' };
+    if (PARAMS.saisonFin && iso > PARAMS.saisonFin)
+      return { ouvert: false, message: 'La saison se termine le ' + jjmmaaaa(PARAMS.saisonFin) + '. Nous ne prenons pas encore de réservation au-delà.' };
+    if (fermetures.has(iso)) {
+      const motif = fermetures.get(iso);
+      return { ouvert: false, message: 'Nous sommes fermés le ' + jjmmaaaa(iso) + (motif ? ' — ' + motif : '') + '. Choisissez une autre date.' };
+    }
+    const h = PARAMS.horaires[jourDe(iso)] || {};
+    if (!h.ouvert)
+      return { ouvert: false, message: 'Nous sommes fermés le ' + JOURS[jourDe(iso)] + '. Choisissez une autre date.' };
+    return { ouvert: true, message: '', debut: h.debut, fin: h.fin };
+  }
+
+  const f      = document.getElementById('resa-form');
+  const champD = f ? f.querySelector('input[name="Date"]')  : null;
+  const champH = f ? f.querySelector('input[name="Heure"]') : null;
+  const alerte = document.getElementById('resa-fermeture');
+  const bouton = f ? f.querySelector('.resa-btn') : null;
+
+  function afficher(texte, type) {
+    if (!alerte) return;
+    alerte.textContent = texte || '';
+    alerte.className = texte ? 'resa-alert' + (type === 'info' ? ' info' : '') : 'resa-alert hidden';
+  }
+
+  /* Motif de refus, ou '' si la demande est acceptable. */
+  function verifier() {
+    if (!champD || !champD.value) return '';
+    const etat = etatDuJour(champD.value);
+    if (!etat.ouvert) return etat.message;
+    if (champH && champH.value && etat.debut && etat.fin && (champH.value < etat.debut || champH.value > etat.fin))
+      return 'Le ' + JOURS[jourDe(champD.value)] + ', le service est de ' + hFR(etat.debut) + ' à ' + hFR(etat.fin) + '. Merci de choisir une heure dans ce créneau.';
+    return '';
+  }
+
+  function rafraichir() {
+    const refus = verifier();
+    if (bouton) bouton.disabled = !!refus;
+    if (refus) { afficher(refus, 'err'); return; }
+    const etat = champD && champD.value ? etatDuJour(champD.value) : null;
+    if (etat && etat.ouvert && etat.debut)
+      afficher('Ce jour-là, nous servons de ' + hFR(etat.debut) + ' à ' + hFR(etat.fin) + '.', 'info');
+    else afficher('', '');
+  }
+
+  (async () => {
+    await chargerParametres();
+    if (champD) {
+      const auj = new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+      champD.min = (PARAMS.saisonDebut && PARAMS.saisonDebut > auj) ? PARAMS.saisonDebut : auj;
+      if (PARAMS.saisonFin) champD.max = PARAMS.saisonFin;
+      champD.addEventListener('change', rafraichir);
+      champD.addEventListener('input',  rafraichir);
+    }
+    if (champH) {
+      champH.addEventListener('change', rafraichir);
+      champH.addEventListener('input',  rafraichir);
+    }
+    rafraichir();
+  })();
+
   if (f) {
     f.addEventListener('submit', async function(e){
       e.preventDefault();
       const result = document.getElementById('resa-result');
       const btn = f.querySelector('.resa-btn');
       const data = new FormData(f);
+
+      /* 0) Refus si la guinguette est fermée ce jour-là ou à cette heure-là */
+      const refus = verifier();
+      if (refus) {
+        afficher(refus, 'err');
+        result.textContent = 'Cette date n’est pas disponible.';
+        result.className = 'resa-result err';
+        if (champD) champD.focus();
+        return;
+      }
+
       result.textContent = 'Envoi en cours…'; result.className = 'resa-result';
       btn.disabled = true;
 
@@ -1288,6 +1413,7 @@ if ('IntersectionObserver' in window) {
         result.className = 'resa-result ok';
         if (window.guingTrack) window.guingTrack('reservation-envoyee', { personnes: String(data.get('Nombre de personnes') || ''), page: 'index.html' });
         f.reset();
+        afficher('', '');
       } else {
         result.textContent = 'Connexion impossible. Appelez-nous au 06 67 42 65 65.';
         result.className = 'resa-result err';

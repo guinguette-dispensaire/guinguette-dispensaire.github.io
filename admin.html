@@ -319,6 +319,25 @@ label.chk input { width: auto; margin: 0; }
   .stats { flex-wrap: wrap; }
   .stat { min-width: calc(50% - 0.35rem); }
 }
+/* ═══ FERMETURES ═══ */
+.fer-lab { display: block; font-size: 0.78rem; font-weight: 700; color: var(--dark-green); }
+.fer-lab input { width: 100%; margin-top: 0.3rem; font-size: 0.9rem; padding: 0.5rem 0.6rem; border: 1.5px solid rgba(0,0,0,0.15); border-radius: 10px; background: var(--cream); font-family: 'Lato','Lato repli',sans-serif; }
+.fer-jour { display: grid; grid-template-columns: 1fr auto auto; gap: 0.45rem; align-items: center; padding: 0.4rem 0; border-bottom: 1px solid rgba(0,0,0,0.06); }
+.fer-jour:last-child { border-bottom: none; }
+.fer-jour .nom { display: flex; align-items: center; gap: 0.5rem; font-size: 0.86rem; font-weight: 700; color: var(--dark-green); }
+.fer-jour input[type=time] { font-size: 0.85rem; padding: 0.35rem 0.45rem; border: 1.5px solid rgba(0,0,0,0.15); border-radius: 8px; background: var(--cream); font-family: 'Lato','Lato repli',sans-serif; }
+.fer-jour.off .nom { color: #9a9a9a; }
+.fer-jour.off input[type=time] { opacity: 0.4; }
+.fer-ajout { display: grid; grid-template-columns: auto 1fr auto; gap: 0.5rem; margin-bottom: 0.9rem; }
+.fer-ajout input { font-size: 0.9rem; padding: 0.5rem 0.6rem; border: 1.5px solid rgba(0,0,0,0.15); border-radius: 10px; background: var(--cream); font-family: 'Lato','Lato repli',sans-serif; }
+.fer-ligne { display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0; border-bottom: 1px solid rgba(0,0,0,0.06); font-size: 0.88rem; }
+.fer-ligne:last-child { border-bottom: none; }
+.fer-ligne .d { font-weight: 700; color: var(--dark-green); white-space: nowrap; }
+.fer-ligne .m { flex: 1; color: #777; }
+.fer-ligne.passee { opacity: 0.5; }
+.fer-etat { min-height: 1.2em; margin: -0.4rem 0 0.9rem; text-align: center; font-size: 0.8rem; font-weight: 700; color: var(--sage); }
+.fer-etat.err { color: var(--burgundy); }
+@media (max-width: 520px) { .fer-ajout { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
@@ -362,6 +381,8 @@ label.chk input { width: auto; margin: 0; }
         <b>Ventes</b><i>Caisse, produits, TVA — remontée Flatpay</i></button>
       <button role="menuitem" data-mod="planning">
         <b>Planning</b><i>Présences de l'équipe — tableau du Drive</i></button>
+      <button role="menuitem" data-mod="fermetures">
+        <b>Fermetures</b><i>Saison, horaires et jours fermés</i></button>
       <button role="menuitem" data-mod="caisse">
         <b>Caisse</b><i>Espèces encaissées et dépenses payées en liquide</i></button>
       <button role="menuitem" data-mod="visi">
@@ -632,6 +653,37 @@ label.chk input { width: auto; margin: 0; }
         <button type="button" class="pl-conc-ajout hidden" id="p-conc-ajout">+ Ajouter un concert</button>
       </div>
       <div class="v-maj" id="p-maj"></div>
+    </div>
+  </main>
+
+  <main id="tab-fermetures" class="hidden">
+    <div class="v-card">
+      <h2>Saison</h2>
+      <div class="sub">Le formulaire du site refuse toute demande en dehors de cette période.</div>
+      <div class="row2">
+        <label class="fer-lab">Ouverture<input type="date" id="fer-saison-debut"></label>
+        <label class="fer-lab">Fermeture<input type="date" id="fer-saison-fin"></label>
+      </div>
+    </div>
+
+    <div class="v-card">
+      <h2>Horaires de la semaine</h2>
+      <div class="sub">Décochez un jour pour le fermer toute la saison. Les heures servent à refuser une demande passée en dehors du service.</div>
+      <div id="fer-jours"></div>
+    </div>
+
+    <button class="btn-add" id="fer-save">Enregistrer la saison et les horaires</button>
+    <p class="fer-etat" id="fer-etat" role="status" aria-live="polite"></p>
+
+    <div class="v-card">
+      <h2>Jours de fermeture exceptionnelle</h2>
+      <div class="sub">Météo, événement, congés… Ces dates sont refusées sur le formulaire du site dès l'enregistrement.</div>
+      <form id="fer-ajout" class="fer-ajout">
+        <input type="date" id="fer-date" required aria-label="Date de fermeture">
+        <input type="text" id="fer-motif" maxlength="80" placeholder="Motif (facultatif) — ex. : météo">
+        <button type="submit" class="btn-ok">Ajouter</button>
+      </form>
+      <div id="fer-liste"></div>
     </div>
   </main>
 </div>
@@ -1253,7 +1305,8 @@ const MODULES = {
   ventes:   { section: 'tab-ventes',      titre: 'Ventes' },
   planning: { section: 'tab-planning',    titre: 'Planning' },
   caisse:   { section: 'tab-caisse',      titre: 'Caisse' },
-  visi:     { section: 'tab-visibilite',  titre: 'Visibilité' }
+  visi:     { section: 'tab-visibilite',  titre: 'Visibilité' },
+  fermetures: { section: 'tab-fermetures', titre: 'Fermetures' }
 };
 
 const modBtn = $('mod-btn'), modMenu = $('mod-menu');
@@ -1287,6 +1340,7 @@ function basculer(onglet) {
   if (onglet === 'visi'   && !visiChargee)    { visiChargee   = true; chargerVisibilite(); }
   if (onglet === 'planning' && !planningCharge) { planningCharge = true; chargerPlanning(); }
   if (onglet === 'caisse'   && !caisseChargee)  { caisseChargee  = true; chargerCaisse(); }
+  if (onglet === 'fermetures' && !fermeturesChargees) { fermeturesChargees = true; chargerFermetures(); }
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -2718,6 +2772,155 @@ function courbe(svgId, r, cle, libelle, inverse, marquerRuptures) {
     }
   });
 }
+
+
+/* ═══════════════════════════════════════════════════════════════
+   FERMETURES — saison, horaires de la semaine, jours fermés
+
+   Deux emplacements dans la base, tous deux lus par le formulaire de
+   réservation du site (index.html) :
+     • config/reservations   { saisonDebut, saisonFin, horaires[7] }
+       horaires[0] = dimanche … horaires[6] = samedi, chacun
+       { ouvert, debut, fin }
+     • fermetures/{AAAA-MM-JJ}  { date, motif }
+   Règles Firestore (publiées le 04/09/2026) : lecture publique — le
+   formulaire doit savoir quand on est fermé — écriture réservée à
+   l'équipe connectée.
+   ═══════════════════════════════════════════════════════════════ */
+let fermeturesChargees = false;
+const JOURS_SEM = ['dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi'];
+const PARAMS_RESA_DEFAUT = {
+  saisonDebut: '2026-06-01',
+  saisonFin:   '2026-10-31',
+  horaires: [
+    { ouvert: true,  debut: '11:00', fin: '22:00' },
+    { ouvert: false, debut: '16:00', fin: '22:00' },
+    { ouvert: true,  debut: '16:00', fin: '22:00' },
+    { ouvert: true,  debut: '16:00', fin: '22:00' },
+    { ouvert: true,  debut: '16:00', fin: '22:00' },
+    { ouvert: true,  debut: '16:00', fin: '22:00' },
+    { ouvert: true,  debut: '11:00', fin: '22:00' }
+  ]
+};
+let paramsResa = null;
+let listeFermetures = [];
+
+const isoAuj     = () => new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+const dateCourte = iso => { const p = String(iso).split('-'); return p[2] + '/' + p[1] + '/' + p[0]; };
+const jourNom    = iso => JOURS_SEM[new Date(iso + 'T12:00:00').getDay()];
+
+async function chargerFermetures() {
+  try {
+    const s = await getDoc(doc(db, 'config', 'reservations'));
+    paramsResa = s.exists() ? Object.assign({}, PARAMS_RESA_DEFAUT, s.data()) : Object.assign({}, PARAMS_RESA_DEFAUT);
+  } catch (e) {
+    paramsResa = Object.assign({}, PARAMS_RESA_DEFAUT);
+    etatFermetures('Lecture des paramètres impossible : ' + (e.code || e.message), true);
+  }
+  if (!Array.isArray(paramsResa.horaires) || paramsResa.horaires.length !== 7)
+    paramsResa.horaires = PARAMS_RESA_DEFAUT.horaires.map(h => Object.assign({}, h));
+
+  try {
+    const q = await getDocs(collection(db, 'fermetures'));
+    listeFermetures = [];
+    q.forEach(x => { const d = x.data(); if (d && d.date) listeFermetures.push({ id: x.id, date: d.date, motif: d.motif || '' }); });
+    listeFermetures.sort((a, b) => a.date < b.date ? -1 : 1);
+  } catch (e) {
+    listeFermetures = [];
+    etatFermetures('Lecture des fermetures impossible : ' + (e.code || e.message), true);
+  }
+  dessinerFermetures();
+}
+
+function etatFermetures(texte, erreur) {
+  const el = $('fer-etat');
+  if (!el) return;
+  el.textContent = texte || '';
+  el.className = 'fer-etat' + (erreur ? ' err' : '');
+}
+
+function dessinerFermetures() {
+  $('fer-saison-debut').value = paramsResa.saisonDebut || '';
+  $('fer-saison-fin').value   = paramsResa.saisonFin   || '';
+
+  $('fer-jours').innerHTML = paramsResa.horaires.map((h, i) =>
+    `<div class="fer-jour ${h.ouvert ? '' : 'off'}">
+       <span class="nom"><input type="checkbox" ${h.ouvert ? 'checked' : ''} aria-label="Ouvert le ${JOURS_SEM[i]}"> ${JOURS_SEM[i]}</span>
+       <input type="time" value="${h.debut || '16:00'}" aria-label="Début du service le ${JOURS_SEM[i]}">
+       <input type="time" value="${h.fin || '22:00'}" aria-label="Fin du service le ${JOURS_SEM[i]}">
+     </div>`).join('');
+  $('fer-jours').querySelectorAll('input[type=checkbox]').forEach(c =>
+    c.addEventListener('change', () => c.closest('.fer-jour').classList.toggle('off', !c.checked)));
+
+  const auj = isoAuj();
+  const aVenir = listeFermetures.filter(x => x.date >= auj);
+  const passees = listeFermetures.filter(x => x.date < auj);
+  const ligne = x =>
+    `<div class="fer-ligne ${x.date < auj ? 'passee' : ''}">
+       <span class="d">${dateCourte(x.date)}</span>
+       <span class="m">${x.motif ? esc(x.motif) : jourNom(x.date)}</span>
+       <button type="button" class="btn-min" data-suppr="${esc(x.id)}">Retirer</button>
+     </div>`;
+  $('fer-liste').innerHTML =
+    (aVenir.length ? aVenir.map(ligne).join('')
+                   : '<div class="empty">Aucune fermeture à venir.</div>')
+    + (passees.length ? `<div class="sub" style="margin:0.9rem 0 0">Déjà passées</div>` + passees.slice(-6).map(ligne).join('') : '');
+  $('fer-liste').querySelectorAll('button[data-suppr]').forEach(b =>
+    b.addEventListener('click', () => supprimerFermeture(b.dataset.suppr)));
+}
+
+async function enregistrerParamsResa() {
+  const horaires = [...$('fer-jours').querySelectorAll('.fer-jour')].map(l => ({
+    ouvert: l.querySelector('input[type=checkbox]').checked,
+    debut:  l.querySelectorAll('input[type=time]')[0].value || '16:00',
+    fin:    l.querySelectorAll('input[type=time]')[1].value || '22:00'
+  }));
+  const debut = $('fer-saison-debut').value, fin = $('fer-saison-fin').value;
+  if (debut && fin && debut > fin)
+    return etatFermetures('La date de fermeture de saison doit venir après celle d’ouverture.', true);
+  const mauvais = horaires.findIndex(h => h.ouvert && h.debut >= h.fin);
+  if (mauvais > -1)
+    return etatFermetures('Le ' + JOURS_SEM[mauvais] + ', l’heure de fin doit être après celle de début.', true);
+
+  try {
+    await setDoc(doc(db, 'config', 'reservations'), {
+      saisonDebut: debut, saisonFin: fin, horaires,
+      majLe: serverTimestamp(), majPar: (auth.currentUser && auth.currentUser.email) || ''
+    }, { merge: true });
+    paramsResa = Object.assign({}, paramsResa, { saisonDebut: debut, saisonFin: fin, horaires });
+    etatFermetures('Enregistré — le site en tient compte immédiatement.', false);
+  } catch (e) { etatFermetures('Enregistrement impossible : ' + (e.code || e.message), true); }
+}
+
+async function ajouterFermeture(ev) {
+  ev.preventDefault();
+  const d = $('fer-date').value, m = $('fer-motif').value.trim();
+  if (!d) return;
+  try {
+    await setDoc(doc(db, 'fermetures', d), {
+      date: d, motif: m,
+      creeLe: serverTimestamp(), creePar: (auth.currentUser && auth.currentUser.email) || ''
+    });
+    listeFermetures = listeFermetures.filter(x => x.id !== d)
+      .concat([{ id: d, date: d, motif: m }])
+      .sort((a, b) => a.date < b.date ? -1 : 1);
+    $('fer-date').value = ''; $('fer-motif').value = '';
+    dessinerFermetures();
+    etatFermetures('Fermeture du ' + dateCourte(d) + ' enregistrée.', false);
+  } catch (e) { etatFermetures('Enregistrement impossible : ' + (e.code || e.message), true); }
+}
+
+async function supprimerFermeture(id) {
+  try {
+    await deleteDoc(doc(db, 'fermetures', id));
+    listeFermetures = listeFermetures.filter(x => x.id !== id);
+    dessinerFermetures();
+    etatFermetures('Fermeture du ' + dateCourte(id) + ' retirée — les réservations sont de nouveau possibles ce jour-là.', false);
+  } catch (e) { etatFermetures('Suppression impossible : ' + (e.code || e.message), true); }
+}
+
+$('fer-save').addEventListener('click', enregistrerParamsResa);
+$('fer-ajout').addEventListener('submit', ajouterFermeture);
 
 </script>
 </body>
