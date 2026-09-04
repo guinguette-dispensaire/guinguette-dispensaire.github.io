@@ -1293,7 +1293,7 @@ if ('IntersectionObserver' in window) {
 
   const jjmmaaaa = iso => { const p = String(iso).split('-'); return p[2] + '/' + p[1] + '/' + p[0]; };
   const jourDe   = iso => new Date(iso + 'T12:00:00').getDay();
-  const hFR      = h   => String(h || '').replace(':', 'h');
+  const hFR      = h   => String(h || '').replace(':00', 'h').replace(':', 'h');
 
   /* { ouvert, message, debut, fin } pour une date AAAA-MM-JJ */
   function etatDuJour(iso) {
