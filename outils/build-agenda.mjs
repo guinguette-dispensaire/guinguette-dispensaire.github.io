@@ -4,12 +4,11 @@
  *   L'onglet « concerts » du Google Sheet  ->  les sections de agenda.html
  *
  * Lit l'onglet « concerts » (colonnes C groupe, D style, E date, F cachet),
- * RETIRE le cachet (jamais publié), répartit les événements en « À venir » et
- * « Déjà passés » selon la date du jour (Europe/Paris), et réécrit trois zones
- * de agenda.html, repérées par la structure existante :
+ * RETIRE le cachet (jamais publié), ne garde que les événements À VENIR
+ * (date >= aujourd'hui, Europe/Paris), et réécrit deux zones de agenda.html,
+ * repérées par la structure existante :
  *     le bloc <script type="application/ld+json"> … </script>
  *     les lignes entre <div id="a-venir"> … </div>
- *     les lignes entre <div id="passes"> … </div>
  *
  * Présentation façon affiche : une ligne compacte par événement
  *     Jour date · heure · type · Nom (+ sous-titre éventuel)
@@ -62,7 +61,7 @@ const OVERRIDES = {
   '2026-10-02': { id:'elsinha', type:'Concert live', heure:'19h – 21h30', title:'Elsinha', sub:'Latino', perf:'MusicGroup' },
   '2026-10-03': { id:'chapeau-solo', type:'Concert live', heure:'19h – 21h', title:'Chapeau solo', sub:'Reprises jazz', perf:'MusicGroup' },
   '2026-10-10': { id:'black-noodles', type:'Concert live', heure:'19h – 21h30', title:'Black Noodles', sub:'Rock', perf:'MusicGroup' },
-  // Déjà passés
+  // Déjà passés (conservés pour référence — non affichés sur la page)
   '2026-09-10': { id:'yipikiyay', type:'Concert live', heure:'19h – 21h30', title:'Yipikiyay', perf:'MusicGroup', src:'instagram' },
   '2026-09-05': { id:'blind-test-paella', type:'Animation', heure:'dès 19h', title:'Blind test', sub:'avec la paëlla de la Mama Valentina', perf:'Organization', src:'instagram' },
   '2026-09-03': { id:'gregoire-delahaye', type:'DJ set', heure:'19h – 21h30', title:'Grégoire Delahaye', perf:'Person', src:'instagram' },
@@ -231,9 +230,8 @@ const passes = events.filter(e => e.date <  today).sort((a, b) => b.date.localeC
 console.log(`Événements : ${events.length}  (à venir : ${avenir.length}, passés : ${passes.length}, aujourd'hui : ${today})`);
 
 const avenirHTML = avenir.map(e => ligne(e, false)).join('\n');
-const passesHTML = passes.map(e => ligne(e, true)).join('\n');
 
-const ld = [...avenir.map(jsonldEvent), ...passes.map(jsonldEvent), {
+const ld = [...avenir.map(jsonldEvent), {
   '@context':'https://schema.org', '@type':'BreadcrumbList', itemListElement:[
     { '@type':'ListItem', position:1, name:'Accueil', item:`${BASE}/` },
     { '@type':'ListItem', position:2, name:'Agenda des concerts et animations', item:`${BASE}/agenda.html` }
@@ -245,10 +243,8 @@ let html = await readFile(FICHIER, 'utf8');
 const avant = html;
 html = remplacer(html, /<script type="application\/ld\+json">[\s\S]*?<\/script>/,
   () => jsonldHTML, 'JSON-LD');
-html = remplacer(html, /<div id="a-venir">[\s\S]*?<\/div>\s*<div class="agenda-sec">\s*<h2>Déjà pass/,
-  () => `<div id="a-venir">\n${avenirHTML}\n</div>\n\n<div class="agenda-sec">\n<h2>Déjà pass`, 'à venir');
-html = remplacer(html, /<div id="passes">[\s\S]*?<\/div>\s*<div class="agenda-sec">\s*<h2>Aussi au Parc/,
-  () => `<div id="passes">\n${passesHTML}\n</div>\n\n<div class="agenda-sec">\n<h2>Aussi au Parc`, 'passés');
+html = remplacer(html, /<div id="a-venir">[\s\S]*?<\/div>\s*<div class="agenda-sec">\s*<h2>Aussi au Parc/,
+  () => `<div id="a-venir">\n${avenirHTML}\n</div>\n\n<div class="agenda-sec">\n<h2>Aussi au Parc`, 'à venir');
 
 if (html === avant) console.log('Agenda déjà à jour — aucun changement.');
 else { await writeFile(FICHIER, html); console.log('agenda.html régénéré.'); }
