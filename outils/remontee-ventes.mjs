@@ -355,6 +355,42 @@ async function lireMixProduit(page) {
   };
 }
 
+/* ─── Connexion au portail, avec reprises ───
+   Flatpay refuse de temps en temps une connexion pourtant bonne : page lente,
+   redirection qui tarde au-dela des 3 secondes qu'on lui laissait. Chaque fois
+   c'etait un mail « Run failed » pour rien. On attend desormais que l'adresse
+   quitte /login (25 s), et on retente deux fois, espace de 20 puis 40 s.
+   Quand la page affiche un vrai message (mot de passe refuse, double
+   authentification...), on n'insiste pas — pas de quoi faire bloquer le compte —
+   et on recopie ce message dans le journal : c'est lui qui dit quoi reparer. */
+async function seConnecter(page) {
+  let message = '';
+  for (let essai = 1; essai <= 3; essai++) {
+    try {
+      await page.goto('https://portal.flatpay.com/login', { waitUntil: 'networkidle', timeout: 45000 });
+      await page.fill('input[name="username"]', process.env.FLATPAY_EMAIL);
+      await page.fill('input[name="password"]', process.env.FLATPAY_PASSWORD);
+      await page.click('button[type="submit"]');
+      await page.waitForURL(u => !String(u).includes('/login'), { timeout: 25000 });
+      await page.waitForLoadState('networkidle').catch(() => {});
+      if (essai > 1) dire(`Connexion obtenue au ${essai}e essai.`);
+      return;
+    } catch (e) {
+      const texte = await page.locator('body').innerText().catch(() => '');
+      message = texte.split('\n').map(l => l.trim()).filter(Boolean)
+        .filter(l => !/^(Se connecter|Bienvenue|E-mail|Mot de passe$|Mot de passe oubli|Continuer)/i.test(l))
+        .slice(0, 4).join(' / ').slice(0, 300);
+      dire(`Connexion, essai ${essai}/3 : refusee` + (message ? ` — la page affiche « ${message} »` : ` (${e.message.split('\n')[0]})`));
+      if (message) break;
+      if (essai < 3) await page.waitForTimeout(essai * 20000);
+    }
+  }
+  const err = new Error('Connexion a Flatpay refusee' + (message ? ` — la page affiche « ${message} »` : '') +
+    '. Verifier le mot de passe (secret FLATPAY_PASSWORD) ou une double authentification.');
+  err.connexion = true;
+  throw err;
+}
+
 /* ─── Programme ─── */
 (async () => {
   const { debut, fin, jours } = fenetre();
@@ -382,24 +418,43 @@ async function lireMixProduit(page) {
   try {
     (await db.collection('planning').get()).forEach(d => ouvert.set(d.id, !d.data().ferme));
   } catch (e) { dire('Planning illisible, on continue sans : ' + e.message); }
-  if (!manquantes.length) { dire('Rien a faire.'); return; }
+  if (!manquantes.length) {
+    await db.collection('ventes_meta').doc('sante').set({ passageOk: Date.now() }, { merge: true }).catch(() => {});
+    dire('Rien a faire.'); return;
+  }
 
   const navigateur = await chromium.launch();
   const page = await (await navigateur.newContext({ locale: 'fr-FR', timezoneId: 'Europe/Paris' })).newPage();
 
   try {
-    /* Connexion */
-    await page.goto('https://portal.flatpay.com/login', { waitUntil: 'networkidle' });
-    await page.fill('input[name="username"]', process.env.FLATPAY_EMAIL);
-    await page.fill('input[name="password"]', process.env.FLATPAY_PASSWORD);
-    await Promise.all([
-      page.waitForLoadState('networkidle'),
-      page.click('button[type="submit"]')
-    ]);
-    await page.waitForTimeout(3000);
-    if (page.url().includes('/login')) {
-      throw new Error("Connexion a Flatpay refusee. Mot de passe change, ou double authentification activee.");
+    /* Connexion — voir seConnecter() : reprises et alerte mail filtree. */
+    const sante = db.collection('ventes_meta').doc('sante');
+    try {
+      await seConnecter(page);
+    } catch (e) {
+      if (!e.connexion) throw e;
+      /* Un refus isole ne merite pas de mail : la fenetre de 21 jours rattrape
+         tout au passage suivant. On l'affiche dans l'outil, et on ne rougit
+         (mail « Run failed ») que si plus rien n'est passe depuis 20 h, au plus
+         une fois par jour. La demande du bouton est marquee traitee pour que
+         les passages de quart d'heure ne s'acharnent pas sur Flatpay. */
+      const s = await sante.get().then(d => d.exists ? d.data() : {}).catch(() => ({}));
+      const heures = s.passageOk ? (Date.now() - Number(s.passageOk)) / 3600000 : 999;
+      const dejaAlerte = s.alerteLe && (Date.now() - Number(s.alerteLe)) < 20 * 3600000;
+      await db.collection('ventes_meta').doc('anomalies').set(
+        { liste: [e.message], le: Date.now(), passage: new Date().toISOString() }, { merge: false }).catch(() => {});
+      await db.collection('commandes').doc('remontee').set(
+        { traitee: Date.now(), echec: e.message }, { merge: true }).catch(() => {});
+      if (heures < 20 || dejaAlerte) {
+        dire(e.message);
+        dire(`Pas d'alerte mail : dernier passage reussi il y a ${heures < 999 ? Math.round(heures) + ' h' : '?'}` +
+             `${dejaAlerte ? ', alerte deja envoyee dans la journee' : ''}. Le prochain passage reessaiera.`);
+        return;
+      }
+      await sante.set({ alerteLe: Date.now() }, { merge: true }).catch(() => {});
+      throw e;
     }
+    await sante.set({ passageOk: Date.now() }, { merge: true }).catch(() => {});
     dire('Connecte au portail Flatpay.');
 
     /* Liste des sessions de caisse sur la fenetre */
@@ -579,7 +634,8 @@ async function lireMixProduit(page) {
   // Une demande faite depuis le bouton de l'outil est marquee traitee,
   // que la remontee ait trouve quelque chose a ecrire ou non.
   try {
-    await db.collection('commandes').doc('remontee').set({ traitee: Date.now() }, { merge: true });
+    await db.collection('commandes').doc('remontee').set(
+      { traitee: Date.now(), echec: admin.firestore.FieldValue.delete() }, { merge: true });
   } catch (e) { dire('Marquage de la demande impossible : ' + e.message); }
 
   /* Les points a regarder ne sont pas des pannes.
