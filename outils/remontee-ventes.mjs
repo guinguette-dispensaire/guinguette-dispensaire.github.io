@@ -363,6 +363,10 @@ async function lireMixProduit(page) {
    Quand la page affiche un vrai message (mot de passe refuse, double
    authentification...), on n'insiste pas — pas de quoi faire bloquer le compte —
    et on recopie ce message dans le journal : c'est lui qui dit quoi reparer. */
+/* Libelles fixes de la page de connexion, en francais comme en anglais : tout
+   le reste (bandeau d'erreur, demande de code...) est le message a recopier. */
+const LIBELLES_LOGIN = /^(se connecter|bienvenue.*|e-?mail|mot de passe|mot de passe oubli\S*( \?)?|continuer|sign in|welcome back.*|email|password|forgot (your )?password\??|continue|log in|connexion)$/i;
+
 async function seConnecter(page) {
   let message = '';
   for (let essai = 1; essai <= 3; essai++) {
@@ -378,8 +382,8 @@ async function seConnecter(page) {
     } catch (e) {
       const texte = await page.locator('body').innerText().catch(() => '');
       message = texte.split('\n').map(l => l.trim()).filter(Boolean)
-        .filter(l => !/^(Se connecter|Bienvenue|E-mail|Mot de passe$|Mot de passe oubli|Continuer)/i.test(l))
-        .slice(0, 4).join(' / ').slice(0, 300);
+        .filter(l => !LIBELLES_LOGIN.test(l))
+        .slice(0, 6).join(' / ').slice(0, 400);
       dire(`Connexion, essai ${essai}/3 : refusee` + (message ? ` — la page affiche « ${message} »` : ` (${e.message.split('\n')[0]})`));
       if (message) break;
       if (essai < 3) await page.waitForTimeout(essai * 20000);
