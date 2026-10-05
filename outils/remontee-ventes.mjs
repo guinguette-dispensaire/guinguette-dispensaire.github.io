@@ -365,7 +365,24 @@ async function lireMixProduit(page) {
    et on recopie ce message dans le journal : c'est lui qui dit quoi reparer. */
 /* Libelles fixes de la page de connexion, en francais comme en anglais : tout
    le reste (bandeau d'erreur, demande de code...) est le message a recopier. */
-const LIBELLES_LOGIN = /^(se connecter|bienvenue.*|e-?mail|mot de passe|mot de passe oubli\S*( \?)?|continuer|sign in|welcome back.*|email|password|forgot (your )?password\??|continue|log in|connexion)$/i;
+const LIBELLES_LOGIN = /^(se connecter|bienvenue.*|e-?mail|mot de passe|mot de passe oubli\S*( \?)?|continuer|entrez votre mot de passe.*|modifier l'e-?mail|\S+@\S+|sign in|welcome back.*|email|password|enter your password.*|change e-?mail|forgot (your )?password\??|continue|log in|connexion)$/i;
+
+/* Depuis fin septembre 2026, Flatpay demande l'e-mail SEUL sur un premier
+   ecran (« Continuer »), puis le mot de passe sur un second (« Se connecter »).
+   Les deux ecrans restent dans la page : l'inactif est repousse hors ecran et
+   rendu inerte (data-testid="login-email-step" / "login-password-step").
+   Remplir le mot de passe pendant le premier ecran ne fait rien, et un seul
+   clic ne connecte pas — c'etait la panne : trois essais, aucun message, et
+   plus une journee remontee depuis le 21/09. On regarde donc quel ecran est
+   actif avant de remplir, et on garde le chemin a un seul ecran si Flatpay
+   y revient. */
+const ETAPE_MDP_ACTIVE = () => {
+  const e = document.querySelector('input[name="password"]');
+  if (!e) return false;
+  if (e.closest('[inert], [aria-hidden="true"], [hidden]')) return false;
+  const r = e.getBoundingClientRect();
+  return r.width > 0 && r.right > 0;
+};
 
 async function seConnecter(page) {
   let message = '';
@@ -373,6 +390,23 @@ async function seConnecter(page) {
     try {
       await page.goto('https://portal.flatpay.com/login', { waitUntil: 'networkidle', timeout: 45000 });
       await page.fill('input[name="username"]', process.env.FLATPAY_EMAIL);
+      if (!await page.evaluate(ETAPE_MDP_ACTIVE)) {
+        /* Premier ecran : on valide l'e-mail et on attend que l'ecran du mot
+           de passe prenne la place. Si Flatpay connecte directement (ancien
+           flux a un ecran), l'adresse quitte /login et on s'arrete la. */
+        await page.click('button[type="submit"]');
+        await Promise.race([
+          page.waitForFunction(ETAPE_MDP_ACTIVE, null, { timeout: 15000 }),
+          page.waitForURL(u => !String(u).includes('/login'), { timeout: 15000 })
+        ]).catch(() => {});
+        if (!String(page.url()).includes('/login')) {
+          await page.waitForLoadState('networkidle').catch(() => {});
+          if (essai > 1) dire(`Connexion obtenue au ${essai}e essai.`);
+          return;
+        }
+        if (!await page.evaluate(ETAPE_MDP_ACTIVE))
+          throw new Error("l'ecran du mot de passe n'est pas apparu apres l'e-mail");
+      }
       await page.fill('input[name="password"]', process.env.FLATPAY_PASSWORD);
       await page.click('button[type="submit"]');
       await page.waitForURL(u => !String(u).includes('/login'), { timeout: 25000 });
